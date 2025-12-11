@@ -59,11 +59,12 @@
 「検討中」や「ES作成中」のまま放置されている企業や、返信が来ていない企業を検知し、アラートを出す機能。
 機会損失やタスク漏れ（サイレントお祈りの勘違い含む）を防ぐ。
 
-### 3-1. データ構造 (Schema Image: AlertSetting)
-- **target_status** (String): 監視対象のステータス（例：「ES作成中」）
-- **threshold_days** (Int): アラートを出すまでの放置日数（例：3日）
-- **alert_message** (String): 通知メッセージ（例：「ESの期限確認した？3日止まってるよ」）
-- **is_active** (Boolean): 機能のON/OFF
+### 3-1. データ構造 (Schema Image)
+- AlertSetting
+  - target_status (String): 監視対象のステータス（例：「ES作成中」）
+  - threshold_days (Int): アラートを出すまでの放置日数（例：3日）
+  - alert_message (String): 通知メッセージ（例：「ESの期限確認した？3日止まってるよ」）
+  - is_active (Boolean): 機能のON/OFF
 
 ### 3-2. 閲覧・操作 (UI/UX)
 #### リスト・カンバン画面
