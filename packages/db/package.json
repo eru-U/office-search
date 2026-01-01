@@ -1,0 +1,18 @@
+{
+	"name": "@terasu/db",
+	"version": "1.0.0",
+	"description": "Job hunting management database package for terasu",
+	"main": "index.js",
+	"scripts": {
+		"db:up": "docker compose up -d",
+		"db:down": "docker compose down",
+		"db:restart": "docker compose restart",
+		"db:logs": "docker compose logs -f",
+		"db:clean": "docker compose down -v",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.15.0"
+}
