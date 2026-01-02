@@ -17,9 +17,9 @@ model User {
   /// ユーザーID
   id            String    @id @default(cuid())
   /// 名前
-  name          String
-  /// メールアドレス
-  email         String?
+  name          String?
+  /// メールアドレス (NextAuth: @unique が必須)
+  email         String?   @unique
   /// メール認証日時
   emailVerified DateTime?
   /// アイコンURL
@@ -30,35 +30,95 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   /// 関連：企業
-  companies         Company[]
+  companies          Company[]
   /// 関連：TODO
-  todos             Todo[]
+  todos              Todo[]
   /// 関連：業界マスタ
-  industries        Industry[]
+  industries         Industry[]
   /// 関連：就活軸
-  jobHuntingAxes    JobHuntingAxis[]
+  jobHuntingAxes     JobHuntingAxis[]
   /// 関連：保有資格
-  qualifications    Qualification[]
+  qualifications     Qualification[]
   /// 関連：タグマスタ
-  tags              Tag[]
+  tags               Tag[]
   /// 関連：技術スタックマスタ
-  techStacks        TechStack[]
+  techStacks         TechStack[]
   /// 関連：労働区分マスタ
-  laborCategories   LaborCategory[]
+  laborCategories    LaborCategory[]
   /// 関連：雇用形態マスタ
   employmentStatuses EmploymentStatus[]
   /// 関連：キャリアビジョン
-  careerVisions     CareerVision[]
-  /// 関連：連携用アカウント
-  accounts          Account[]
-  /// 関連：セッション
-  sessions          Session[]
+  careerVisions      CareerVision[]
+  /// 関連：連携用アカウント (NextAuth用)
+  accounts           Account[]
+  /// 関連：セッション (NextAuth用)
+  sessions           Session[]
+}
+
+/// 認証連携用アカウント
+model Account {
+  /// 内部ID
+  id                 String  @id @default(cuid())
+  /// ユーザーID
+  userId             String
+  /// プロバイダー種別（NextAuthに必須）
+  type               String
+  /// プロバイダー名（google等）
+  provider           String
+  /// プロバイダー側のアカウントID
+  providerAccountId  String
+  /// リフレッシュトークン
+  refresh_token      String? @db.Text
+  /// アクセストークン
+  access_token       String? @db.Text
+  /// 有効期限
+  expires_at         Int?
+  /// トークン種別
+  token_type         String?
+  /// スコープ
+  scope              String?
+  /// IDトークン
+  id_token           String? @db.Text
+  /// セッション状態
+  session_state      String?
+  
+  /// 関連：ユーザー
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+/// セッション管理
+model Session {
+  /// 内部ID
+  id           String   @id @default(cuid())
+  /// セッショントークン (NextAuth: @unique が必須)
+  sessionToken String   @unique
+  /// ユーザーID
+  userId       String
+  /// 有効期限
+  expires      DateTime
+  
+  /// 関連：ユーザー
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// メール認証用トークン
+model VerificationToken {
+  /// 識別子 (NextAuth: identifier に変更)
+  identifier String
+  /// トークン (NextAuth: @unique が必須)
+  token      String   @unique
+  /// 有効期限
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 /// 企業情報を管理するテーブル
 model Company {
   /// 企業ID
-  id               String    @id @default(cuid())
+  id               String   @id @default(cuid())
   /// ユーザーID
   userId           String
   /// 会社名
@@ -74,9 +134,9 @@ model Company {
   /// 総合評価スコア
   ratingScore      Int?
   /// 作成日時
-  createdAt        DateTime  @default(now())
+  createdAt        DateTime @default(now())
   /// 更新日時
-  updatedAt        DateTime  @updatedAt
+  updatedAt        DateTime @updatedAt
   /// 志望度（100分立）
   aspirationLevel  Int?
   /// お気に入りフラグ
@@ -103,13 +163,13 @@ model Company {
 /// 業界情報を管理するマスタテーブル
 model Industry {
   /// 業界ID
-  id        String    @id @default(cuid())
+  id        String  @id @default(cuid())
   /// ユーザーID
   userId    String?
   /// 業界名
   name      String?
   /// 表示順序
-  sortOrder Int       @default(0)
+  sortOrder Int     @default(0)
 
   /// 関連：ユーザー
   user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -173,36 +233,36 @@ model Branch {
 /// 募集職種の詳細を管理するテーブル
 model JobPosting {
   /// 募集職種ID
-  id                String            @id @default(cuid())
+  id                 String   @id @default(cuid())
   /// 年代ID
-  yearlyInfoId      String
+  yearlyInfoId       String
   /// 募集職種名
-  title             String
+  title              String
   /// 試用期間（月）
-  probationMonths   Float?
+  probationMonths    Float?
   /// 雇用形態ID
   employmentStatusId String?
   /// 労働区分ID
-  laborCategoryId   String
+  laborCategoryId    String
   /// リモートワーク可否
-  isRemoteAllowed   Boolean
+  isRemoteAllowed    Boolean
   /// 備考
-  notes             String?
+  notes              String?
 
   /// 関連：年代別企業情報
-  yearlyInfo        CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
+  yearlyInfo       CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
   /// 関連：雇用形態
-  employmentStatus  EmploymentStatus? @relation(fields: [employmentStatusId], references: [id], onDelete: Cascade)
+  employmentStatus EmploymentStatus? @relation(fields: [employmentStatusId], references: [id], onDelete: Cascade)
   /// 関連：労働区分
-  laborCategory     LaborCategory     @relation(fields: [laborCategoryId], references: [id], onDelete: Cascade)
+  laborCategory    LaborCategory     @relation(fields: [laborCategoryId], references: [id], onDelete: Cascade)
   /// 関連：給与
-  salaries          Salary[]
+  salaries         Salary[]
   /// 関連：選考スケジュール
   selectionSchedules SelectionSchedule[]
   /// 関連：労働時間
-  workingHours      WorkingHours[]
+  workingHours     WorkingHours[]
   /// 関連：技術スタック
-  techStacks        TechStack[]       @relation("JobToTechStack")
+  techStacks       TechStack[]       @relation("JobToTechStack")
 }
 
 /// 給与形態マスタ（例：年収、月収）
@@ -276,32 +336,32 @@ model ContactPerson {
 /// 選考のスケジュールを管理するテーブル
 model SelectionSchedule {
   /// 選考スケジュールID
-  id                String    @id @default(cuid())
+  id              String    @id @default(cuid())
   /// 親選考スケジュールID
-  parentId          String?
+  parentId        String?
   /// 募集職種ID
-  jobPostingId      String
+  jobPostingId    String
   /// タイトル
-  title             String
+  title           String
   /// 選考日時
-  scheduledAt       DateTime?
+  scheduledAt     DateTime?
   /// 詳細メモ
-  notes             String?
+  notes           String?
   /// 完了フラグ
-  isCompleted       Boolean
+  isCompleted     Boolean
   /// 合否結果
-  passed            Boolean?
+  passed          Boolean?
   /// ステータス更新日
-  statusUpdatedAt   DateTime?
+  statusUpdatedAt DateTime?
   /// 場所・URL
-  locationUrl       String?
+  locationUrl     String?
 
   /// 関連：募集職種
-  jobPosting        JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  jobPosting JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
   /// 関連：タスク
-  tasks             Task[]
+  tasks      Task[]
   /// 関連：QA
-  qas               QA[]
+  qas        QA[]
 }
 
 /// ユーザーのTODOリスト
@@ -343,22 +403,22 @@ model Tag {
 /// 自身の就活の軸
 model JobHuntingAxis {
   /// 就活軸ID
-  id             String                @id @default(cuid())
+  id           String                @id @default(cuid())
   /// ユーザーID
-  userId         String
+  userId       String
   /// 軸の内容
-  content        String?
+  content      String?
   /// 優先度種別
-  priorityType   Int?
+  priorityType Int?
   /// 表示順序
-  displayOrder   Int?
+  displayOrder Int?
   /// 作成日時
-  createdAt      DateTime?             @default(now())
+  createdAt    DateTime?             @default(now())
   
   /// 関連：ユーザー
-  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// 関連：企業マッチング
-  matchings      CompanyAxisMatching[]
+  matchings    CompanyAxisMatching[]
 }
 
 /// 企業と就活軸のマッチング状況
@@ -419,16 +479,16 @@ model Qualification {
 /// 面接などのQA記録
 model QA {
   /// QAID
-  id           String            @id @default(cuid())
+  id         String            @id @default(cuid())
   /// 選考スケジュールID
-  scheduleId   String
+  scheduleId String
   /// 質問内容
-  question     String
+  question   String
   /// 回答内容
-  answer       String?
+  answer     String?
   
   /// 関連：選考スケジュール
-  schedule     SelectionSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  schedule   SelectionSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
 }
 
 /// 技術スタックのマスタ
@@ -507,20 +567,20 @@ model Bonus {
 /// 労働時間の設定
 model WorkingHours {
   /// 労働時間ID
-  id              String     @id @default(cuid())
+  id            String     @id @default(cuid())
   /// 募集職種ID
-  jobPostingId    String
+  jobPostingId  String
   /// 始業時間
-  startTime       DateTime?  @db.Time
+  startTime     DateTime?  @db.Time
   /// 就業時間
-  endTime         DateTime?  @db.Time
+  endTime       DateTime?  @db.Time
   /// コアタイム開始時間
-  coreStartTime   DateTime?  @db.Time
+  coreStartTime DateTime?  @db.Time
   /// コアタイム終了時間
-  coreEndTime     DateTime?  @db.Time
+  coreEndTime   DateTime?  @db.Time
   
   /// 関連：募集職種
-  jobPosting      JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  jobPosting    JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
 }
 
 /// 労働区分のマスタ
@@ -613,58 +673,4 @@ model CareerVision {
   
   /// 関連：ユーザー
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-/// 認証連携用アカウント
-model Account {
-  /// 内部ID
-  id                String  @id @default(cuid())
-  /// ユーザーID
-  userId            String
-  /// プロバイダー名（google等）
-  provider          String
-  /// プロバイダー側のアカウントID
-  providerAccountId String
-  /// リフレッシュトークン
-  refresh_token     String?
-  /// アクセストークン
-  access_token      String?
-  /// 有効期限
-  expires_at        Int?
-  /// トークン種別
-  token_type        String?
-  /// スコープ
-  scope             String?
-  /// IDトークン
-  id_token          String?
-  /// セッション状態
-  session_state     String?
-  
-  /// 関連：ユーザー
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-/// セッション管理
-model Session {
-  /// 内部ID
-  id           String   @id @default(cuid())
-  /// セッショントークン
-  sessionToken String
-  /// ユーザーID
-  userId       String
-  /// 有効期限
-  expires      DateTime
-  
-  /// 関連：ユーザー
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-/// メール認証用トークン
-model VerificationToken {
-  /// 識別ID
-  identified String   @id @default(cuid())
-  /// トークン
-  token      String
-  /// 有効期限
-  expires    DateTime
 }
