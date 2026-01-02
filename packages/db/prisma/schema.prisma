@@ -10,18 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// --- Enum 定義 ---
-
-/// 給与の制度区分
-enum SalaryType {
-  /// 年収
-  ANNUAL
-  /// 月収
-  MONTHLY
-  /// 裁量労働制
-  DISCRETIONARY
-}
-
 // --- モデル定義 ---
 
 /// ユーザー情報を管理するテーブル
@@ -120,6 +108,8 @@ model Industry {
   userId    String?
   /// 業界名
   name      String?
+  /// 表示順序
+  sortOrder Int       @default(0)
 
   /// 関連：ユーザー
   user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -215,25 +205,40 @@ model JobPosting {
   techStacks        TechStack[]       @relation("JobToTechStack")
 }
 
+/// 給与形態マスタ（例：年収、月収）
+model SalaryCategory {
+  /// カテゴリID
+  id        String   @id @default(cuid())
+  /// カテゴリ名
+  name      String
+  /// 表示順序
+  sortOrder Int      @default(0)
+
+  /// 関連：給与
+  salaries  Salary[]
+}
+
 /// 給与情報を管理するテーブル
 model Salary {
   /// 給与ID
-  id           String     @id @default(cuid())
+  id               String         @id @default(cuid())
   /// 募集職種ID
-  jobPostingId String
-  /// 制度区分
-  type         SalaryType
+  jobPostingId     String
+  /// 給与形態マスタID
+  salaryCategoryId String
   /// 給与額
-  amount       Int?
+  amount           Int?
   /// 基本給
-  baseSalary   Int?
+  baseSalary       Int?
 
   /// 関連：募集職種
-  jobPosting   JobPosting  @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  jobPosting     JobPosting     @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  /// 関連：給与形態マスタ
+  salaryCategory SalaryCategory @relation(fields: [salaryCategoryId], references: [id])
   /// 関連：手当
-  allowances   Allowance[]
+  allowances     Allowance[]
   /// 関連：賞与
-  bonuses      Bonus[]
+  bonuses        Bonus[]
 }
 
 /// 企業に関するメモ
@@ -526,6 +531,8 @@ model LaborCategory {
   userId      String
   /// 区分名
   name        String
+  /// 表示順序
+  sortOrder   Int          @default(0)
   
   /// 関連：ユーザー
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -584,6 +591,8 @@ model EmploymentStatus {
   userId      String
   /// 雇用形態名
   name        String?
+  /// 表示順序
+  sortOrder   Int          @default(0)
   
   /// 関連：ユーザー
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
