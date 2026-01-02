@@ -15,13 +15,11 @@ datasource db {
 /// 給与の制度区分
 enum SalaryType {
   /// 年収
-  ANNUAL @map("年収")
+  ANNUAL
   /// 月収
-  MONTHLY @map("月収")
+  MONTHLY
   /// 裁量労働制
-  DISCRETIONARY @map("裁量労働制")
-
-  @@map("SeidoKibun")
+  DISCRETIONARY
 }
 
 // --- モデル定義 ---
@@ -29,19 +27,19 @@ enum SalaryType {
 /// ユーザー情報を管理するテーブル
 model User {
   /// ユーザーID
-  id            String    @id @default(cuid()) @map("ユーザーID")
+  id            String    @id @default(cuid())
   /// 名前
-  name          String    @map("名前")
+  name          String
   /// メールアドレス
-  email         String?   @map("email")
+  email         String?
   /// メール認証日時
-  emailVerified DateTime? @map("emailVerified")
+  emailVerified DateTime?
   /// アイコンURL
-  image         String?   @map("アイコン")
+  image         String?
   /// 作成日
-  createdAt     DateTime  @default(now()) @map("作成日")
+  createdAt     DateTime  @default(now())
   /// 更新日
-  updatedAt     DateTime  @updatedAt @map("更新日")
+  updatedAt     DateTime  @updatedAt
 
   /// 関連：企業
   companies         Company[]
@@ -67,38 +65,36 @@ model User {
   accounts          Account[]
   /// 関連：セッション
   sessions          Session[]
-
-  @@map("ユーザー")
 }
 
 /// 企業情報を管理するテーブル
 model Company {
   /// 企業ID
-  id               String    @id @default(cuid()) @map("企業ID")
+  id               String    @id @default(cuid())
   /// ユーザーID
-  userId           String    @map("ユーザーID")
+  userId           String
   /// 会社名
-  name             String    @map("会社名")
+  name             String
   /// 設立年月日
-  establishedDate  DateTime  @map("設立年月日")
+  establishedDate  DateTime
   /// 資本金
-  capital          BigInt?   @map("資本金")
+  capital          BigInt?
   /// 公式サイトURL
-  websiteUrl       String?   @map("公式サイトURL")
+  websiteUrl       String?
   /// 電話番号
-  phoneNumber      String?   @map("電話番号")
+  phoneNumber      String?
   /// 総合評価スコア
-  ratingScore      Int?      @map("総合評価スコア")
+  ratingScore      Int?
   /// 作成日時
-  createdAt        DateTime  @default(now()) @map("作成日時")
+  createdAt        DateTime  @default(now())
   /// 更新日時
-  updatedAt        DateTime  @updatedAt @map("更新日時")
+  updatedAt        DateTime  @updatedAt
   /// 志望度（100分立）
-  aspirationLevel  Int?      @map("志望度")
+  aspirationLevel  Int?
   /// お気に入りフラグ
-  isFavorite       Boolean   @map("お気に入りフラグ")
+  isFavorite       Boolean
   /// 閲覧回数
-  viewCount        Int       @map("閲覧回数")
+  viewCount        Int
 
   /// 関連：ユーザー
   user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -114,49 +110,45 @@ model Company {
   industries        Industry[]            @relation("CompanyToIndustry")
   /// 関連：就活軸マッチング
   axisMatchings     CompanyAxisMatching[]
-
-  @@map("企業")
 }
 
 /// 業界情報を管理するマスタテーブル
 model Industry {
   /// 業界ID
-  id        String    @id @default(cuid()) @map("業界ID")
+  id        String    @id @default(cuid())
   /// ユーザーID
-  userId    String?   @map("ユーザーID")
+  userId    String?
   /// 業界名
-  name      String?   @map("業界名")
+  name      String?
 
   /// 関連：ユーザー
   user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// 関連：企業
   companies Company[] @relation("CompanyToIndustry")
-
-  @@map("業界マスタ")
 }
 
 /// 年代別の企業詳細情報を管理するテーブル
 model CompanyYearlyInfo {
   /// 年代ID
-  id               String   @id @default(cuid()) @map("年代ID")
+  id               String   @id @default(cuid())
   /// 企業ID
-  companyId        String   @map("企業ID")
+  companyId        String
   /// 採用サイトURL
-  recruitmentUrl   String?  @map("採用サイトURL")
+  recruitmentUrl   String?
   /// データ取得日
-  dataDate         DateTime @map("データの日")
+  dataDate         DateTime
   /// 社員数
-  employeeCount    Int?     @map("社員数")
+  employeeCount    Int?
   /// 代表者名
-  representative   String   @map("代表者名")
+  representative   String
   /// 売上高
-  revenue          BigInt?  @map("売上高")
+  revenue          BigInt?
   /// 副業可否
-  isSideJobAllowed Boolean? @map("副業可否")
+  isSideJobAllowed Boolean?
   /// 時短勤務有無
-  hasShortTimeWork Boolean? @map("時短勤務有無")
+  hasShortTimeWork Boolean?
   /// 服装自由
-  isDressFree      Boolean? @map("服装自由")
+  isDressFree      Boolean?
 
   /// 関連：企業
   company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -174,42 +166,38 @@ model CompanyYearlyInfo {
   welfares         Welfare[]
   /// 関連：研修制度
   trainingSystems  TrainingSystem[]
-
-  @@map("年代別企業テーブル")
 }
 
 /// 拠点の住所情報を管理するテーブル
 model Branch {
   /// 拠点ID
-  id           String             @id @default(cuid()) @map("拠点ID")
+  id           String             @id @default(cuid())
   /// 年代ID
-  yearlyInfoId String?            @map("年代ID")
+  yearlyInfoId String?
   /// 拠点住所
-  address      String             @map("拠点住所")
+  address      String
   /// 関連：年代別企業情報
   yearlyInfo   CompanyYearlyInfo? @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
-
-  @@map("拠点・支店")
 }
 
 /// 募集職種の詳細を管理するテーブル
 model JobPosting {
   /// 募集職種ID
-  id                String            @id @default(cuid()) @map("募集職種ID")
+  id                String            @id @default(cuid())
   /// 年代ID
-  yearlyInfoId      String            @map("年代ID")
+  yearlyInfoId      String
   /// 募集職種名
-  title             String            @map("募集職種名")
+  title             String
   /// 試用期間（月）
-  probationMonths   Float?            @map("試用期間（月）")
+  probationMonths   Float?
   /// 雇用形態ID
-  employmentStatusId String?           @map("雇用形態ID")
+  employmentStatusId String?
   /// 労働区分ID
-  laborCategoryId   String            @map("労働区分ID")
+  laborCategoryId   String
   /// リモートワーク可否
-  isRemoteAllowed   Boolean           @map("リモートワーク可否")
+  isRemoteAllowed   Boolean
   /// 備考
-  notes             String?           @map("備考")
+  notes             String?
 
   /// 関連：年代別企業情報
   yearlyInfo        CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
@@ -225,22 +213,20 @@ model JobPosting {
   workingHours      WorkingHours[]
   /// 関連：技術スタック
   techStacks        TechStack[]       @relation("JobToTechStack")
-
-  @@map("募集職種")
 }
 
 /// 給与情報を管理するテーブル
 model Salary {
   /// 給与ID
-  id           String     @id @default(cuid()) @map("給与ID")
+  id           String     @id @default(cuid())
   /// 募集職種ID
-  jobPostingId String     @map("募集職種ID")
+  jobPostingId String
   /// 制度区分
-  type         SalaryType @map("制度区分")
+  type         SalaryType
   /// 給与額
-  amount       Int?       @map("給与")
+  amount       Int?
   /// 基本給
-  baseSalary   Int?       @map("基本給")
+  baseSalary   Int?
 
   /// 関連：募集職種
   jobPosting   JobPosting  @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
@@ -248,68 +234,62 @@ model Salary {
   allowances   Allowance[]
   /// 関連：賞与
   bonuses      Bonus[]
-
-  @@map("給与")
 }
 
 /// 企業に関するメモ
 model Memo {
   /// メモID
-  id        String   @id @default(cuid()) @map("メモID")
+  id        String   @id @default(cuid())
   /// 企業ID
-  companyId String   @map("企業ID")
+  companyId String
   /// メモ内容
-  content   String   @map("メモ内容")
+  content   String
   /// 作成日時
-  createdAt DateTime @default(now()) @map("作成日時")
+  createdAt DateTime @default(now())
   
   /// 関連：企業
   company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@map("メモ")
 }
 
 /// 企業の重要人物や連絡先
 model ContactPerson {
   /// 重要人物ID
-  id           String            @id @default(cuid()) @map("重要人物ID")
+  id           String            @id @default(cuid())
   /// 年代ID
-  yearlyInfoId String            @map("年代ID")
+  yearlyInfoId String
   /// 氏名
-  name         String            @map("氏名")
+  name         String
   /// 役職
-  position     String            @map("役職")
+  position     String
   /// 特徴メモ
-  description  String?           @map("特徴メモ")
+  description  String?
   
   /// 関連：年代別企業情報
   yearlyInfo   CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
-
-  @@map("重要人物・連絡先")
 }
 
 /// 選考のスケジュールを管理するテーブル
 model SelectionSchedule {
   /// 選考スケジュールID
-  id                String    @id @default(cuid()) @map("選考スケジュールID")
+  id                String    @id @default(cuid())
   /// 親選考スケジュールID
-  parentId          String?   @map("親選考スケジュールID")
+  parentId          String?
   /// 募集職種ID
-  jobPostingId      String    @map("募集職種ID")
+  jobPostingId      String
   /// タイトル
-  title             String    @map("タイトル")
+  title             String
   /// 選考日時
-  scheduledAt       DateTime? @map("選考日時")
+  scheduledAt       DateTime?
   /// 詳細メモ
-  notes             String?   @map("詳細メモ")
+  notes             String?
   /// 完了フラグ
-  isCompleted       Boolean   @map("完了フラグ")
+  isCompleted       Boolean
   /// 合否結果
-  passed            Boolean?  @map("合否結果")
+  passed            Boolean?
   /// ステータス更新日
-  statusUpdatedAt   DateTime? @map("ステータス更新日")
+  statusUpdatedAt   DateTime?
   /// 場所・URL
-  locationUrl       String?   @map("場所・URL")
+  locationUrl       String?
 
   /// 関連：募集職種
   jobPosting        JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
@@ -317,81 +297,73 @@ model SelectionSchedule {
   tasks             Task[]
   /// 関連：QA
   qas               QA[]
-
-  @@map("選考スケジュール")
 }
 
 /// ユーザーのTODOリスト
 model Todo {
   /// TODOID
-  id          String    @id @default(cuid()) @map("TODOID")
+  id          String    @id @default(cuid())
   /// ユーザーID
-  userId      String    @map("ユーザーID")
+  userId      String
   /// タイトル
-  title       String    @map("タイトル")
+  title       String
   /// 開始日
-  startDate   DateTime? @map("開始日")
+  startDate   DateTime?
   /// 終了日
-  endDate     DateTime? @map("終了日")
+  endDate     DateTime?
   /// 備考
-  notes       String?   @map("備考")
+  notes       String?
   /// 完了フラグ
-  isCompleted Boolean   @map("完了フラグ")
+  isCompleted Boolean
   
   /// 関連：ユーザー
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("TODO")
 }
 
 /// 汎用的なタグ
 model Tag {
   /// タグID
-  id        String    @id @default(cuid()) @map("タグID")
+  id        String    @id @default(cuid())
   /// タグ名
-  name      String    @map("タグ名")
+  name      String
   /// ユーザーID
-  userId    String    @map("ユーザーID")
+  userId    String
   
   /// 関連：ユーザー
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// 関連：企業
   companies Company[] @relation("CompanyToTag")
-
-  @@map("タグマスタ")
 }
 
 /// 自身の就活の軸
 model JobHuntingAxis {
   /// 就活軸ID
-  id             String                @id @default(cuid()) @map("就活軸ID")
+  id             String                @id @default(cuid())
   /// ユーザーID
-  userId         String                @map("ユーザーID")
+  userId         String
   /// 軸の内容
-  content        String?               @map("軸の内容")
+  content        String?
   /// 優先度種別
-  priorityType   Int?                  @map("優先度種別")
+  priorityType   Int?
   /// 表示順序
-  displayOrder   Int?                  @map("表示順序")
+  displayOrder   Int?
   /// 作成日時
-  createdAt      DateTime?             @default(now()) @map("作成日時")
+  createdAt      DateTime?             @default(now())
   
   /// 関連：ユーザー
   user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// 関連：企業マッチング
   matchings      CompanyAxisMatching[]
-
-  @@map("就活軸")
 }
 
 /// 企業と就活軸のマッチング状況
 model CompanyAxisMatching {
   /// 企業ID
-  companyId String @map("企業ID")
+  companyId String
   /// 就活軸ID
-  axisId    String @map("就活軸ID")
+  axisId    String
   /// 適合スコア
-  score     Int?   @map("適合スコア")
+  score     Int?
   
   /// 関連：企業
   company   Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -399,270 +371,239 @@ model CompanyAxisMatching {
   jobAxis   JobHuntingAxis @relation(fields: [axisId], references: [id], onDelete: Cascade)
 
   @@id([companyId, axisId])
-  @@map("企業就活軸マッチング")
 }
 
 /// スケジュールに紐づくタスク
 model Task {
   /// タスクID
-  id          String            @id @default(cuid()) @map("タスクID")
+  id          String            @id @default(cuid())
   /// スケジュールID
-  scheduleId  String            @map("スケジュールID")
+  scheduleId  String
   /// タイトル
-  title       String            @map("タイトル")
+  title       String
   /// 説明
-  description String?           @map("説明")
+  description String?
   /// 完了フラグ
-  isCompleted Boolean           @map("完了フラグ")
+  isCompleted Boolean
   /// 優先度
-  priority    Int               @map("優先度")
+  priority    Int
   /// 期限
-  deadline    DateTime?         @map("期限")
+  deadline    DateTime?
   /// 作成日時
-  createdAt   DateTime?         @default(now()) @map("作成日時")
+  createdAt   DateTime?         @default(now())
   
   /// 関連：選考スケジュール
   schedule    SelectionSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-
-  @@map("タスク")
 }
 
 /// ユーザーの保有資格
 model Qualification {
   /// 保有資格ID
-  id           String    @id @default(cuid()) @map("保有資格ID")
+  id           String    @id @default(cuid())
   /// ユーザーID
-  userId       String    @map("ユーザーID")
+  userId       String
   /// 資格名
-  name         String?   @map("資格名")
+  name         String?
   /// 取得年月
-  obtainedDate DateTime? @map("取得年月")
+  obtainedDate DateTime?
   
   /// 関連：ユーザー
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("保有資格")
 }
 
 /// 面接などのQA記録
 model QA {
   /// QAID
-  id           String            @id @default(cuid()) @map("QAID")
+  id           String            @id @default(cuid())
   /// 選考スケジュールID
-  scheduleId   String            @map("選考スケジュールID")
+  scheduleId   String
   /// 質問内容
-  question     String            @map("質問内容")
+  question     String
   /// 回答内容
-  answer       String?           @map("回答内容")
+  answer       String?
   
   /// 関連：選考スケジュール
   schedule     SelectionSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-
-  @@map("QA")
 }
 
 /// 技術スタックのマスタ
 model TechStack {
   /// 技術スタックID
-  id          String       @id @default(cuid()) @map("技術スタックID")
+  id          String       @id @default(cuid())
   /// ユーザーID
-  userId      String?      @map("ユーザーID")
+  userId      String?
   /// 技術スタック名
-  name        String?      @map("技術スタック名")
+  name        String?
   
   /// 関連：ユーザー
   user        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// 関連：募集職種
   jobPostings JobPosting[] @relation("JobToTechStack")
-
-  @@map("技術スタックマスタ")
 }
 
 /// 企業理念
 model CompanyPhilosophy {
   /// 企業理念ID
-  id        String  @id @default(cuid()) @map("企業理念ID")
+  id        String  @id @default(cuid())
   /// 企業ID
-  companyId String  @map("企業ID")
+  companyId String
   /// 企業理念内容
-  content   String? @map("企業理念内容")
+  content   String?
   
   /// 関連：企業
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@map("企業理念テーブル")
 }
 
 /// 事業内容の詳細
 model BusinessContent {
   /// 事業内容ID
-  id           String            @id @default(cuid()) @map("事業内容ID")
+  id           String            @id @default(cuid())
   /// 年代ID
-  yearlyInfoId String            @map("年代ID")
+  yearlyInfoId String
   /// 事業内容タイトル
-  title        String            @map("事業内容タイトル")
+  title        String
   /// 事業内容詳細
-  description  String?           @map("事業内容詳細")
+  description  String?
   
   /// 関連：年代別企業情報
   yearlyInfo   CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
-
-  @@map("事業内容")
 }
 
 /// 各種手当
 model Allowance {
   /// 手当ID
-  id       String @id @default(cuid()) @map("手当ID")
+  id       String @id @default(cuid())
   /// 給与ID
-  salaryId String @map("給与ID")
+  salaryId String
   /// 手当名
-  name     String @map("手当名")
+  name     String
   /// 金額
-  amount   Int    @map("金額")
+  amount   Int
   
   /// 関連：給与
   salary   Salary @relation(fields: [salaryId], references: [id], onDelete: Cascade)
-
-  @@map("手当")
 }
 
 /// 賞与情報
 model Bonus {
   /// 賞与ID
-  id           String @id @default(cuid()) @map("賞与ID")
+  id           String @id @default(cuid())
   /// 給与ID
-  salaryId     String @map("給与ID")
+  salaryId     String
   /// 賞与回数
-  timesPerYear Int?   @map("賞与回数")
+  timesPerYear Int?
   /// 何か月分
-  months       Float? @map("か月分")
+  months       Float?
   
   /// 関連：給与
   salary       Salary @relation(fields: [salaryId], references: [id], onDelete: Cascade)
-
-  @@map("賞与")
 }
 
 /// 労働時間の設定
 model WorkingHours {
   /// 労働時間ID
-  id              String     @id @default(cuid()) @map("労働時間ID")
+  id              String     @id @default(cuid())
   /// 募集職種ID
-  jobPostingId    String     @map("募集職種ID")
+  jobPostingId    String
   /// 始業時間
-  startTime       DateTime?  @db.Time @map("始業時間")
+  startTime       DateTime?  @db.Time
   /// 就業時間
-  endTime         DateTime?  @db.Time @map("就業時間")
+  endTime         DateTime?  @db.Time
   /// コアタイム開始時間
-  coreStartTime   DateTime?  @db.Time @map("コアタイム開始時間")
+  coreStartTime   DateTime?  @db.Time
   /// コアタイム終了時間
-  coreEndTime     DateTime?  @db.Time @map("コアタイム終了時間")
+  coreEndTime     DateTime?  @db.Time
   
   /// 関連：募集職種
   jobPosting      JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
-
-  @@map("労働時間")
 }
 
 /// 労働区分のマスタ
 model LaborCategory {
   /// 労働区分ID
-  id          String       @id @default(cuid()) @map("労働区分ID")
+  id          String       @id @default(cuid())
   /// ユーザーID
-  userId      String       @map("ユーザーID")
+  userId      String
   /// 区分名
-  name        String       @map("区分名")
+  name        String
   
   /// 関連：ユーザー
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// 関連：募集職種
   jobPostings JobPosting[]
-
-  @@map("労働区分マスタ")
 }
 
 /// 休日制度
 model HolidaySystem {
   /// 休日制度ID
-  id           String            @id @default(cuid()) @map("休日制度ID")
+  id           String            @id @default(cuid())
   /// 年代ID
-  yearlyInfoId String            @map("年代ID")
+  yearlyInfoId String
   /// 休日制度名
-  name         String            @map("休日制度名")
+  name         String
   
   /// 関連：年代別企業情報
   yearlyInfo   CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
-
-  @@map("休日制度")
 }
 
 /// 福利厚生
 model Welfare {
   /// 福利厚生ID
-  id           String            @id @default(cuid()) @map("福利厚生ID")
+  id           String            @id @default(cuid())
   /// 年代ID
-  yearlyInfoId String            @map("年代ID")
+  yearlyInfoId String
   /// 福利厚生名
-  name         String            @map("福利厚生名")
+  name         String
   /// 福利厚生内容
-  content      String?           @map("福利厚生内容")
+  content      String?
   
   /// 関連：年代別企業情報
   yearlyInfo   CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
-
-  @@map("福利厚生")
 }
 
 /// 研修制度
 model TrainingSystem {
   /// 研修制度ID
-  id           String            @id @default(cuid()) @map("研修制度ID")
+  id           String            @id @default(cuid())
   /// 年代ID
-  yearlyInfoId String            @map("年代ID")
+  yearlyInfoId String
   /// 期間（月）
-  months       Float             @map("期間（月）")
+  months       Float
   /// 内容
-  content      String?           @map("内容")
+  content      String?
   
   /// 関連：年代別企業情報
   yearlyInfo   CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
-
-  @@map("研修制度")
 }
 
 /// 雇用形態のマスタ
 model EmploymentStatus {
   /// 雇用形態ID
-  id          String       @id @default(cuid()) @map("雇用形態ID")
+  id          String       @id @default(cuid())
   /// ユーザーID
-  userId      String       @map("ユーザーID")
+  userId      String
   /// 雇用形態名
-  name        String?      @map("雇用形態名")
+  name        String?
   
   /// 関連：ユーザー
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// 関連：募集職種
   jobPostings JobPosting[]
-
-  @@map("雇用形態マスタ")
 }
 
 /// 自身のキャリアビジョン
 model CareerVision {
   /// キャリアビジョンID
-  id         String   @id @default(cuid()) @map("キャリアビジョンID")
+  id         String   @id @default(cuid())
   /// ユーザーID
-  userId     String   @map("ユーザーID")
+  userId     String
   /// キャリア名
-  name       String   @map("キャリア名")
+  name       String
   /// 達成する年
-  targetYear DateTime @map("達成する年")
+  targetYear DateTime
   
   /// 関連：ユーザー
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("キャリアビジョン")
 }
 
 /// 認証連携用アカウント
@@ -670,30 +611,28 @@ model Account {
   /// 内部ID
   id                String  @id @default(cuid())
   /// ユーザーID
-  userId            String  @map("userId")
+  userId            String
   /// プロバイダー名（google等）
-  provider          String  @map("provider")
+  provider          String
   /// プロバイダー側のアカウントID
-  providerAccountId String  @map("providerAccountId")
+  providerAccountId String
   /// リフレッシュトークン
-  refresh_token     String? @map("refresh_token")
+  refresh_token     String?
   /// アクセストークン
-  access_token      String? @map("access_token")
+  access_token      String?
   /// 有効期限
-  expires_at        Int?    @map("expires_at")
+  expires_at        Int?
   /// トークン種別
-  token_type        String? @map("token_type")
+  token_type        String?
   /// スコープ
-  scope             String? @map("scope")
+  scope             String?
   /// IDトークン
-  id_token          String? @map("id_token")
+  id_token          String?
   /// セッション状態
-  session_state     String? @map("session_state")
+  session_state     String?
   
   /// 関連：ユーザー
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("連携用")
 }
 
 /// セッション管理
@@ -701,26 +640,22 @@ model Session {
   /// 内部ID
   id           String   @id @default(cuid())
   /// セッショントークン
-  sessionToken String   @map("sessionToken")
+  sessionToken String
   /// ユーザーID
-  userId       String   @map("userId")
+  userId       String
   /// 有効期限
-  expires      DateTime @map("expires")
+  expires      DateTime
   
   /// 関連：ユーザー
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("セッション")
 }
 
 /// メール認証用トークン
 model VerificationToken {
   /// 識別ID
-  identified String   @id @default(cuid()) @map("identified")
+  identified String   @id @default(cuid())
   /// トークン
-  token      String   @map("token")
+  token      String
   /// 有効期限
-  expires    DateTime @map("expires")
-
-  @@map("メール認証用")
+  expires    DateTime
 }
