@@ -572,7 +572,7 @@ model WorkingHours {
   jobPostingId  String
   /// 始業時間
   startTime     DateTime?  @db.Time
-  /// 就業時間
+  /// 終業時間
   endTime       DateTime?  @db.Time
   /// コアタイム開始時間
   coreStartTime DateTime?  @db.Time
