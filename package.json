@@ -1,15 +1,29 @@
 {
-  "name": "office-search",
+  "name": "@terasu/root",
+  "description": "A project for the Terasu application",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "pnpm --filter @terasu/web dev",
+
+    "build": "pnpm --filter @terasu/web build",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+
+    "db:up": "pnpm --filter @terasu/db db:dc:up",
+    "db:down": "pnpm --filter @terasu/db db:dc:down",
+    "db:generate": "pnpm --filter @terasu/db db:pr:generate",
+    "db:migrate": "pnpm --filter @terasu/db db:pr:migrate",
+    "db:studio": "pnpm --filter @terasu/db db:pr:studio",
+
+    "postinstall": "pnpm --filter @terasu/db db:pr:generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.15.0",
   "devDependencies": {
     "@biomejs/biome": "2.3.6"
-  }
+  },
+  "packageManager": "pnpm@10.15.0"
 }
