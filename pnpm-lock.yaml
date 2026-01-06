@@ -12,7 +12,7 @@ importers:
         specifier: 2.3.6
         version: 2.3.6
 
-  packages/apps/terasu-web:
+  apps/terasu-web:
     dependencies:
       next:
         specifier: 16.1.1
