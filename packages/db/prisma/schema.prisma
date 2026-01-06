@@ -137,7 +137,7 @@ model Company {
   createdAt        DateTime @default(now())
   /// 更新日時
   updatedAt        DateTime @updatedAt
-  /// 志望度（100分立）
+  /// 志望度（0～5の5段階評価）
   aspirationLevel  Int?
   /// お気に入りフラグ
   isFavorite       Boolean
