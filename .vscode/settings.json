@@ -1,4 +1,6 @@
 {
-    "editor.defaultFormatter": "biomejs.biome",
-    "editor.formatOnSave": true
+	"editor.defaultFormatter": "biomejs.biome",
+	"editor.formatOnSave": true,
+	"prisma.pinToPrisma6": true,
+	"cSpell.words": ["cuid"]
 }

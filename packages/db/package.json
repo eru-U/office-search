@@ -4,15 +4,28 @@
 	"description": "Job hunting management database package for terasu",
 	"main": "index.js",
 	"scripts": {
-		"db:up": "docker compose up -d",
-		"db:down": "docker compose down",
-		"db:restart": "docker compose restart",
-		"db:logs": "docker compose logs -f",
-		"db:clean": "docker compose down -v",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"db:dc:up": "docker compose up -d",
+		"db:dc:down": "docker compose down",
+		"db:dc:restart": "docker compose restart",
+		"db:dc:logs": "docker compose logs -f",
+		"db:dc:clean": "docker compose down -v",
+		"db:pr:generate": "prisma generate",
+		"db:pr:migrate": "prisma migrate dev",
+		"db:pr:studio": "prisma studio",
+		"db:pr:reset": "prisma migrate reset",
+		"db:pr:deploy": "prisma migrate deploy",
+		"db:pr:seed": "prisma db seed"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
-	"packageManager": "pnpm@10.15.0"
+	"packageManager": "pnpm@10.15.0",
+	"devDependencies": {
+		"@types/node": "^25.0.3",
+		"prisma": "6.0.0",
+		"tsx": "^4.21.0"
+	},
+	"dependencies": {
+		"@prisma/client": "6.0.0"
+	}
 }
