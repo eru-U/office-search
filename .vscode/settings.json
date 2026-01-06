@@ -1,6 +1,10 @@
 {
-	"editor.defaultFormatter": "biomejs.biome",
-	"editor.formatOnSave": true,
-	"prisma.pinToPrisma6": true,
-	"cSpell.words": ["cuid"]
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "prisma.pinToPrisma6": true,
+  "css.validate": false,
+  "cSpell.words": ["cuid"],
+  "files.associations": {
+    "*.json": "jsonc"
+  }
 }
