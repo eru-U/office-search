@@ -63,12 +63,6 @@ importers:
       '@prisma/client':
         specifier: 6.0.0
         version: 6.0.0(prisma@6.0.0)
-      '@terasu/schema':
-        specifier: workspace:*
-        version: link:../schema
-      '@terasu/web':
-        specifier: workspace:*
-        version: link:../../apps/terasu-web
       zod:
         specifier: ^4.3.5
         version: 4.3.5
@@ -88,9 +82,9 @@ importers:
 
   packages/schema:
     dependencies:
-      '@terasu/web':
+      '@terasu/db':
         specifier: workspace:*
-        version: link:../../apps/terasu-web
+        version: link:../db
       zod:
         specifier: ^4.3.5
         version: 4.3.5
