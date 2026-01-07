@@ -10,8 +10,8 @@
     "format": "turbo format",
     "db:up": "pnpm --filter @terasu/db db:dc:up",
     "db:down": "pnpm --filter @terasu/db db:dc:down",
-    "db:generate": "turbo db:pr:generate",
-    "db:migrate": "turbo db:pr:migrate",
+    "db:generate": "pnpm --filter @terasu/db db:pr:generate",
+    "db:migrate": "pnpm --filter @terasu/db db:pr:migrate",
     "db:studio": "turbo db:pr:studio",
     "postinstall": "turbo db:pr:generate"
   },
