@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@db/*": ["packages/db/*"],
+      "@schema/*": ["packages/schema/*"],
+      "@apps-web/*": ["apps/terasu-web/*"]
+    }
+  }
+}
