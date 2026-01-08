@@ -1,4 +1,4 @@
-// パスの先については適時ファイル作成する
+// パスの先については別途ファイル作成する
 
 import type { LucideProps } from "lucide-react";
 import {
