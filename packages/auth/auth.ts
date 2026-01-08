@@ -13,8 +13,8 @@ if (!AUTH_GITHUB_ID || !AUTH_GITHUB_SECRET || !AUTH_SECRET) {
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     GitHub({
-      clientId: process.env.AUTH_GITHUB_ID,
-      clientSecret: process.env.AUTH_GITHUB_SECRET,
+      clientId: AUTH_GITHUB_ID,
+      clientSecret: AUTH_GITHUB_SECRET,
     }),
   ],
   pages: {
