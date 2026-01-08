@@ -12,7 +12,7 @@ export const seedPersonalData = async (userId: string) => {
     await prismaClient.careerVision.create({
       data: { userId, name: `ビジョン ${i}`, targetYear: new Date() },
     });
-    const tag = await prismaClient.tag.create({
+    await prismaClient.tag.create({
       data: { userId, name: `タグ ${i}` },
     });
     const axis = await prismaClient.jobHuntingAxis.create({
