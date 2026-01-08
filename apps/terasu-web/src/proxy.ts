@@ -1,4 +1,3 @@
-// middleware.ts
 export { auth as proxy } from "@terasu/auth/auth";
 
 export const config = {
