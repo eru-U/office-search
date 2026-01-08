@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
@@ -10,12 +12,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { auth } from "@terasu/auth/auth";
+import type { Session } from "next-auth";
 import Link from "next/link"; // Next.js なので Link を使うのがおすすめ
+import { usePathname } from "next/navigation";
 import { itemsSet } from "./sidebar-items"; // itemsSet に名前を変えてインポート
 
-export async function AppSidebar() {
-  const session = await auth();
+export function AppSidebar({ session }: { session: Session }) {
+  const pathname = usePathname();
   return (
     <Sidebar>
       <SidebarContent>
@@ -39,17 +42,33 @@ export async function AppSidebar() {
             <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      {/* href に a タグではなく Link を使うと高速に遷移できるよ */}
-                      <Link href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {group.items.map((item) => {
+                  const isActive = pathname === item.url;
+                  return (
+                    <SidebarMenuItem
+                      key={item.title}
+                      aria-current={isActive ? "page" : undefined}
+                    >
+                      <SidebarMenuButton asChild>
+                        {/* href に a タグではなく Link を使うと高速に遷移できるよ */}
+                        <Link href={item.url}>
+                          <item.icon
+                            className={
+                              isActive ? "text-blue-500" : "text-gray-500"
+                            }
+                          />
+                          <span
+                            className={
+                              isActive ? "text-blue-500" : "text-gray-500"
+                            }
+                          >
+                            {item.title}
+                          </span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
