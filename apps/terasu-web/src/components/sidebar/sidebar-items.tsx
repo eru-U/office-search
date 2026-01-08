@@ -1,5 +1,18 @@
+// パスの先については適時ファイル作成する
+
 import type { LucideProps } from "lucide-react";
-import { Home, Inbox } from "lucide-react";
+import {
+  Building2,
+  CalendarDays,
+  ClipboardCheck,
+  Database,
+  LayoutDashboard,
+  ListTodo,
+  Star,
+  Target,
+  UserCog,
+  UserRound,
+} from "lucide-react";
 
 import type { ForwardRefExoticComponent, RefAttributes } from "react";
 
@@ -20,8 +33,8 @@ export const itemsSet: SidebarTypes = [
     items: [
       {
         title: "ダッシュボード",
-        url: "#",
-        icon: Home,
+        url: "/dashboard",
+        icon: LayoutDashboard,
       },
     ],
   },
@@ -30,13 +43,13 @@ export const itemsSet: SidebarTypes = [
     items: [
       {
         title: "基本情報・資格",
-        url: "#",
-        icon: Home,
+        url: "/profile",
+        icon: UserRound, // もしくは Award
       },
       {
         title: "就活軸設定",
-        url: "#",
-        icon: Inbox,
+        url: "/axis",
+        icon: Target,
       },
     ],
   },
@@ -45,13 +58,13 @@ export const itemsSet: SidebarTypes = [
     items: [
       {
         title: "企業一覧・検索",
-        url: "#",
-        icon: Home,
+        url: "/companies",
+        icon: Building2,
       },
       {
         title: "お気に入り企業",
-        url: "#",
-        icon: Home,
+        url: "/favorites",
+        icon: Star,
       },
     ],
   },
@@ -60,18 +73,18 @@ export const itemsSet: SidebarTypes = [
     items: [
       {
         title: "タスク管理",
-        url: "#",
-        icon: Home,
+        url: "/tasks",
+        icon: ListTodo,
       },
       {
-        title: "選考状況・先行タスク管理",
-        url: "#",
-        icon: Home,
+        title: "選考状況・タスク",
+        url: "/selection",
+        icon: ClipboardCheck,
       },
       {
         title: "スケジュールカレンダー",
-        url: "#",
-        icon: Home,
+        url: "/calendar",
+        icon: CalendarDays,
       },
     ],
   },
@@ -80,13 +93,13 @@ export const itemsSet: SidebarTypes = [
     items: [
       {
         title: "アカウント設定",
-        url: "#",
-        icon: Home,
+        url: "/settings",
+        icon: UserCog,
       },
       {
         title: "マスタ管理",
-        url: "#",
-        icon: Home,
+        url: "/admin/masters",
+        icon: Database,
       },
     ],
   },
