@@ -17,6 +17,9 @@
     "db:pr:deploy": "prisma migrate deploy",
     "db:pr:seed": "prisma db seed"
   },
+  "prisma": {
+    "seed": "tsx seeds/mod.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -32,7 +35,7 @@
     "zod": "^4.3.5"
   },
   "exports": {
-    ".": "./src/index.ts",
+    ".": "./index.ts",
     "./lib/*": "./lib/*"
   }
 }
