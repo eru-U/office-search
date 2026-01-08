@@ -1,4 +1,4 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +27,7 @@ export async function AppSidebar() {
                 src={session?.user?.image || ""}
                 alt={session?.user?.name || "User"}
               />
+              <AvatarFallback>{session?.user?.name?.[0] || "U"}</AvatarFallback>
             </Avatar>
 
             <p>{session?.user?.name || "User"}</p>
