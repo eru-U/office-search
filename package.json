@@ -14,7 +14,7 @@
     "db:migrate": "pnpm --filter @terasu/db db:pr:migrate",
     "db:studio": "turbo db:pr:studio",
     "postinstall": "turbo db:pr:generate",
-    "gen-env": "tsx scripts/gen-env-example.ts"
+    "gen-env": "tsx scripts/gen-env-example.mjs"
   },
   "keywords": [],
   "author": "",
