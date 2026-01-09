@@ -32,7 +32,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // セッションにユーザーIDを含めるための設定
     async session({ session, user }) {
       if (session.user) {
-        session.user.id = user.id;
+        (session.user as typeof session.user & { id: string }).id = user.id;
       }
       return session;
     },
