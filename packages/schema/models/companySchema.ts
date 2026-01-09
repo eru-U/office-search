@@ -9,7 +9,7 @@ export const createCompanySchema = CompanySchema.pick({
 }).extend({
   name: z
     .string()
-    .min(1, "企業名は１文字以上にしてください")
+    .min(1, "企業名は1文字以上にしてください")
     .max(100, "企業名は100文字以下にしてください"),
 });
 
