@@ -13,7 +13,7 @@ export const createCompanySchema = CompanySchema.pick({
     .max(100, "企業名は100文字以下にしてください"),
 });
 
-export type createCompanySchema = z.infer<typeof createCompanySchema>;
+export type CreateCompanySchema = z.infer<typeof createCompanySchema>;
 
 /**
  * 企業検索用のスキーマ
@@ -46,7 +46,7 @@ export const searchCompanySchema = CompanySchema.pick({
   score: z.number().max(100, "マッチング度は100以下にしてください").optional(),
 });
 
-export type searchCompanySchema = z.infer<typeof searchCompanySchema>;
+export type SearchCompanySchema = z.infer<typeof searchCompanySchema>;
 
 /**
  * 企業一覧表示用のスキーマ
@@ -120,4 +120,4 @@ export const companyListSchema = CompanySchema.pick({
     }),
 });
 
-export type companyListSchema = z.infer<typeof companyListSchema>;
+export type CompanyListSchema = z.infer<typeof companyListSchema>;
