@@ -7,7 +7,7 @@ generator client {
 
 generator zod {
   provider = "zod-prisma-types"
-  output   = "../lib/generated/zod"
+  output   = "../../schema/generated"
   relationModel = true
   generateClientErrors = true
 }
@@ -131,7 +131,7 @@ model Company {
   /// 会社名
   name             String
   /// 設立年月日
-  establishedDate  DateTime
+  establishedDate  DateTime?
   /// 資本金
   capital          BigInt?
   /// 公式サイトURL
@@ -147,10 +147,9 @@ model Company {
   /// 志望度（0～5の5段階評価）
   aspirationLevel  Int?
   /// お気に入りフラグ
-  isFavorite       Boolean
+  isFavorite       Boolean @default(false)
   /// 閲覧回数
-  viewCount        Int
-
+  viewCount        Int @default(0)
   /// 関連：ユーザー
   user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// 関連：メモ
@@ -277,7 +276,7 @@ model SalaryCategory {
   /// カテゴリID
   id        String   @id @default(cuid())
   /// カテゴリ名
-  name      String
+  categoryName      String
   /// 表示順序
   sortOrder Int      @default(0)
 

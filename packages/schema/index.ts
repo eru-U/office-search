@@ -1,1 +1,2 @@
-export * from "@db/lib/generated/zod";
+export * from "./generated/index";
+export * from "./models/companySchema";
