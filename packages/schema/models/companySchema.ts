@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CompanySchema } from "../generated";
+import { CompanySchema, SalarySchema } from "../generated";
 
 /**
  * 企業登録用のスキーマ
@@ -59,10 +59,10 @@ export const companyListSchema = CompanySchema.pick({
    */
   name: z.string().min(1).max(100),
   /**
-   * 想定年収
-   * 月収の場合は表示側で12倍してからソートして表示
+   * 収入
+   * 月収、年収どちらでもここに入る
    */
-  yearSalary: z
+  amount: z
     .number()
     .min(0)
     .nullable()
@@ -73,6 +73,11 @@ export const companyListSchema = CompanySchema.pick({
       }
       return val;
     }),
+  /**
+   * 給与のカテゴリ名
+   * 月収や年収の値が入る
+   */
+  categoryName:z.string().nullable().optional(),
   /**
    * 業界タグ
    * 複数の業界名を配列で取得

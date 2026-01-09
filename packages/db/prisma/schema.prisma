@@ -276,7 +276,7 @@ model SalaryCategory {
   /// カテゴリID
   id        String   @id @default(cuid())
   /// カテゴリ名
-  name      String
+  categoryName      String
   /// 表示順序
   sortOrder Int      @default(0)
 
