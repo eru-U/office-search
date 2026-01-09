@@ -131,7 +131,7 @@ model Company {
   /// 会社名
   name             String
   /// 設立年月日
-  establishedDate  DateTime
+  establishedDate  DateTime?
   /// 資本金
   capital          BigInt?
   /// 公式サイトURL
@@ -147,10 +147,9 @@ model Company {
   /// 志望度（0～5の5段階評価）
   aspirationLevel  Int?
   /// お気に入りフラグ
-  isFavorite       Boolean
+  isFavorite       Boolean @default(false)
   /// 閲覧回数
-  viewCount        Int
-
+  viewCount        Int @default(0)
   /// 関連：ユーザー
   user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// 関連：メモ
