@@ -24,7 +24,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: {
     signIn: "/login",
   },
-  // adapterを使用する場合はデフォルトでこれ
+  // アダプター使用時は'database'戦略をわかりやすく設定
   session: {
     strategy: "database",
   },
