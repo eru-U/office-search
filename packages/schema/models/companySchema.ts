@@ -88,7 +88,7 @@ export const companyListSchema = CompanySchema.pick({
     .nullable()
     .optional()
     .transform((val) => {
-      if (val === null || val === undefined || val.length === 0) {
+      if (!val?.length) {
         return ["---"];
       }
       return val;
