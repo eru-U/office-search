@@ -1,4 +1,6 @@
 // auth.ts
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prismaClient } from "@terasu/db";
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github"; // 例としてGitHubを使用
 
@@ -11,6 +13,8 @@ if (!AUTH_GITHUB_ID || !AUTH_GITHUB_SECRET || !AUTH_SECRET) {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // データベース連携
+  adapter: PrismaAdapter(prismaClient),
   providers: [
     GitHub({
       clientId: AUTH_GITHUB_ID,
@@ -19,6 +23,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   pages: {
     signIn: "/login",
+  },
+  // アダプター使用時は'database'戦略をわかりやすく設定
+  session: {
+    strategy: "database",
+  },
+  callbacks: {
+    // セッションにユーザーIDを含めるための設定
+    async session({ session, user }) {
+      if (session.user) {
+        (session.user as typeof session.user & { id: string }).id = user.id;
+      }
+      return session;
+    },
   },
   secret: AUTH_SECRET,
 });
