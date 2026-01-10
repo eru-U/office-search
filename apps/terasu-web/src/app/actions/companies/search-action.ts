@@ -1,24 +1,35 @@
 "use server";
 
+import { getRequiredSession } from "@/lib/requireAuth";
 import { type Prisma, prismaClient } from "@terasu/db";
 import {
   companyListArraySchema,
   type SearchCompanySchema,
 } from "@terasu/schema";
-
 /**
  * 企業検索アクション
  */
 export async function searchCompaniesAction(
   params: SearchCompanySchema & { page?: number },
 ) {
+  const { userId } = await getRequiredSession();
+  if (!userId) {
+    return {
+      success: false,
+      data: [],
+      totalCount: 0,
+      totalPages: 0,
+      error: "認証が必要です。",
+    };
+  }
+
   // ページネーション用
   const pageSize = 20; // 最大20件
   const page = params.page || 1; // 現在のページ
   const skip = (page - 1) * pageSize; // 読み始めるページ
 
   // 検索条件の構築
-  const where: Prisma.CompanyWhereInput = {};
+  const where: Prisma.CompanyWhereInput = { userId };
 
   // 企業名
   if (params.name) {
