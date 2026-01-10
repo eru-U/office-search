@@ -145,3 +145,5 @@ docker-data
 .obsidian
 
 .turbo
+
+packages/db/seeds/config.ts
