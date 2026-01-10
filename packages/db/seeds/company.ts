@@ -1,4 +1,4 @@
-import cuid from "@paralleldrive/cuid2";
+import cuid from "cuid";
 import { prismaClient } from "../lib/client";
 
 /**
@@ -28,7 +28,7 @@ export const seedCompanies = async (userId: string) => {
     const existing = await prismaClient.company.findFirst({
       where: { name: c.name, userId },
     });
-    const companyId = existing?.id || cuid.createId();
+    const companyId = existing?.id || cuid();
 
     await prismaClient.company.upsert({
       where: { id: companyId },
@@ -41,60 +41,60 @@ export const seedCompanies = async (userId: string) => {
         isFavorite: c.fav,
         viewCount: 0,
         philosophies: {
-          create: { id: cuid.createId(), content: `${c.name}の理念です。` },
+          create: { id: cuid(), content: `${c.name}の理念です。` },
         },
         memos: {
-          create: { id: cuid.createId(), content: `${c.name}のメモです。` },
+          create: { id: cuid(), content: `${c.name}のメモです。` },
         },
         yearlyInfos: {
           create: {
-            id: cuid.createId(),
+            id: cuid(),
             representative: "代表 太郎",
             dataDate: new Date(),
             branches: {
-              create: { id: cuid.createId(), address: "東京都渋谷区" },
+              create: { id: cuid(), address: "東京都渋谷区" },
             },
             businessContents: {
-              create: { id: cuid.createId(), title: "受託開発" },
+              create: { id: cuid(), title: "受託開発" },
             },
             holidaySystems: {
-              create: { id: cuid.createId(), name: "土日祝休み" },
+              create: { id: cuid(), name: "土日祝休み" },
             },
             welfares: {
-              create: { id: cuid.createId(), name: "福利厚生充実" },
+              create: { id: cuid(), name: "福利厚生充実" },
             },
             trainingSystems: {
-              create: { id: cuid.createId(), months: 3, content: "OJT研修" },
+              create: { id: cuid(), months: 3, content: "OJT研修" },
             },
             jobPostings: {
               create: {
-                id: cuid.createId(),
+                id: cuid(),
                 title: "エンジニア",
                 isRemoteAllowed: true,
                 laborCategoryId: lab.id,
                 employmentStatusId: emp.id,
                 workingHours: {
                   create: {
-                    id: cuid.createId(),
+                    id: cuid(),
                     startTime: new Date(),
                     endTime: new Date(),
                   },
                 },
                 salaries: {
                   create: {
-                    id: cuid.createId(),
+                    id: cuid(),
                     salaryCategoryId: sc.id,
                     amount: 320000,
                     allowances: {
                       create: {
-                        id: cuid.createId(),
+                        id: cuid(),
                         name: "手当",
                         amount: 5000,
                       },
                     },
                     bonuses: {
                       create: {
-                        id: cuid.createId(),
+                        id: cuid(),
                         timesPerYear: 2,
                         months: 4,
                       },
@@ -103,12 +103,12 @@ export const seedCompanies = async (userId: string) => {
                 },
                 selectionSchedules: {
                   create: {
-                    id: cuid.createId(),
+                    id: cuid(),
                     title: "選考フロー",
                     isCompleted: false,
                     tasks: {
                       create: {
-                        id: cuid.createId(),
+                        id: cuid(),
                         title: "面談",
                         priority: 1,
                         isCompleted: false,
@@ -116,7 +116,7 @@ export const seedCompanies = async (userId: string) => {
                     },
                     qas: {
                       create: {
-                        id: cuid.createId(),
+                        id: cuid(),
                         question: "Q",
                         answer: "A",
                       },

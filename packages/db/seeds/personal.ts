@@ -1,4 +1,4 @@
-import cuid from "@paralleldrive/cuid2";
+import cuid from "cuid";
 import { prismaClient } from "../lib/client";
 
 /**
@@ -14,7 +14,7 @@ export const seedPersonalData = async (userId: string) => {
       where: { id: `todo-${suffix}` },
       update: {},
       create: {
-        id: cuid.createId(),
+        id: cuid(),
         userId,
         title: `TODO ${i}`,
         isCompleted: false,
@@ -24,14 +24,14 @@ export const seedPersonalData = async (userId: string) => {
     await prismaClient.qualification.upsert({
       where: { id: `qual-${suffix}` },
       update: {},
-      create: { id: cuid.createId(), userId, name: `資格 ${i}` },
+      create: { id: cuid(), userId, name: `資格 ${i}` },
     });
 
     await prismaClient.careerVision.upsert({
       where: { id: `cv-${suffix}` },
       update: {},
       create: {
-        id: cuid.createId(),
+        id: cuid(),
         userId,
         name: `ビジョン ${i}`,
         targetYear: new Date(),
@@ -41,13 +41,13 @@ export const seedPersonalData = async (userId: string) => {
     await prismaClient.tag.upsert({
       where: { id: `tag-${suffix}` },
       update: {},
-      create: { id: cuid.createId(), userId, name: `タグ ${i}` },
+      create: { id: cuid(), userId, name: `タグ ${i}` },
     });
 
     const axis = await prismaClient.jobHuntingAxis.upsert({
       where: { id: `axis-${suffix}` },
       update: {},
-      create: { id: cuid.createId(), userId, content: `就活の軸 ${i}` },
+      create: { id: cuid(), userId, content: `就活の軸 ${i}` },
     });
 
     const comps = await prismaClient.company.findMany({
