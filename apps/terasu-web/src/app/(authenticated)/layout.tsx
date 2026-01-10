@@ -19,9 +19,9 @@ export default async function AuthenticatedLayout({
   return (
     <SidebarProvider>
       <AppSidebar session={session} />
-      <main>
+      <main className="w-full">
         <SidebarTrigger />
-        {children}
+        <div className="m-2">{children}</div>
       </main>
     </SidebarProvider>
   );
