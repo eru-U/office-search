@@ -12,8 +12,6 @@ import {
 export async function searchCompaniesAction(
   params: SearchCompanySchema & { page?: number },
 ) {
-  console.log("サーバーアクションに入りました");
-
   // ページネーション用
   const pageSize = 20; // 最大20件
   const page = params.page || 1; // 現在のページ
@@ -68,8 +66,6 @@ export async function searchCompaniesAction(
       }),
       prismaClient.company.count({ where }),
     ]);
-
-    console.log(companies);
 
     // 検証 兼 変換
     const validatedData = companyListArraySchema.parse(companies);
