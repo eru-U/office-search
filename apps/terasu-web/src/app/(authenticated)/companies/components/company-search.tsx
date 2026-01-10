@@ -89,7 +89,6 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
     params.set("page", "1");
 
     router.push(`${pathname}?${params.toString()}`);
-    console.log("Search parameters updated:", data);
   };
 
   return (
