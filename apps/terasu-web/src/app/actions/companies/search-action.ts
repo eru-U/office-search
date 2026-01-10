@@ -30,10 +30,7 @@ export async function searchCompaniesAction(
     where.industries = {
       // 指定した業界に１つでも条件に一致するデータが関連テーブルにあればその企業を表示する
       some: {
-        name: {
-          contains: params.industryName,
-          mode: "insensitive",
-        },
+        id: params.industryName,
       },
     };
   }
