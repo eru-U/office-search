@@ -129,7 +129,7 @@ model Company {
   /// ユーザーID
   userId           String
   /// 会社名
-  name             String
+  name             String   @unique
   /// 設立年月日
   establishedDate  DateTime?
   /// 資本金
