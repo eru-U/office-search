@@ -13,6 +13,9 @@ interface CompanyListItemProps {
   company: CompanyListSchema;
 }
 
+/**
+ * リスト一つ一つ用のコンポーネント
+ */
 export const CompanyListItem: FC<CompanyListItemProps> = ({ company }) => {
   // 💡 anyを使わず、型を絞り込むヘルパー
   const isAvailable = (val: string | number): val is number => {

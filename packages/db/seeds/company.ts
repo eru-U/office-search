@@ -1,67 +1,126 @@
+import cuid from "@paralleldrive/cuid2";
 import { prismaClient } from "../lib/client";
 
+/**
+ * 企業データの詳細シード
+ */
 export const seedCompanies = async (userId: string) => {
-  console.log("🏢 Seeding Companies and deep hierarchies...");
-  const lab = await prismaClient.laborCategory.findFirst();
-  const sc = await prismaClient.salaryCategory.findFirst();
-  const emp = await prismaClient.employmentStatus.findFirst();
+  console.log("🏢 企業データの詳細シードを実行中...");
 
-  for (let i = 1; i <= 3; i++) {
-    const cId = `comp-${i}`;
+  const lab = await prismaClient.laborCategory.findFirst({ where: { userId } });
+  const sc = await prismaClient.salaryCategory.findFirst();
+  const emp = await prismaClient.employmentStatus.findFirst({
+    where: { userId },
+  });
+
+  if (!lab || !sc || !emp) {
+    console.error("❌ マスタデータが不足しています。");
+    return;
+  }
+
+  const testCompanies = [
+    { name: "株式会社テラス・イノベーション", fav: true },
+    { name: "フューチャー・フロント・ラボ", fav: false },
+    { name: "ネクスト・ステップ・ワークス", fav: false },
+  ];
+
+  for (const c of testCompanies) {
+    const existing = await prismaClient.company.findFirst({
+      where: { name: c.name, userId },
+    });
+    const companyId = existing?.id || cuid.createId();
+
     await prismaClient.company.upsert({
-      where: { id: cId },
-      update: {},
+      where: { id: companyId },
+      update: { name: c.name, isFavorite: c.fav },
       create: {
-        id: cId,
+        id: companyId,
         userId,
-        name: `テスト企業 ${i}`,
+        name: c.name,
         establishedDate: new Date(),
-        isFavorite: i === 1,
+        isFavorite: c.fav,
         viewCount: 0,
-        philosophies: { create: { content: `理念 ${i}` } },
-        memos: { create: { content: `メモ ${i}` } },
+        philosophies: {
+          create: { id: cuid.createId(), content: `${c.name}の理念です。` },
+        },
+        memos: {
+          create: { id: cuid.createId(), content: `${c.name}のメモです。` },
+        },
         yearlyInfos: {
           create: {
-            id: `y-${i}`,
-            representative: `代表 ${i}`,
+            id: cuid.createId(),
+            representative: "代表 太郎",
             dataDate: new Date(),
-            branches: { create: { address: `住所 ${i}` } },
-            businessContents: { create: { title: `事業 ${i}` } },
-            holidaySystems: { create: { name: `休日 ${i}` } },
-            welfares: { create: { name: `福利厚生 ${i}` } },
-            trainingSystems: { create: { months: 3, content: `研修 ${i}` } },
-            contactPersons: { create: { name: `担当 ${i}`, position: "人事" } },
+            branches: {
+              create: { id: cuid.createId(), address: "東京都渋谷区" },
+            },
+            businessContents: {
+              create: { id: cuid.createId(), title: "受託開発" },
+            },
+            holidaySystems: {
+              create: { id: cuid.createId(), name: "土日祝休み" },
+            },
+            welfares: {
+              create: { id: cuid.createId(), name: "福利厚生充実" },
+            },
+            trainingSystems: {
+              create: { id: cuid.createId(), months: 3, content: "OJT研修" },
+            },
             jobPostings: {
               create: {
-                id: `job-${i}`,
-                title: `職種 ${i}`,
+                id: cuid.createId(),
+                title: "エンジニア",
                 isRemoteAllowed: true,
-                laborCategoryId: lab!.id,
-                employmentStatusId: emp!.id,
+                laborCategoryId: lab.id,
+                employmentStatusId: emp.id,
                 workingHours: {
-                  create: { startTime: new Date(), endTime: new Date() },
+                  create: {
+                    id: cuid.createId(),
+                    startTime: new Date(),
+                    endTime: new Date(),
+                  },
                 },
                 salaries: {
                   create: {
-                    salaryCategoryId: sc!.id,
-                    amount: 300000,
-                    allowances: { create: { name: "手当", amount: 10000 } },
-                    bonuses: { create: { timesPerYear: 2, months: 4 } },
+                    id: cuid.createId(),
+                    salaryCategoryId: sc.id,
+                    amount: 320000,
+                    allowances: {
+                      create: {
+                        id: cuid.createId(),
+                        name: "手当",
+                        amount: 5000,
+                      },
+                    },
+                    bonuses: {
+                      create: {
+                        id: cuid.createId(),
+                        timesPerYear: 2,
+                        months: 4,
+                      },
+                    },
                   },
                 },
                 selectionSchedules: {
                   create: {
-                    id: `sel-${i}`,
-                    title: `選考 ${i}`,
+                    id: cuid.createId(),
+                    title: "選考フロー",
                     isCompleted: false,
                     tasks: {
                       create: {
-                        title: `課題 ${i}`,
+                        id: cuid.createId(),
+                        title: "面談",
                         priority: 1,
                         isCompleted: false,
                       },
                     },
-                    qas: { create: { question: `Q ${i}`, answer: `A ${i}` } },
+                    qas: {
+                      create: {
+                        id: cuid.createId(),
+                        question: "Q",
+                        answer: "A",
+                      },
+                    },
                   },
                 },
               },
