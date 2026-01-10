@@ -1,6 +1,7 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
+import { getIndustriesAction } from "@/app/actions/industories/get-industries-action";
 import {
   Empty,
   EmptyDescription,
@@ -17,14 +18,49 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { CompanyListArraySchema } from "@terasu/schema";
 import { SearchX } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CompanyListItem } from "./components/company-list-item";
 import { CompanySearch } from "./components/company-search";
 
 export default function CompanyListPage() {
   const searchParams = useSearchParams();
+
+  // 🚀 1. 業界データを保持するステート（初期値は空配列）
+  const [industries, setIndustries] = useState<{ id: string; name: string }[]>(
+    [],
+  );
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 業界一覧をfetch
+  useEffect(() => {
+    const fetchIndustries = async () => {
+      try {
+        const result = await getIndustriesAction();
+
+        // 🚀 1. 成功したかどうかをチェック
+        if (result.success && result.data) {
+          // 🚀 2. Action側の { label, value } を Page側の { name, id } に変換
+          const formattedData = result.data.map((item) => ({
+            id: item.value, // value を id に
+            name: item.label ?? "", // label を name に（nullなら空文字）
+          }));
+
+          setIndustries(formattedData);
+        } else {
+          console.error("Actionがエラーを返しました:", result.error);
+        }
+      } catch (error) {
+        console.error("通信エラー:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchIndustries();
+  }, []);
 
   // --- 💡 ページネーション・ロジック ---
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -75,69 +111,6 @@ export default function CompanyListPage() {
     },
     {
       id: "5",
-      name: "DEFY株式会社",
-      amount: 2000000,
-      aspirationLevel: 3,
-      industryName: ["DX推進", "コンサル"],
-      score: 100,
-      categoryName: "月",
-    },
-    {
-      id: "6",
-      name: "DEFY株式会社",
-      amount: 2000000,
-      aspirationLevel: 3,
-      industryName: ["DX推進", "コンサル"],
-      score: 100,
-      categoryName: "月",
-    },
-    {
-      id: "7",
-      name: "DEFY株式会社",
-      amount: 2000000,
-      aspirationLevel: 3,
-      industryName: ["DX推進", "コンサル"],
-      score: 100,
-      categoryName: "月",
-    },
-    {
-      id: "8",
-      name: "DEFY株式会社",
-      amount: 2000000,
-      aspirationLevel: 3,
-      industryName: ["DX推進", "コンサル"],
-      score: 100,
-      categoryName: "月",
-    },
-    {
-      id: "9",
-      name: "DEFY株式会社",
-      amount: 2000000,
-      aspirationLevel: 3,
-      industryName: ["DX推進", "コンサル"],
-      score: 100,
-      categoryName: "月",
-    },
-    {
-      id: "10",
-      name: "DEFY株式会社",
-      amount: 2000000,
-      aspirationLevel: 3,
-      industryName: ["DX推進", "コンサル"],
-      score: 100,
-      categoryName: "月",
-    },
-    {
-      id: "11",
-      name: "DEFY株式会社",
-      amount: 2000000,
-      aspirationLevel: 3,
-      industryName: ["DX推進", "コンサル"],
-      score: 100,
-      categoryName: "月",
-    },
-    {
-      id: "12",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -200,8 +173,15 @@ export default function CompanyListPage() {
       <h1 className="text-xl font-bold tracking-tight">企業一覧</h1>
 
       {/* 💡 追従する検索バーコンテナ（AccordionはCompanySearchの中に実装されている想定） */}
+      {/* Page側 */}
       <div className="sticky top-0 z-30 -mx-4 px-4 py-2 bg-background/80 backdrop-blur-md border-b">
-        <CompanySearch />
+        {isLoading ? (
+          <div className="flex flex-col gap-2 w-full">
+            <Skeleton className="h-10 w-full rounded-lg" />
+          </div>
+        ) : (
+          <CompanySearch industries={industries} />
+        )}
       </div>
 
       <div className="space-y-4">
