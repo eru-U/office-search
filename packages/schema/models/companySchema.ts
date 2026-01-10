@@ -53,6 +53,7 @@ export type SearchCompanySchema = z.infer<typeof searchCompanySchema>;
  */
 export const companyListSchema = CompanySchema.pick({
   name: true,
+  id: true,
 }).extend({
   /**
    * 企業名
@@ -126,3 +127,7 @@ export const companyListSchema = CompanySchema.pick({
 });
 
 export type CompanyListSchema = z.infer<typeof companyListSchema>;
+
+export const companyListArraySchema = z.array(companyListSchema);
+
+export type CompanyListArraySchema = z.infer<typeof companyListArraySchema>;
