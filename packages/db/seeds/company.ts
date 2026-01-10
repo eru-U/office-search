@@ -1,80 +1,114 @@
+import cuid from "cuid";
 import { prismaClient } from "../lib/client";
 
+/**
+ * 企業データの詳細シード
+ */
 export const seedCompanies = async (userId: string) => {
   console.log("🏢 企業データの詳細シードを実行中...");
 
-  const lab = await prismaClient.laborCategory.findFirst();
+  const lab = await prismaClient.laborCategory.findFirst({ where: { userId } });
   const sc = await prismaClient.salaryCategory.findFirst();
-  const emp = await prismaClient.employmentStatus.findFirst();
+  const emp = await prismaClient.employmentStatus.findFirst({
+    where: { userId },
+  });
 
   if (!lab || !sc || !emp) {
-    console.error(
-      "❌ カテゴリデータが見つかりません。masterシードを先に実行してください。",
-    );
+    console.error("❌ マスタデータが不足しています。");
     return;
   }
 
   const testCompanies = [
-    { id: "comp-1", name: "株式会社テラス・イノベーション", fav: true },
-    { id: "comp-2", name: "フューチャー・フロント・ラボ", fav: false },
-    { id: "comp-3", name: "ネクスト・ステップ・ワークス", fav: false },
+    { name: "株式会社テラス・イノベーション", fav: true },
+    { name: "フューチャー・フロント・ラボ", fav: false },
+    { name: "ネクスト・ステップ・ワークス", fav: false },
   ];
 
   for (const c of testCompanies) {
+    const existing = await prismaClient.company.findFirst({
+      where: { name: c.name, userId },
+    });
+    const companyId = existing?.id || cuid();
+
     await prismaClient.company.upsert({
-      where: { id: c.id },
+      where: { id: companyId },
       update: { name: c.name, isFavorite: c.fav },
       create: {
-        id: c.id,
+        id: companyId,
         userId,
         name: c.name,
         establishedDate: new Date(),
         isFavorite: c.fav,
         viewCount: 0,
-        philosophies: { create: { content: `${c.name}の理念です。` } },
-        memos: { create: { content: `${c.name}のメモです。` } },
+        philosophies: {
+          create: { id: cuid(), content: `${c.name}の理念です。` },
+        },
+        memos: {
+          create: { id: cuid(), content: `${c.name}のメモです。` },
+        },
         yearlyInfos: {
           create: {
-            id: `y-${c.id}`,
+            id: cuid(),
             representative: "代表 太郎",
             dataDate: new Date(),
-            branches: { create: { address: "東京都渋谷区" } },
-            businessContents: { create: { title: "受託開発" } },
-            holidaySystems: { create: { name: "土日祝休み" } },
-            welfares: { create: { name: "福利厚生充実" } },
-            trainingSystems: { create: { months: 3, content: "OJT研修" } },
-            contactPersons: { create: { name: "採用担当", position: "人事" } },
+            branches: {
+              create: { id: cuid(), address: "東京都渋谷区" },
+            },
+            businessContents: {
+              create: { id: cuid(), title: "受託開発" },
+            },
+            holidaySystems: {
+              create: { id: cuid(), name: "土日祝休み" },
+            },
+            welfares: {
+              create: { id: cuid(), name: "福利厚生充実" },
+            },
+            trainingSystems: {
+              create: { id: cuid(), months: 3, content: "OJT研修" },
+            },
             jobPostings: {
               create: {
-                id: `job-${c.id}`,
+                id: cuid(),
                 title: "エンジニア",
                 isRemoteAllowed: true,
                 laborCategoryId: lab.id,
                 employmentStatusId: emp.id,
                 workingHours: {
-                  create: { startTime: new Date(), endTime: new Date() },
+                  create: {
+                    id: cuid(),
+                    startTime: new Date(),
+                    endTime: new Date(),
+                  },
                 },
                 salaries: {
                   create: {
+                    id: cuid(),
                     salaryCategoryId: sc.id,
                     amount: 320000,
-                    allowances: { create: { name: "手当", amount: 5000 } },
-                    bonuses: { create: { timesPerYear: 2, months: 4 } },
+                    allowances: {
+                      create: { id: cuid(), name: "手当", amount: 5000 },
+                    },
+                    bonuses: {
+                      create: { id: cuid(), timesPerYear: 2, months: 4 },
+                    },
                   },
                 },
                 selectionSchedules: {
                   create: {
-                    id: `sel-${c.id}`,
+                    id: cuid(),
                     title: "選考フロー",
                     isCompleted: false,
                     tasks: {
                       create: {
+                        id: cuid(),
                         title: "面談",
                         priority: 1,
                         isCompleted: false,
                       },
                     },
-                    qas: { create: { question: "Q", answer: "A" } },
+                    qas: {
+                      create: { id: cuid(), question: "Q", answer: "A" },
+                    },
                   },
                 },
               },

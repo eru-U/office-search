@@ -1,8 +1,8 @@
+import cuid from "cuid";
 import { prismaClient } from "../lib/client";
 
 /**
  * 各種カテゴリのマスタデータをシードします。
- * schema.prisma の定義に基づき、正しいプロパティ名で upsert を実行します。
  */
 export const seedMasters = async (userId: string) => {
   console.log("📊 マスターデータのシードを開始します...");
@@ -15,39 +15,55 @@ export const seedMasters = async (userId: string) => {
 
   // 業界マスタ
   for (const name of industries) {
+    const existing = await prismaClient.industry.findFirst({
+      where: { name, userId },
+    });
+    const id = existing?.id || cuid();
     await prismaClient.industry.upsert({
-      where: { id: `ind-${name}` },
+      where: { id },
       update: {},
-      create: { id: `ind-${name}`, name, userId },
+      create: { id, name, userId },
     });
   }
 
   // 雇用形態マスタ
   for (const name of empStatuses) {
+    const existing = await prismaClient.employmentStatus.findFirst({
+      where: { name, userId },
+    });
+    const id = existing?.id || cuid();
     await prismaClient.employmentStatus.upsert({
-      where: { id: `emp-${name}` },
+      where: { id },
       update: {},
-      create: { id: `emp-${name}`, name, userId },
+      create: { id, name, userId },
     });
   }
 
   // 労働区分マスタ
   for (const name of laborCats) {
+    const existing = await prismaClient.laborCategory.findFirst({
+      where: { name, userId },
+    });
+    const id = existing?.id || cuid();
     await prismaClient.laborCategory.upsert({
-      where: { id: `lab-${name}` },
+      where: { id },
       update: {},
-      create: { id: `lab-${name}`, name, userId },
+      create: { id, name, userId },
     });
   }
 
-  // 給与形態マスタ (ここを修正: name → categoryName)
+  // 給与形態マスタ
   for (const name of salaryCats) {
+    const existing = await prismaClient.salaryCategory.findFirst({
+      where: { categoryName: name },
+    });
+    const id = existing?.id || cuid();
     await prismaClient.salaryCategory.upsert({
-      where: { id: `sc-${name}` },
+      where: { id },
       update: {},
       create: {
-        id: `sc-${name}`,
-        categoryName: name, // schema.prisma の定義に合わせました
+        id,
+        categoryName: name,
         sortOrder: 0,
       },
     });
@@ -55,10 +71,14 @@ export const seedMasters = async (userId: string) => {
 
   // 技術スタックマスタ
   for (const name of techStacks) {
+    const existing = await prismaClient.techStack.findFirst({
+      where: { name, userId },
+    });
+    const id = existing?.id || cuid();
     await prismaClient.techStack.upsert({
-      where: { id: `ts-${name}` },
+      where: { id },
       update: {},
-      create: { id: `ts-${name}`, name, userId },
+      create: { id, name, userId },
     });
   }
 
