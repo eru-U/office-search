@@ -11,12 +11,12 @@ import {
   ChevronsUpDown,
   Search,
   Tag,
+  X,
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 
-// --- UI Components ---
 import { StarRating } from "@/components/star-rating";
 import {
   Accordion,
@@ -33,6 +33,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "@/components/ui/command";
 import {
   Form,
@@ -70,6 +71,9 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
     },
   });
 
+  /**
+   * 基本的にここで行うのはパスの変更だけ
+   */
   const onSubmit = (data: SearchCompanySchema) => {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -85,7 +89,7 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
     params.set("page", "1");
 
     router.push(`${pathname}?${params.toString()}`);
-    console.log(data);
+    console.log("Search parameters updated:", data);
   };
 
   return (
@@ -130,7 +134,7 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
                       )}
                     />
 
-                    {/* 業界選択：Combobox */}
+                    {/* 業界選択：Combobox（「指定なし」追加版） */}
                     <FormField
                       control={form.control}
                       name="industryName"
@@ -171,6 +175,20 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
                                 <CommandList>
                                   <CommandEmpty>見つかりません</CommandEmpty>
                                   <CommandGroup>
+                                    {/* --- 「指定なし」の選択肢を追加 --- */}
+                                    <CommandItem
+                                      value="all-industries"
+                                      onSelect={() => {
+                                        form.setValue("industryName", "");
+                                        setOpen(false);
+                                      }}
+                                      className="text-blue-600 font-medium"
+                                    >
+                                      <X className="mr-2 h-4 w-4" />
+                                      指定なし（全表示）
+                                    </CommandItem>
+                                    <CommandSeparator className="my-1" />
+                                    {/* --------------------------------- */}
                                     {industries.map((industry) => (
                                       <CommandItem
                                         key={industry.id}
@@ -219,6 +237,12 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
                                 className="pl-9 h-9 text-sm pr-12"
                                 type="number"
                                 {...field}
+                                value={field.value || ""}
+                                onChange={(e) =>
+                                  field.onChange(
+                                    e.target.value ? Number(e.target.value) : 0,
+                                  )
+                                }
                               />
                               <span className="absolute right-3 top-2.5 text-[10px] text-gray-400">
                                 万円〜
@@ -239,7 +263,15 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
                         type="button"
                         variant="outline"
                         className="h-9 px-3 text-gray-500"
-                        onClick={() => form.reset()}
+                        onClick={() => {
+                          form.reset({
+                            aspirationLevel: 0,
+                            industryName: "",
+                            name: "",
+                            score: 0,
+                            yearSalary: 0,
+                          });
+                        }}
                       >
                         リセット
                       </Button>
