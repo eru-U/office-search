@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@terasu/auth";
 import { prismaClient } from "@terasu/db";
 
 /**
@@ -7,11 +8,25 @@ import { prismaClient } from "@terasu/db";
  * コンボボックスやセレクトボックスで利用
  */
 export async function getIndustriesAction() {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    console.warn("未認証のユーザーが業界リストを取得しようとしました。");
+    return {
+      success: false,
+      data: [],
+      error: "ログインが必要です",
+    };
+  }
   try {
     const industries = await prismaClient.industry.findMany({
       select: {
         id: true,
         name: true,
+      },
+      where: {
+        userId: userId,
       },
       orderBy: {
         sortOrder: "asc",
