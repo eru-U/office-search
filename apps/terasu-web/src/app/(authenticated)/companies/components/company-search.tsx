@@ -1,6 +1,21 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { type SearchCompanySchema, searchCompanySchema } from "@terasu/schema";
+import {
+  Banknote,
+  Building2,
+  Check,
+  ChevronsUpDown,
+  Search,
+  Tag,
+} from "lucide-react";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+
+// --- UI Components ---
 import { StarRating } from "@/components/star-rating";
 import {
   Accordion,
@@ -11,6 +26,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
   Form,
   FormControl,
   FormField,
@@ -18,36 +41,41 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { type SearchCompanySchema, searchCompanySchema } from "@terasu/schema";
-import { Banknote, Building2, Search, Tag } from "lucide-react";
-import { useForm } from "react-hook-form";
 
-/**
- * 企業検索用の固定アコーディオンコンポーネント
- */
-export const CompanySearch = () => {
+interface CompanySearchProps {
+  industries: { id: string; name: string }[];
+}
+
+export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
+  const [open, setOpen] = React.useState(false);
+
+  // formの作成
   const form = useForm<SearchCompanySchema>({
     resolver: zodResolver(searchCompanySchema),
     defaultValues: {
       aspirationLevel: 0,
-      industryName: "",
+      industryName: "", // ここに ID が入るようになる
       name: "",
       score: 0,
       yearSalary: 0,
     },
   });
 
-  const onSubmit = (data: SearchCompanySchema) => console.log(data);
+  // 実行時間数
+  const onSubmit = (data: SearchCompanySchema) =>
+    console.log("検索実行！:", data);
 
   return (
-    /* 💡 外側の div で Sticky 固定と背景のボカシを設定 */
     <div className="sticky top-0 z-30 -mx-4 px-4 py-2 bg-background/80 backdrop-blur-md border-b">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="search-filters" className="border-none">
           <Card className="shadow-none bg-gray-50/50 border-none">
-            {/* 💡 アコーディオンのヘッダー部分 */}
             <AccordionTrigger className="px-4 py-2 hover:no-underline border rounded-lg bg-card">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <Search className="w-4 h-4 text-blue-500" />
@@ -55,7 +83,6 @@ export const CompanySearch = () => {
               </div>
             </AccordionTrigger>
 
-            {/* 💡 アコーディオンの中身（フォーム部分） */}
             <AccordionContent>
               <CardContent className="p-4 pt-6">
                 <Form {...form}>
@@ -63,7 +90,6 @@ export const CompanySearch = () => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="flex flex-col gap-4"
                   >
-                    {/* 上段：主要な検索条件 */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                       <FormField
                         control={form.control}
@@ -91,20 +117,71 @@ export const CompanySearch = () => {
                         control={form.control}
                         name="industryName"
                         render={({ field }) => (
-                          <FormItem className="space-y-1">
+                          <FormItem className="space-y-1 flex flex-col">
                             <FormLabel className="text-xs text-gray-500 font-bold ml-1">
                               業界
                             </FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <Tag className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
-                                <Input
-                                  className="pl-9 h-9 text-sm"
-                                  placeholder="業界名..."
-                                  {...field}
-                                />
-                              </div>
-                            </FormControl>
+                            <Popover open={open} onOpenChange={setOpen}>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    className={cn(
+                                      "w-full h-9 justify-between font-normal pl-3 pr-2 text-sm",
+                                      !field.value && "text-muted-foreground",
+                                    )}
+                                  >
+                                    <div className="flex items-center gap-2 truncate">
+                                      <Tag className="h-4 w-4 text-gray-400 shrink-0" />
+                                      {field.value
+                                        ? industries.find(
+                                            (i) => i.id === field.value,
+                                          )?.name
+                                        : "業界を選択..."}
+                                    </div>
+                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-[--radix-popover-trigger-width] p-0"
+                                align="start"
+                              >
+                                <Command>
+                                  <CommandInput placeholder="業界を検索..." />
+                                  <CommandList>
+                                    <CommandEmpty>見つかりません</CommandEmpty>
+                                    <CommandGroup>
+                                      {industries.map((industry) => (
+                                        <CommandItem
+                                          key={industry.id}
+                                          value={industry.name} // 検索用に名前を value に設定（重要）
+                                          onSelect={() => {
+                                            // 実際の値（ID）をフォームにセット
+                                            form.setValue(
+                                              "industryName",
+                                              industry.id,
+                                            );
+                                            setOpen(false);
+                                          }}
+                                        >
+                                          <Check
+                                            className={cn(
+                                              "mr-2 h-4 w-4",
+                                              industry.id === field.value
+                                                ? "opacity-100"
+                                                : "opacity-0",
+                                            )}
+                                          />
+                                          {industry.name}
+                                        </CommandItem>
+                                      ))}
+                                    </CommandGroup>
+                                  </CommandList>
+                                </Command>
+                              </PopoverContent>
+                            </Popover>
                           </FormItem>
                         )}
                       />
