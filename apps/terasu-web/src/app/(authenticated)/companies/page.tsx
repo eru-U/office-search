@@ -65,13 +65,11 @@ export default function CompanyListPage() {
           score: Number(searchParams.get("score")) || 0,
           page: currentPage,
         };
-        console.log(`検索結果${searchArgs}`);
 
         const [indResult, compResult] = await Promise.all([
           getIndustriesAction(),
           searchCompaniesAction(searchArgs),
         ]);
-        console.log(compResult);
 
         if (indResult.success && indResult.data) {
           setIndustries(
