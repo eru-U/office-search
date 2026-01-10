@@ -47,14 +47,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface CompanySearchProps {
   industries: { id: string; name: string }[];
 }
 
 export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [open, setOpen] = React.useState(false);
-
   // formの作成
   const form = useForm<SearchCompanySchema>({
     resolver: zodResolver(searchCompanySchema),
@@ -68,8 +71,25 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
   });
 
   // 実行時間数
-  const onSubmit = (data: SearchCompanySchema) =>
-    console.log("検索実行！:", data);
+  const onSubmit = (data: SearchCompanySchema) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    // フォームの値をURLパラメータにセット（空なら削除）
+    Object.entries(data).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, String(value));
+      } else {
+        params.delete(key);
+      }
+    });
+
+    // 検索時はページを1に戻すのがお作法
+    params.set("page", "1");
+
+    // URLを更新（これによりPageコンポーネントが反応する）
+    router.push(`${pathname}?${params.toString()}`);
+    console.log("検索が実行されました");
+  };
 
   return (
     <div className="sticky top-0 z-30 -mx-4 px-4 py-2 bg-background/80 backdrop-blur-md border-b">
