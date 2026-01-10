@@ -47,7 +47,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "2",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -56,7 +56,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "3",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -65,7 +65,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "4",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -74,7 +74,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "5",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -83,7 +83,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "6",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -92,7 +92,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "7",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -101,7 +101,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "8",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -110,7 +110,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "9",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -119,7 +119,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "10",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -128,7 +128,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "11",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
@@ -137,7 +137,7 @@ export default function CompanyListPage() {
       categoryName: "月",
     },
     {
-      id: "1",
+      id: "12",
       name: "DEFY株式会社",
       amount: 2000000,
       aspirationLevel: 3,
