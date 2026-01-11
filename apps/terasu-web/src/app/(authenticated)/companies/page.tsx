@@ -4,6 +4,7 @@
 import { searchCompaniesAction } from "@/app/actions/companies/search-action";
 import { getIndustriesAction } from "@/app/actions/industries/get-industries-action";
 import { CustomPagination } from "@/components/custom-pagination";
+import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyDescription,
@@ -13,9 +14,10 @@ import {
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { CompanyListArraySchema } from "@terasu/schema";
-import { SearchX } from "lucide-react";
+import { Plus, SearchX } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { CompanyCreateModal } from "./components/company-create-modal"; // モーダルをインポート
 import { CompanyListItem } from "./components/company-list-item";
 import { CompanySearch } from "./components/company-search";
 
@@ -92,7 +94,11 @@ export default function CompanyListPage() {
 
   return (
     <div className="p-4 space-y-4 relative">
-      <h1 className="text-xl font-bold tracking-tight">企業一覧</h1>
+      {/* ヘッダーセクション：Linkを削除してModalを配置 */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold tracking-tight">企業一覧</h1>
+        <CompanyCreateModal />
+      </div>
 
       {/* 検索バーセクション */}
       <div className="sticky top-0 z-30 -mx-4 px-4 py-2 bg-background/80 backdrop-blur-md border-b">
@@ -119,8 +125,19 @@ export default function CompanyListPage() {
               </EmptyMedia>
               <EmptyTitle>企業が見つかりませんでした</EmptyTitle>
               <EmptyDescription>
-                検索条件を変更するか、キーワードを減らして再度お試しください。
+                検索条件を変更するか、新しく企業を登録してみましょう。
               </EmptyDescription>
+              <div className="mt-4">
+                {/* Empty時もモーダルをトリガーにする */}
+                <CompanyCreateModal
+                  trigger={
+                    <Button variant="outline">
+                      <Plus className="mr-2 h-4 w-4" />
+                      新しい企業を登録する
+                    </Button>
+                  }
+                />
+              </div>
             </EmptyHeader>
           </Empty>
         ) : (
