@@ -164,6 +164,8 @@ model Company {
   industries        Industry[]            @relation("CompanyToIndustry")
   /// 関連：就活軸マッチング
   axisMatchings     CompanyAxisMatching[]
+  /// 複合ユニーク制約
+  @@unique([userId, name])
 }
 
 /// 業界情報を管理するマスタテーブル
