@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import type { CompanyListSchema } from "@terasu/schema";
 import { Banknote, Building2 } from "lucide-react";
+import Link from "next/link";
 import type { FC } from "react";
 
 interface CompanyListItemProps {
@@ -49,70 +50,72 @@ export const CompanyListItem: FC<CompanyListItemProps> = ({ company }) => {
   };
 
   return (
-    <Card className="group hover:shadow-md hover:border-blue-200 transition-all border-gray-100 my-2">
-      <CardContent className="p-4">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-          {/* 1. 企業メイン情報 */}
-          <div className="md:col-span-4 space-y-2">
-            <h3 className="text-base font-bold text-gray-900 group-hover:text-blue-600 flex items-center gap-2 truncate">
-              <Building2 className="w-4 h-4 shrink-0 text-blue-500/70" />
-              {company.name}
-            </h3>
-            <div className="flex flex-wrap gap-1">
-              {company.industryName.map((tag) => (
-                <Badge
-                  key={tag}
-                  variant="secondary"
-                  className="bg-blue-50 text-blue-700 border-none text-[10px] px-1.5 py-0"
-                >
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          {/* 2. 給与情報 */}
-          <div className="md:col-span-3 flex items-center gap-3 border-l border-gray-100 md:pl-4">
-            <div className="p-2 bg-green-50 rounded-full">
-              <Banknote className="w-4 h-4 text-green-600" />
-            </div>
-            {renderSalary()}
-          </div>
-
-          {/* 3. 評価セクション (日本語ラベル) */}
-          <div className="md:col-span-5 flex items-center gap-6 border-l border-gray-100 md:pl-4">
-            <div className="flex flex-col gap-1 shrink-0">
-              <span className="text-[10px] font-bold text-gray-400">
-                志望度
-              </span>
-              {isAvailable(company.aspirationLevel) ? (
-                <StarRating
-                  value={company.aspirationLevel}
-                  readOnly
-                  className="scale-75 origin-left"
-                />
-              ) : (
-                <span className="text-sm text-gray-300">---</span>
-              )}
-            </div>
-
-            <div className="flex-1 space-y-1">
-              <div className="flex justify-between items-baseline">
-                <span className="text-[10px] font-bold text-gray-400">
-                  マッチング度
-                </span>
-                <span className="text-xs font-mono font-bold text-blue-600">
-                  {isAvailable(company.score) ? `${company.score}%` : "---"}
-                </span>
+    <Link href={`companies/${company.id}`}>
+      <Card className="group hover:shadow-md hover:border-blue-200 transition-all border-gray-100 my-2">
+        <CardContent className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+            {/* 1. 企業メイン情報 */}
+            <div className="md:col-span-4 space-y-2">
+              <h3 className="text-base font-bold text-gray-900 group-hover:text-blue-600 flex items-center gap-2 truncate">
+                <Building2 className="w-4 h-4 shrink-0 text-blue-500/70" />
+                {company.name}
+              </h3>
+              <div className="flex flex-wrap gap-1">
+                {company.industryName.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="secondary"
+                    className="bg-blue-50 text-blue-700 border-none text-[10px] px-1.5 py-0"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
               </div>
-              <Progress
-                value={isAvailable(company.score) ? company.score : 0}
-                className="h-1.5"
-              />
+            </div>
+
+            {/* 2. 給与情報 */}
+            <div className="md:col-span-3 flex items-center gap-3 border-l border-gray-100 md:pl-4">
+              <div className="p-2 bg-green-50 rounded-full">
+                <Banknote className="w-4 h-4 text-green-600" />
+              </div>
+              {renderSalary()}
+            </div>
+
+            {/* 3. 評価セクション (日本語ラベル) */}
+            <div className="md:col-span-5 flex items-center gap-6 border-l border-gray-100 md:pl-4">
+              <div className="flex flex-col gap-1 shrink-0">
+                <span className="text-[10px] font-bold text-gray-400">
+                  志望度
+                </span>
+                {isAvailable(company.aspirationLevel) ? (
+                  <StarRating
+                    value={company.aspirationLevel}
+                    readOnly
+                    className="scale-75 origin-left"
+                  />
+                ) : (
+                  <span className="text-sm text-gray-300">---</span>
+                )}
+              </div>
+
+              <div className="flex-1 space-y-1">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-[10px] font-bold text-gray-400">
+                    マッチング度
+                  </span>
+                  <span className="text-xs font-mono font-bold text-blue-600">
+                    {isAvailable(company.score) ? `${company.score}%` : "---"}
+                  </span>
+                </div>
+                <Progress
+                  value={isAvailable(company.score) ? company.score : 0}
+                  className="h-1.5"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   );
 };
