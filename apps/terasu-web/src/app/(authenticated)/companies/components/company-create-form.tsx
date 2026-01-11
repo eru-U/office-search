@@ -40,7 +40,7 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
   /**
    * 登録処理のコアロジック
    */
-  const onSubmit = async (
+  const processSubmit = async (
     data: CreateCompanySchema,
     shouldRedirect: boolean,
   ) => {
@@ -70,7 +70,13 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
 
   return (
     <Form {...form}>
-      <form className="space-y-6">
+      {/* onSubmit を追加。
+        Enterキー押下時はデフォルトで「登録して閉じる (shouldRedirect: false)」が走るように設定。
+      */}
+      <form
+        onSubmit={form.handleSubmit((data) => processSubmit(data, false))}
+        className="space-y-6"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -85,17 +91,18 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
                   autoFocus
                 />
               </FormControl>
-              {/* Zodのメッセージがここに出る */}
               <FormMessage />
             </FormItem>
           )}
         />
 
         <div className="flex flex-col sm:flex-row gap-3">
+          {/* type="submit" にすることでEnterキーに対応。
+            挙動は「登録して閉じる」。
+          */}
           <Button
-            type="button"
+            type="submit"
             variant="outline"
-            onClick={form.handleSubmit((data) => onSubmit(data, false))}
             disabled={isPending}
             className="w-full sm:flex-1"
           >
@@ -104,9 +111,13 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
             ) : null}
             登録して閉じる
           </Button>
+
+          {/* こちらは type="button" のまま。
+            クリック時のみ「登録して詳細へ (shouldRedirect: true)」を走らせる。
+          */}
           <Button
             type="button"
-            onClick={form.handleSubmit((data) => onSubmit(data, true))}
+            onClick={form.handleSubmit((data) => processSubmit(data, true))}
             disabled={isPending}
             className="w-full sm:flex-1"
           >
