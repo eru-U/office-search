@@ -79,9 +79,6 @@ export async function searchCompaniesAction(
       prismaClient.company.count({ where }),
     ]);
 
-    // 検証 兼 変換
-    console.log(companies);
-
     const validatedData = companyListArraySchema.parse(companies);
 
     return {
