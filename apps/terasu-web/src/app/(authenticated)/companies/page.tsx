@@ -1,7 +1,7 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
-import { searchCompaniesAction } from "@/app/actions/companies/search-action";
+import { searchCompaniesAction } from "@/app/actions/companies/list/search-action";
 import { getIndustriesAction } from "@/app/actions/industries/get-industries-action";
 import { CustomPagination } from "@/components/custom-pagination";
 import { Button } from "@/components/ui/button";
