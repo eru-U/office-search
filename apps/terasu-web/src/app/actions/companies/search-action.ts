@@ -14,15 +14,6 @@ export async function searchCompaniesAction(
   params: SearchCompanySchema & { page?: number },
 ) {
   const { userId } = await getRequiredSession();
-  if (!userId) {
-    return {
-      success: false,
-      data: [],
-      totalCount: 0,
-      totalPages: 0,
-      error: "認証が必要です。",
-    };
-  }
 
   // ページネーション用
   const pageSize = 20; // 最大20件

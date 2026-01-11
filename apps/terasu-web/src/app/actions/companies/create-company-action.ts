@@ -13,13 +13,6 @@ export async function createCompanyAction(data: CreateCompanySchema) {
   // 1. セッション確認（バックエンドでの門番）
   const { userId } = await getRequiredSession();
 
-  if (!userId) {
-    return {
-      success: false,
-      error: "認証セッションが切れました。再度ログインしてください。",
-    };
-  }
-
   // 2. 共通スキーマによるバリデーション
   const result = createCompanySchema.safeParse(data);
 

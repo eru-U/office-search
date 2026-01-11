@@ -11,14 +11,6 @@ export async function getIndustriesAction() {
   const session = await auth();
   const userId = session?.user?.id;
 
-  if (!userId) {
-    console.warn("未認証のユーザーが業界リストを取得しようとしました。");
-    return {
-      success: false,
-      data: [],
-      error: "ログインが必要です",
-    };
-  }
   try {
     const industries = await prismaClient.industry.findMany({
       select: {
