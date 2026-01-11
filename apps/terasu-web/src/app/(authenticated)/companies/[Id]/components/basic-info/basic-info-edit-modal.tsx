@@ -4,9 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import { CalendarIcon, Save } from "lucide-react";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -34,42 +32,34 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-/**
- * 基本情報編集用のバリデーションスキーマ（UIプレビュー用）
- */
-const basicInfoSchema = z.object({
-  establishedDate: z.date().optional(),
-  capital: z.string().optional(),
-  representative: z.string().optional(),
-  employeeCount: z.string().optional(),
-  phoneNumber: z.string().optional(),
-  revenue: z.string().optional(),
-});
-
-type BasicInfoFormValues = z.infer<typeof basicInfoSchema>;
+// 共有スキーマからインポート
+import {
+  updateBasicInfoSchema,
+  type UpdateBasicInfoSchema,
+} from "@terasu/schema";
 
 interface BasicInfoEditModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  initialData: BasicInfoFormValues;
+  initialData: UpdateBasicInfoSchema;
 }
 
 /**
- * 基本情報編集モーダルコンポーネント
+ * 基本情報編集モーダル
+ * 共有スキーマ updateBasicInfoSchema を使用。
  */
 export function BasicInfoEditModal({
   open,
   onOpenChange,
   initialData,
 }: BasicInfoEditModalProps) {
-  const form = useForm<BasicInfoFormValues>({
-    resolver: zodResolver(basicInfoSchema),
+  const form = useForm<UpdateBasicInfoSchema>({
+    resolver: zodResolver(updateBasicInfoSchema),
     defaultValues: initialData,
   });
 
-  // 登録ボタン押下時の疑似処理
-  const onSubmit = (values: BasicInfoFormValues) => {
-    console.log("基本情報更新（UIのみ実行）:", values);
+  const onSubmit = (values: UpdateBasicInfoSchema) => {
+    console.log("Basic Info Update (UI only):", values);
     onOpenChange(false);
   };
 
@@ -81,7 +71,7 @@ export function BasicInfoEditModal({
             基本情報の編集
           </DialogTitle>
           <DialogDescription>
-            企業の公開情報を最新の状態に更新しましょう。
+            企業の公開情報を最新の状態に更新します。
           </DialogDescription>
         </DialogHeader>
 
@@ -90,7 +80,7 @@ export function BasicInfoEditModal({
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-5 pt-4"
           >
-            {/* 設立年月日 (Popover + Calendar) */}
+            {/* 設立年月日 */}
             <FormField
               control={form.control}
               name="establishedDate"
@@ -125,7 +115,7 @@ export function BasicInfoEditModal({
                     >
                       <Calendar
                         mode="single"
-                        selected={field.value}
+                        selected={field.value ?? undefined}
                         onSelect={field.onChange}
                         initialFocus
                         locale={ja}
@@ -138,7 +128,6 @@ export function BasicInfoEditModal({
             />
 
             <div className="grid grid-cols-2 gap-4">
-              {/* 資本金 */}
               <FormField
                 control={form.control}
                 name="capital"
@@ -149,8 +138,9 @@ export function BasicInfoEditModal({
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="例: 50,000,000"
+                        placeholder="500,000,000"
                         {...field}
+                        value={field.value ?? ""}
                         className="h-11 rounded-xl border-slate-200 font-bold"
                       />
                     </FormControl>
@@ -158,7 +148,6 @@ export function BasicInfoEditModal({
                   </FormItem>
                 )}
               />
-              {/* 社員数 */}
               <FormField
                 control={form.control}
                 name="employeeCount"
@@ -169,8 +158,9 @@ export function BasicInfoEditModal({
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="例: 150"
+                        placeholder="150"
                         {...field}
+                        value={field.value ?? ""}
                         className="h-11 rounded-xl border-slate-200 font-bold"
                       />
                     </FormControl>
@@ -180,7 +170,6 @@ export function BasicInfoEditModal({
               />
             </div>
 
-            {/* 代表者名 */}
             <FormField
               control={form.control}
               name="representative"
@@ -191,8 +180,9 @@ export function BasicInfoEditModal({
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="例: 山田 太郎"
+                      placeholder="田中 太郎"
                       {...field}
+                      value={field.value ?? ""}
                       className="h-11 rounded-xl border-slate-200 font-bold"
                     />
                   </FormControl>
@@ -201,7 +191,6 @@ export function BasicInfoEditModal({
               )}
             />
 
-            {/* 電話番号 */}
             <FormField
               control={form.control}
               name="phoneNumber"
@@ -212,8 +201,9 @@ export function BasicInfoEditModal({
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="例: 03-xxxx-xxxx"
+                      placeholder="03-xxxx-xxxx"
                       {...field}
+                      value={field.value ?? ""}
                       className="h-11 rounded-xl border-slate-200 font-bold"
                     />
                   </FormControl>
@@ -222,7 +212,6 @@ export function BasicInfoEditModal({
               )}
             />
 
-            {/* 売上高 */}
             <FormField
               control={form.control}
               name="revenue"
@@ -233,8 +222,9 @@ export function BasicInfoEditModal({
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="例: 1,000,000,000"
+                      placeholder="1,300,000,000"
                       {...field}
+                      value={field.value ?? ""}
                       className="h-11 rounded-xl border-slate-200 font-bold"
                     />
                   </FormControl>
@@ -246,7 +236,7 @@ export function BasicInfoEditModal({
             <DialogFooter className="pt-2">
               <Button
                 type="submit"
-                className="w-full h-12 rounded-full font-black shadow-lg shadow-primary/20"
+                className="w-full h-12 rounded-full font-black shadow-lg shadow-primary/20 transition-transform active:scale-95"
               >
                 <Save className="mr-2 h-4 w-4" />
                 変更を保存

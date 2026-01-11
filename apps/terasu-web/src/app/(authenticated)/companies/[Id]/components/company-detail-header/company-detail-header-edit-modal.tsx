@@ -1,13 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Edit2, Loader2 } from "lucide-react";
+import { Edit2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
-import { updateCompanyHeaderAction } from "@/app/actions/companies/detail/update-company-header-action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -28,61 +26,40 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-const formSchema = z.object({
-  name: z.string().min(1, "企業名は必須です"),
-  websiteUrl: z
-    .string()
-    .url("有効なURLを入力してください")
-    .or(z.literal(""))
-    .nullable(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+// 共有スキーマからインポート
+import {
+  updateCompanyHeaderSchema,
+  type UpdateCompanyHeaderSchema,
+} from "@terasu/schema";
 
 interface CompanyDetailHeaderEditModalProps {
   companyId: string;
-  initialData: {
-    name: string;
-    websiteUrl: string | null;
-  };
+  initialData: UpdateCompanyHeaderSchema;
 }
 
 /**
  * 企業ヘッダー情報の編集用モーダル
+ * 共有スキーマ updateCompanyHeaderSchema を使用するようにリファクタリングしました。
  */
 export function CompanyDetailHeaderEditModal({
   companyId,
   initialData,
 }: CompanyDetailHeaderEditModalProps) {
   const [open, setOpen] = useState(false);
-  const [isPending, setIsPending] = useState(false);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<UpdateCompanyHeaderSchema>({
+    resolver: zodResolver(updateCompanyHeaderSchema),
     defaultValues: {
       name: initialData.name,
-      websiteUrl: initialData.websiteUrl || "",
+      websiteUrl: initialData.websiteUrl ?? "",
     },
   });
 
-  const onSubmit = async (values: FormValues) => {
-    setIsPending(true);
-    const result = await updateCompanyHeaderAction({
-      id: companyId,
-      ...values,
-    });
-
-    if (result.success) {
-      toast.success(result.message);
-      setOpen(false);
-    } else {
-      if (result.error?.includes("既に他の登録で使用されています")) {
-        form.setError("name", { message: result.error });
-      } else {
-        toast.error(result.error);
-      }
-    }
-    setIsPending(false);
+  const onSubmit = async (values: UpdateCompanyHeaderSchema) => {
+    // UIのみの動作：コンソール出力して閉じる
+    console.log("Header Update (UI only):", { id: companyId, ...values });
+    toast.success("ヘッダー情報を更新しました（デモ）");
+    setOpen(false);
   };
 
   return (
@@ -91,29 +68,39 @@ export function CompanyDetailHeaderEditModal({
         <Button
           variant="ghost"
           size="sm"
-          className="h-6 w-6 p-0 hover:bg-primary/10"
+          className="h-6 w-6 p-0 hover:bg-primary/10 transition-colors"
         >
           <Edit2 className="h-3 w-3 text-muted-foreground" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px] rounded-3xl border-none shadow-2xl">
         <DialogHeader>
-          <DialogTitle>ヘッダー情報の編集</DialogTitle>
+          <DialogTitle className="text-xl font-black">
+            ヘッダーの編集
+          </DialogTitle>
           <DialogDescription>
             企業の基本名称と公式サイトのURLを更新します。
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 pt-4"
+          >
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>企業名</FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
+                    企業名
+                  </FormLabel>
                   <FormControl>
-                    <Input {...field} disabled={isPending} />
+                    <Input
+                      {...field}
+                      className="h-11 rounded-xl border-slate-200 font-bold focus-visible:ring-primary"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -124,22 +111,26 @@ export function CompanyDetailHeaderEditModal({
               name="websiteUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>公式サイトURL</FormLabel>
+                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
+                    公式サイトURL
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      value={field.value || ""}
+                      value={field.value ?? ""}
                       placeholder="https://..."
-                      disabled={isPending}
+                      className="h-11 rounded-xl border-slate-200 font-bold focus-visible:ring-primary"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <DialogFooter>
-              <Button type="submit" disabled={isPending}>
-                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <DialogFooter className="pt-2">
+              <Button
+                type="submit"
+                className="w-full h-12 rounded-full font-black shadow-lg shadow-primary/20"
+              >
                 保存する
               </Button>
             </DialogFooter>
