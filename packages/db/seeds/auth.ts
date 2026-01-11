@@ -1,4 +1,4 @@
-import cuid from "@paralleldrive/cuid2";
+import cuid from "cuid";
 import { prismaClient } from "../lib/client";
 
 /**
@@ -17,7 +17,7 @@ export const seedAuth = async (userId: string) => {
     },
     update: {},
     create: {
-      id: cuid.createId(),
+      id: cuid(),
       userId,
       type: "oauth",
       provider: "google",
@@ -30,7 +30,7 @@ export const seedAuth = async (userId: string) => {
     where: { sessionToken: `token-${userId}` },
     update: { expires: new Date(Date.now() + 86400000) },
     create: {
-      id: cuid.createId(),
+      id: cuid(),
       userId,
       sessionToken: `token-${userId}`,
       expires: new Date(Date.now() + 86400000),

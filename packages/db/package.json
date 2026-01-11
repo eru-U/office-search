@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@prisma/client": "6.0.0",
-    "@paralleldrive/cuid2": "^2.2.2",
+    "cuid": "^3.0.0",
     "zod": "^4.3.5"
   },
   "exports": {

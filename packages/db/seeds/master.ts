@@ -1,4 +1,4 @@
-import cuid from "@paralleldrive/cuid2";
+import cuid from "cuid";
 import { prismaClient } from "../lib/client";
 
 /**
@@ -18,7 +18,7 @@ export const seedMasters = async (userId: string) => {
     const existing = await prismaClient.industry.findFirst({
       where: { name, userId },
     });
-    const id = existing?.id || cuid.createId();
+    const id = existing?.id || cuid();
     await prismaClient.industry.upsert({
       where: { id },
       update: {},
@@ -31,7 +31,7 @@ export const seedMasters = async (userId: string) => {
     const existing = await prismaClient.employmentStatus.findFirst({
       where: { name, userId },
     });
-    const id = existing?.id || cuid.createId();
+    const id = existing?.id || cuid();
     await prismaClient.employmentStatus.upsert({
       where: { id },
       update: {},
@@ -44,7 +44,7 @@ export const seedMasters = async (userId: string) => {
     const existing = await prismaClient.laborCategory.findFirst({
       where: { name, userId },
     });
-    const id = existing?.id || cuid.createId();
+    const id = existing?.id || cuid();
     await prismaClient.laborCategory.upsert({
       where: { id },
       update: {},
@@ -57,7 +57,7 @@ export const seedMasters = async (userId: string) => {
     const existing = await prismaClient.salaryCategory.findFirst({
       where: { categoryName: name },
     });
-    const id = existing?.id || cuid.createId();
+    const id = existing?.id || cuid();
     await prismaClient.salaryCategory.upsert({
       where: { id },
       update: {},
@@ -74,7 +74,7 @@ export const seedMasters = async (userId: string) => {
     const existing = await prismaClient.techStack.findFirst({
       where: { name, userId },
     });
-    const id = existing?.id || cuid.createId();
+    const id = existing?.id || cuid();
     await prismaClient.techStack.upsert({
       where: { id },
       update: {},
