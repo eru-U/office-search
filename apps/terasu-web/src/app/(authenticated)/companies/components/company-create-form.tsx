@@ -29,7 +29,6 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
 
-  // 1. react-hook-form の初期化
   const form = useForm<CreateCompanySchema>({
     resolver: zodResolver(createCompanySchema),
     defaultValues: {
@@ -37,9 +36,6 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
     },
   });
 
-  /**
-   * 登録処理のコアロジック
-   */
   const processSubmit = async (
     data: CreateCompanySchema,
     shouldRedirect: boolean,
@@ -50,8 +46,6 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
 
       if (result.success && result.id) {
         toast.success(result.message || "企業を登録しました");
-
-        // フォームのリセットとモーダルを閉じる処理
         form.reset();
         onSuccess?.();
 
@@ -59,7 +53,18 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
           router.push(`/companies/${result.id}`);
         }
       } else {
-        toast.error(result.error || "登録に失敗しました");
+        // --- ここがポイント：UIへのフィードバック ---
+        if (result.error?.includes("既に登録されています")) {
+          // サーバーからの「重複エラー」を、nameフィールドのエラーとしてセットする
+          form.setError("name", {
+            type: "manual",
+            message: result.error,
+          });
+          // 特定のフィールドエラーなので、toastは出さなくてもユーザーは気づける（お好みで）
+        } else {
+          // それ以外の予期せぬエラーは toast で通知
+          toast.error(result.error || "登録に失敗しました");
+        }
       }
     } catch (_error) {
       toast.error("予期せぬエラーが発生しました");
@@ -70,9 +75,6 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
 
   return (
     <Form {...form}>
-      {/* onSubmit を追加。
-        Enterキー押下時はデフォルトで「登録して閉じる (shouldRedirect: false)」が走るように設定。
-      */}
       <form
         onSubmit={form.handleSubmit((data) => processSubmit(data, false))}
         className="space-y-6"
@@ -84,6 +86,9 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
             <FormItem>
               <FormLabel className="font-bold">企業名</FormLabel>
               <FormControl>
+                {/* エラーがある場合、shadcn/ui の Input は自動的に 
+                  枠線が赤くなり、下の FormMessage にメッセージが表示されます。
+                */}
                 <Input
                   placeholder="例：株式会社テラス・イノベーション"
                   {...field}
@@ -97,33 +102,22 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
         />
 
         <div className="flex flex-col sm:flex-row gap-3">
-          {/* type="submit" にすることでEnterキーに対応。
-            挙動は「登録して閉じる」。
-          */}
           <Button
             type="submit"
             variant="outline"
             disabled={isPending}
             className="w-full sm:flex-1"
           >
-            {isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : null}
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             登録して閉じる
           </Button>
-
-          {/* こちらは type="button" のまま。
-            クリック時のみ「登録して詳細へ (shouldRedirect: true)」を走らせる。
-          */}
           <Button
             type="button"
             onClick={form.handleSubmit((data) => processSubmit(data, true))}
             disabled={isPending}
             className="w-full sm:flex-1"
           >
-            {isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : null}
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             登録して詳細へ
           </Button>
         </div>

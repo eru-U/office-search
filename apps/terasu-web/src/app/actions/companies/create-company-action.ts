@@ -2,7 +2,7 @@
 
 // biome-ignore assist/source/organizeImports: <>
 import { getRequiredSession } from "@/lib/requireAuth";
-import { prismaClient } from "@terasu/db";
+import { Prisma, prismaClient } from "@terasu/db"; // Prismaのエラー型をインポート
 import { createCompanySchema, type CreateCompanySchema } from "@terasu/schema";
 import { revalidatePath } from "next/cache";
 
@@ -10,14 +10,20 @@ import { revalidatePath } from "next/cache";
  * 企業を新規登録するサーバーアクション
  */
 export async function createCompanyAction(data: CreateCompanySchema) {
-  // 1. セッション確認（バックエンドでの門番）
+  // 1. セッション確認
   const { userId } = await getRequiredSession();
 
-  // 2. 共通スキーマによるバリデーション
+  if (!userId) {
+    return {
+      success: false,
+      error: "認証セッションが切れました。再度ログインしてください。",
+    };
+  }
+
+  // 2. 共通スキーマによるバリデーション（形式のチェック）
   const result = createCompanySchema.safeParse(data);
 
   if (!result.success) {
-    // ZodErrorから最初のメッセージを抽出
     const errorMessage = result.error.message || "入力内容に不備があります。";
     return {
       success: false,
@@ -27,19 +33,17 @@ export async function createCompanyAction(data: CreateCompanySchema) {
 
   try {
     // 3. データベースへの登録
-    // userId はクライアントから送らせず、サーバー側で取得したものをセットするのが鉄則
     const company = await prismaClient.company.create({
       data: {
         userId: userId,
         name: result.data.name,
-        // 他の初期値（Prisma側でデフォルト値があれば省略可能）
         viewCount: 0,
         isFavorite: false,
         establishedDate: new Date(),
       },
     });
 
-    // 4. 一覧画面のキャッシュを無効化
+    // 4. キャッシュの無効化
     revalidatePath("/companies");
 
     return {
@@ -48,6 +52,18 @@ export async function createCompanyAction(data: CreateCompanySchema) {
       message: "企業を登録しました。",
     };
   } catch (error) {
+    // --- Copilotの指摘対応：一意制約エラーのハンドリング ---
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // P2002 は "Unique constraint failed on the fields" のエラーコード
+      if (error.code === "P2002") {
+        return {
+          success: false,
+          error:
+            "この企業名は既に登録されています。別の名前を入力してください。",
+        };
+      }
+    }
+
     console.error("企業登録中に予期せぬエラーが発生しました:", error);
     return {
       success: false,
