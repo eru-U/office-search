@@ -1,10 +1,10 @@
 "use server";
 
+// biome-ignore assist/source/organizeImports: <>
 import { getRequiredSession } from "@/lib/requireAuth";
 import { type Prisma, prismaClient } from "@terasu/db";
 import {
   companyListArraySchema,
-  companyListSchema,
   type SearchCompanySchema,
 } from "@terasu/schema";
 /**
