@@ -1,10 +1,13 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
+import getCompanyDetail from "@/app/actions/companies/detail/data-select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Globe, Star } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CompanyDetailHeaderEditModal } from "./company-detail-header-edit-modal";
 import { CompanyDetailSideSheet } from "./company-detail-side-sheet"; // 追加
 
@@ -12,12 +15,37 @@ import { CompanyDetailSideSheet } from "./company-detail-side-sheet"; // 追加
  * 企業詳細ページのStickyヘッダー
  */
 export function CompanyDetailHeader() {
-  const data = {
-    id: "some-id",
-    name: "株式会社HALコーポレーション",
-    websiteUrl: "https://google.com",
-    score: 85,
-  };
+  const [data, setData] = useState<{
+    id: string;
+    name: string;
+    websiteUrl: string | null;
+    ratingScore: number | null;
+  }>({
+    id: "",
+    name: "",
+    websiteUrl: "",
+    ratingScore: 0,
+  });
+
+  const params = useParams();
+  const id = params.Id as string;
+  console.log(id);
+
+  useEffect(() => {
+    // データ取得処理をここに追加
+    const fetchFunction = async () => {
+      try {
+        const detailData = await getCompanyDetail(id);
+        console.log(detailData);
+        if (detailData) {
+          setData(detailData);
+        }
+      } catch (error) {
+        console.error("エラーが発生しました", error);
+      }
+    };
+    fetchFunction();
+  }, [id]);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -25,7 +53,7 @@ export function CompanyDetailHeader() {
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              {data.name}
+              {data?.name}
             </h1>
             <CompanyDetailHeaderEditModal
               companyId={data.id}
@@ -34,7 +62,7 @@ export function CompanyDetailHeader() {
           </div>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <a
-              href={data.websiteUrl}
+              href={data.websiteUrl ? data.websiteUrl : undefined}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 hover:text-primary transition-colors font-medium underline-offset-4 hover:underline"
@@ -51,7 +79,7 @@ export function CompanyDetailHeader() {
                 variant="secondary"
                 className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200 px-2 py-0"
               >
-                {data.score}%
+                {data.ratingScore ? `${data.ratingScore}%` : "---"}
               </Badge>
             </div>
           </div>
