@@ -1,6 +1,9 @@
 "use client";
 
-import { memoEdit } from "@/actions/companies/detail/memo-action/memos";
+import {
+  memoDelete,
+  memoEdit,
+} from "@/actions/companies/detail/memo-action/memos";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -48,6 +51,18 @@ export const MemoItem = ({
     });
   };
 
+  const deleteFunction = (id: string) => {
+    startTransition(async () => {
+      try {
+        await memoDelete(id);
+        toast.success("メモを削除しました");
+        onRefresh();
+      } catch (_error) {
+        toast.error("削除に失敗しました");
+      }
+    });
+  };
+
   return (
     <div className="group relative p-4 rounded-2xl border bg-white hover:border-primary/30 transition-all hover:shadow-md">
       <div className="flex justify-between items-center mb-3">
@@ -80,6 +95,7 @@ export const MemoItem = ({
             variant="ghost"
             size="icon"
             className="h-7 w-7 text-slate-400 hover:text-destructive"
+            onClick={() => deleteFunction(memo.id)}
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>

@@ -48,6 +48,24 @@ export async function memoEdit(id: string, content: string) {
 }
 
 /**
+ * メモ削除関数
+ * @param id メモID
+ */
+export async function memoDelete(id: string) {
+  try {
+    await prismaClient.memo.delete({
+      where: {
+        id: id,
+      },
+    });
+    revalidatePath(`/companies/${id}`);
+  } catch (error) {
+    console.error("企業情報取得エラー", error);
+    return null;
+  }
+}
+
+/**
  * 企業のメモ全件取得
  * @param id 企業ID
  */
