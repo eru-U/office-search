@@ -1,6 +1,7 @@
 "use server";
 
 import { prismaClient } from "@terasu/db";
+import { revalidatePath } from "next/cache";
 
 export const headerEditAction = async (data: {
   id: string;
@@ -16,4 +17,5 @@ export const headerEditAction = async (data: {
       websiteUrl: data.websiteUrl,
     },
   });
+  revalidatePath(`/companies/${data.id}`);
 };

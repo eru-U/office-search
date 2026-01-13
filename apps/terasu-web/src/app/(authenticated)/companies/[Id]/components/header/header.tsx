@@ -1,62 +1,37 @@
+// apps/terasu-web/app/(authenticated)/companies/[Id]/components/header/header.tsx
 "use client";
 
-// biome-ignore assist/source/organizeImports: <>
-import { headerEditAction } from "@/actions/companies/detail/header-action/header-edit";
-import { headerFetch } from "@/actions/companies/detail/header-action/header-fetch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Globe, Star } from "lucide-react";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { CompanyDetailSideSheet } from "../sheet/side-sheet"; // 追加
+import { CompanyDetailSideSheet } from "../sheet/side-sheet";
 import { CompanyDetailHeaderEditModal } from "./header-edit-modal";
 
-/**
- * 企業詳細ページのStickyヘッダー
- */
-export function CompanyDetailHeader() {
-  const [data, setData] = useState<{
+// 受け取るデータの型定義
+interface CompanyDetailHeaderProps {
+  data: {
     id: string;
     name: string;
     websiteUrl: string | null;
     ratingScore: number | null;
-  }>({
-    id: "",
-    name: "",
-    websiteUrl: "",
-    ratingScore: 0,
-  });
+  };
+}
 
-  // URLパラメータから企業IDを取得
-  const params = useParams();
-  const id = params.Id as string;
-  console.log(id);
-
-  useEffect(() => {
-    // データ取得処理をここに追加
-    const fetchFunction = async () => {
-      try {
-        const detailData = await headerFetch(id);
-        console.log(detailData);
-        // 取得したデータをstateに保存
-        if (detailData) {
-          setData(detailData);
-        }
-      } catch (error) {
-        console.error("エラーが発生しました", error);
-      }
-    };
-    fetchFunction();
-  }, [id]);
+/**
+ * 企業詳細ページのStickyヘッダー
+ */
+export function CompanyDetailHeader({ data }: CompanyDetailHeaderProps) {
+  // 💡 見てください！ useState も useEffect も useParams も全部消えました。
+  // 届いた data をそのまま使うだけです。
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="container flex h-20 items-center justify-between py-4 px-6">
+      <div className="flex h-20 items-center justify-between py-4 px-6">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              {data?.name}
+              {data.name}
             </h1>
             <CompanyDetailHeaderEditModal
               companyId={data.id}
@@ -71,7 +46,7 @@ export function CompanyDetailHeader() {
               className="flex items-center gap-1.5 hover:text-primary transition-colors font-medium underline-offset-4 hover:underline"
             >
               <Globe className="h-3.5 w-3.5" />
-              公式サイト
+              {data.websiteUrl ? "公式サイト" : "公式サイト（未登録）"}
             </a>
             <Separator orientation="vertical" className="h-4" />
             <div className="flex items-center gap-2">
@@ -82,7 +57,7 @@ export function CompanyDetailHeader() {
                 variant="secondary"
                 className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200 px-2 py-0"
               >
-                {data.ratingScore ? `${data.ratingScore}%` : "---"}
+                {data.ratingScore ? `${data.ratingScore}%` : "未評価"}
               </Badge>
             </div>
           </div>
@@ -98,7 +73,6 @@ export function CompanyDetailHeader() {
             評価する
           </Button>
 
-          {/* メモ・QAボタンをサイドシートコンポーネントに置き換え */}
           <CompanyDetailSideSheet />
         </div>
       </div>
