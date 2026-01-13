@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { createCompanyAction } from "@/app/actions/companies/list/create-company-action";
+import { createCompanyAction } from "@/actions/companies/list/create-company-action";
 import { Button } from "@/components/ui/button";
 import {
   Form,

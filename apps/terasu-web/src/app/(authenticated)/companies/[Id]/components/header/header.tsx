@@ -1,20 +1,21 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
-import getCompanyDetail from "@/app/actions/companies/detail/data-select";
+import getCompanyDetail from "@/actions/companies/detail/data-select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Globe, Star } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { CompanyDetailHeaderEditModal } from "./company-detail-header-edit-modal";
-import { CompanyDetailSideSheet } from "./company-detail-side-sheet"; // 追加
+import { CompanyDetailHeaderEditModal } from "./header-edit-modal";
+import { CompanyDetailSideSheet } from "../sheet/side-sheet"; // 追加
 
 /**
  * 企業詳細ページのStickyヘッダー
  */
 export function CompanyDetailHeader() {
+  // 状態管理のデータを宣言
   const [data, setData] = useState<{
     id: string;
     name: string;
@@ -27,6 +28,7 @@ export function CompanyDetailHeader() {
     ratingScore: 0,
   });
 
+  // URLパラメータから企業IDを取得
   const params = useParams();
   const id = params.Id as string;
   console.log(id);
@@ -37,6 +39,7 @@ export function CompanyDetailHeader() {
       try {
         const detailData = await getCompanyDetail(id);
         console.log(detailData);
+        // 取得したデータをstateに保存
         if (detailData) {
           setData(detailData);
         }

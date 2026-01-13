@@ -1,5 +1,6 @@
 "use client";
 
+// biome-ignore assist/source/organizeImports: <>
 import {
   Accordion,
   AccordionContent,

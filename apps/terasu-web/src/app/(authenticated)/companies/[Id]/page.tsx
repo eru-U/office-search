@@ -1,6 +1,6 @@
 "use client";
 
-import { CompanyDetailHeader } from "./components/company-detail-header/company-detail-header";
+import { CompanyDetailHeader } from "./components/header/header";
 
 /**
  * 企業詳細ページ：メイン

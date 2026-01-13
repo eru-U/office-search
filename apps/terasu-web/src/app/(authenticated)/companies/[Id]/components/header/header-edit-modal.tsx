@@ -1,5 +1,6 @@
 "use client";
 
+// biome-ignore assist/source/organizeImports: <>
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit2 } from "lucide-react";
 import { useState } from "react";
@@ -50,6 +51,7 @@ export function CompanyDetailHeaderEditModal({
   const form = useForm<UpdateCompanyHeaderSchema>({
     resolver: zodResolver(updateCompanyHeaderSchema),
     defaultValues: {
+      // nameは必須なのでnull合体不要
       name: initialData.name,
       websiteUrl: initialData.websiteUrl ?? "",
     },
@@ -100,6 +102,7 @@ export function CompanyDetailHeaderEditModal({
                     <Input
                       {...field}
                       className="h-11 rounded-xl border-slate-200 font-bold focus-visible:ring-primary"
+                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage />
