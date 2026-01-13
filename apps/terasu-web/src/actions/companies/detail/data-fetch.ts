@@ -1,3 +1,4 @@
+"use server";
 import { getRequiredSession } from "@/lib/requireAuth";
 import { prismaClient } from "@terasu/db";
 
