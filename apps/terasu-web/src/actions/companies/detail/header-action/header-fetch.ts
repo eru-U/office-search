@@ -1,4 +1,5 @@
 "use server";
+import { getRequiredSession } from "@/lib/requireAuth";
 import { prismaClient } from "@terasu/db";
 
 /**
@@ -7,9 +8,11 @@ import { prismaClient } from "@terasu/db";
  */
 export const headerFetch = async (id: string) => {
   try {
+    const session = await getRequiredSession();
     const companyData = await prismaClient.company.findUnique({
       where: {
         id: id,
+        userId: session.userId,
       },
       select: {
         id: true,
