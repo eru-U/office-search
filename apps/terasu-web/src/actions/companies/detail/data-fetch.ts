@@ -12,6 +12,7 @@ export const detailDataFetch = async (id: string) => {
   try {
     const result = await prismaClient.companyYearlyInfo.findMany({
       select: {
+        id: true,
         representative: true,
         employeeCount: true,
         revenue: true,
@@ -22,6 +23,7 @@ export const detailDataFetch = async (id: string) => {
             phoneNumber: true,
             philosophies: {
               select: {
+                id: true,
                 content: true,
               },
             },
@@ -29,17 +31,20 @@ export const detailDataFetch = async (id: string) => {
         },
         welfares: {
           select: {
+            id: true,
             name: true,
             content: true,
           },
         },
         branches: {
           select: {
+            id: true,
             address: true,
           },
         },
         contactPersons: {
           select: {
+            id: true,
             name: true,
             position: true,
           },
