@@ -5,13 +5,13 @@ import { StarRating } from "@/components/star-rating";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import type { CompanyListSchema } from "@terasu/schema";
+import type { companySchema } from "@terasu/schema";
 import { Banknote, Building2 } from "lucide-react";
 import Link from "next/link";
 import type { FC } from "react";
 
 interface CompanyListItemProps {
-  company: CompanyListSchema;
+  company: companySchema.CompanyListSchema;
 }
 
 /**

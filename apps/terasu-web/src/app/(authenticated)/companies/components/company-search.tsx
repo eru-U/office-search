@@ -3,7 +3,7 @@
 // biome-ignore assist/source/organizeImports: <>
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type SearchCompanySchema, searchCompanySchema } from "@terasu/schema";
+import { companySchema } from "@terasu/schema";
 import {
   Banknote,
   Building2,
@@ -60,8 +60,8 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
   const searchParams = useSearchParams();
   const [open, setOpen] = React.useState(false);
 
-  const form = useForm<SearchCompanySchema>({
-    resolver: zodResolver(searchCompanySchema),
+  const form = useForm<companySchema.SearchCompanySchema>({
+    resolver: zodResolver(companySchema.searchCompanySchema),
     defaultValues: {
       aspirationLevel: Number(searchParams.get("aspirationLevel")) || 0,
       industryName: searchParams.get("industryName") || "",
@@ -74,7 +74,7 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
   /**
    * 基本的にここで行うのはパスの変更だけ
    */
-  const onSubmit = (data: SearchCompanySchema) => {
+  const onSubmit = (data: companySchema.SearchCompanySchema) => {
     const params = new URLSearchParams(searchParams.toString());
 
     Object.entries(data).forEach(([key, value]) => {

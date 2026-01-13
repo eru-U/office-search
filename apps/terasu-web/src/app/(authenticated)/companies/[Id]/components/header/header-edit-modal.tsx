@@ -29,15 +29,12 @@ import { Input } from "@/components/ui/input";
 
 // 共有スキーマからインポート
 import { headerEditAction } from "@/actions/companies/detail/header-action/header-edit";
-import {
-  companyDetailHeaderEditSchema,
-  type CompanyDetailHeaderEditTypes,
-} from "@terasu/schema";
+import { companyDetailSchema } from "@terasu/schema";
 import { useParams } from "next/navigation";
 
 interface CompanyDetailHeaderEditModalProps {
   companyId: string;
-  initialData: CompanyDetailHeaderEditTypes;
+  initialData: companyDetailSchema.CompanyDetailHeaderEditTypes;
 }
 
 /**
@@ -51,8 +48,8 @@ export function CompanyDetailHeaderEditModal({
   const params = useParams();
   const companyId = params.Id as string;
 
-  const form = useForm<CompanyDetailHeaderEditTypes>({
-    resolver: zodResolver(companyDetailHeaderEditSchema),
+  const form = useForm<companyDetailSchema.CompanyDetailHeaderEditTypes>({
+    resolver: zodResolver(companyDetailSchema.companyDetailHeaderEditSchema),
     defaultValues: {
       // nameは必須なのでnull合体不要
       name: initialData.name,
@@ -60,7 +57,9 @@ export function CompanyDetailHeaderEditModal({
     },
   });
 
-  const onSubmit = async (values: CompanyDetailHeaderEditTypes) => {
+  const onSubmit = async (
+    values: companyDetailSchema.CompanyDetailHeaderEditTypes,
+  ) => {
     await headerEditAction({
       id: companyId,
       name: values.name,
