@@ -1,7 +1,6 @@
 "use server";
 
 import { prismaClient } from "@terasu/db";
-import { revalidatePath } from "next/cache";
 
 /**
  * メモ追加用のサーバアクション
@@ -17,7 +16,6 @@ export async function memoAdd(id: string, content: string) {
         content: content,
       },
     });
-    revalidatePath(`/companies/${id}`);
   } catch (error) {
     console.error("企業情報取得エラー", error);
     return null;
@@ -40,7 +38,6 @@ export async function memoEdit(id: string, content: string) {
         content: content,
       },
     });
-    revalidatePath(`/companies/${id}`);
   } catch (error) {
     console.error("企業情報取得エラー", error);
     return null;
@@ -58,7 +55,6 @@ export async function memoDelete(id: string) {
         id: id,
       },
     });
-    revalidatePath(`/companies/${id}`);
   } catch (error) {
     console.error("企業情報取得エラー", error);
     return null;
@@ -83,7 +79,6 @@ export async function memoFetch(id: string) {
       orderBy: { createdAt: "desc" },
     });
 
-    revalidatePath(`/companies/${id}`);
     return memos;
   } catch (error) {
     console.error("企業情報取得エラー", error);
