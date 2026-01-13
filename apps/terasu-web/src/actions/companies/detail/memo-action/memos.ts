@@ -1,6 +1,7 @@
 "use server";
 
 import { prismaClient } from "@terasu/db";
+import { revalidatePath } from "next/cache";
 
 /**
  * メモ追加用のサーバアクション
@@ -9,17 +10,14 @@ import { prismaClient } from "@terasu/db";
  */
 export async function memoAdd(id: string, content: string) {
   try {
-    if (!id) {
-      return null;
-    }
-
     // メモ追加
-    prismaClient.memo.create({
+    await prismaClient.memo.create({
       data: {
         companyId: id,
         content: content,
       },
     });
+    revalidatePath(`/companies/${id}`);
   } catch (error) {
     console.error("企業情報取得エラー", error);
     return null;
@@ -33,12 +31,8 @@ export async function memoAdd(id: string, content: string) {
  */
 export async function memoEdit(id: string, content: string) {
   try {
-    if (!id) {
-      return null;
-    }
-
     // メモ編集
-    prismaClient.memo.update({
+    await prismaClient.memo.update({
       where: {
         id: id,
       },
@@ -46,6 +40,33 @@ export async function memoEdit(id: string, content: string) {
         content: content,
       },
     });
+    revalidatePath(`/companies/${id}`);
+  } catch (error) {
+    console.error("企業情報取得エラー", error);
+    return null;
+  }
+}
+
+/**
+ * 企業のメモ全件取得
+ * @param id 企業ID
+ */
+export async function memoFetch(id: string) {
+  try {
+    const memos = await prismaClient.memo.findMany({
+      where: {
+        companyId: id,
+      },
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    revalidatePath(`/companies/${id}`);
+    return memos;
   } catch (error) {
     console.error("企業情報取得エラー", error);
     return null;
