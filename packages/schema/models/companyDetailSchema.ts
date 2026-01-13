@@ -5,7 +5,7 @@ import { z } from "zod";
  * 1. Header (Companyモデル) 用スキーマ
  * 修正：websiteUrl を .optional() に変更
  */
-export const updateCompanyHeaderSchema = z.object({
+export const companyDetailHeaderEditSchema = z.object({
   name: z.string().min(1, "企業名は必須です"),
   websiteUrl: z
     .string()
@@ -15,8 +15,8 @@ export const updateCompanyHeaderSchema = z.object({
     .optional(), // キーがなくてもOKにする
 });
 
-export type UpdateCompanyHeaderSchema = z.infer<
-  typeof updateCompanyHeaderSchema
+export type CompanyDetailHeaderEditTypes = z.infer<
+  typeof companyDetailHeaderEditSchema
 >;
 // ============================================================
 /**
@@ -27,7 +27,7 @@ export const companyMemoSchema = z.object({
   content: z.string().min(1, "メモ内容を入力してください"),
 });
 
-export type CompanyMemoSchema = z.infer<typeof companyMemoSchema>;
+export type CompanyMemoTypes = z.infer<typeof companyMemoSchema>;
 // ============================================================
 /**
  * 4. QA (QAモデル) 用スキーマ
@@ -37,5 +37,5 @@ export const createQASchema = z.object({
   answer: z.string().optional().nullable(),
 });
 
-export type CreateQASchema = z.infer<typeof createQASchema>;
+export type CreateQATypes = z.infer<typeof createQASchema>;
 // ============================================================

@@ -28,14 +28,16 @@ import {
 import { Input } from "@/components/ui/input";
 
 // 共有スキーマからインポート
+import { headerEditAction } from "@/actions/companies/detail/header-action/header-edit";
 import {
-  updateCompanyHeaderSchema,
-  type UpdateCompanyHeaderSchema,
+  companyDetailHeaderEditSchema,
+  type CompanyDetailHeaderEditTypes,
 } from "@terasu/schema";
+import { useParams } from "next/navigation";
 
 interface CompanyDetailHeaderEditModalProps {
   companyId: string;
-  initialData: UpdateCompanyHeaderSchema;
+  initialData: CompanyDetailHeaderEditTypes;
 }
 
 /**
@@ -43,13 +45,14 @@ interface CompanyDetailHeaderEditModalProps {
  * 共有スキーマ updateCompanyHeaderSchema を使用するようにリファクタリングしました。
  */
 export function CompanyDetailHeaderEditModal({
-  companyId,
   initialData,
 }: CompanyDetailHeaderEditModalProps) {
   const [open, setOpen] = useState(false);
+  const params = useParams();
+  const companyId = params.Id as string;
 
-  const form = useForm<UpdateCompanyHeaderSchema>({
-    resolver: zodResolver(updateCompanyHeaderSchema),
+  const form = useForm<CompanyDetailHeaderEditTypes>({
+    resolver: zodResolver(companyDetailHeaderEditSchema),
     defaultValues: {
       // nameは必須なのでnull合体不要
       name: initialData.name,
@@ -57,10 +60,13 @@ export function CompanyDetailHeaderEditModal({
     },
   });
 
-  const onSubmit = async (values: UpdateCompanyHeaderSchema) => {
-    // UIのみの動作：コンソール出力して閉じる
-    console.log("Header Update (UI only):", { id: companyId, ...values });
-    toast.success("ヘッダー情報を更新しました（デモ）");
+  const onSubmit = async (values: CompanyDetailHeaderEditTypes) => {
+    await headerEditAction({
+      id: companyId,
+      name: values.name,
+      websiteUrl: values.websiteUrl ?? "",
+    });
+    toast.success("ヘッダー情報を更新しました。");
     setOpen(false);
   };
 

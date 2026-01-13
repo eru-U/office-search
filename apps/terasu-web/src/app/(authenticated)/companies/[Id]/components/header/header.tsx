@@ -1,21 +1,21 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
-import getCompanyDetail from "@/actions/companies/detail/data-select";
+import { headerEditAction } from "@/actions/companies/detail/header-action/header-edit";
+import { headerFetch } from "@/actions/companies/detail/header-action/header-fetch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Globe, Star } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { CompanyDetailHeaderEditModal } from "./header-edit-modal";
 import { CompanyDetailSideSheet } from "../sheet/side-sheet"; // 追加
+import { CompanyDetailHeaderEditModal } from "./header-edit-modal";
 
 /**
  * 企業詳細ページのStickyヘッダー
  */
 export function CompanyDetailHeader() {
-  // 状態管理のデータを宣言
   const [data, setData] = useState<{
     id: string;
     name: string;
@@ -37,7 +37,7 @@ export function CompanyDetailHeader() {
     // データ取得処理をここに追加
     const fetchFunction = async () => {
       try {
-        const detailData = await getCompanyDetail(id);
+        const detailData = await headerFetch(id);
         console.log(detailData);
         // 取得したデータをstateに保存
         if (detailData) {
