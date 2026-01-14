@@ -2500,22 +2500,23 @@ export const CompanyOrderByWithRelationInputSchema: z.ZodType<Prisma.CompanyOrde
 export const CompanyWhereUniqueInputSchema: z.ZodType<Prisma.CompanyWhereUniqueInput> = z.union([
   z.object({
     id: z.cuid(),
-    name: z.string(),
+    userId_name: z.lazy(() => CompanyUserIdNameCompoundUniqueInputSchema),
   }),
   z.object({
     id: z.cuid(),
   }),
   z.object({
-    name: z.string(),
+    userId_name: z.lazy(() => CompanyUserIdNameCompoundUniqueInputSchema),
   }),
 ])
 .and(z.strictObject({
   id: z.cuid().optional(),
-  name: z.string().optional(),
+  userId_name: z.lazy(() => CompanyUserIdNameCompoundUniqueInputSchema).optional(),
   AND: z.union([ z.lazy(() => CompanyWhereInputSchema), z.lazy(() => CompanyWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => CompanyWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => CompanyWhereInputSchema), z.lazy(() => CompanyWhereInputSchema).array() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  name: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   establishedDate: z.union([ z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date() ]).optional().nullable(),
   capital: z.union([ z.lazy(() => BigIntNullableFilterSchema), z.bigint() ]).optional().nullable(),
   websiteUrl: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
@@ -6771,6 +6772,11 @@ export const CompanyPhilosophyOrderByRelationAggregateInputSchema: z.ZodType<Pri
 
 export const CompanyAxisMatchingOrderByRelationAggregateInputSchema: z.ZodType<Prisma.CompanyAxisMatchingOrderByRelationAggregateInput> = z.strictObject({
   _count: z.lazy(() => SortOrderSchema).optional(),
+});
+
+export const CompanyUserIdNameCompoundUniqueInputSchema: z.ZodType<Prisma.CompanyUserIdNameCompoundUniqueInput> = z.strictObject({
+  userId: z.string(),
+  name: z.string(),
 });
 
 export const CompanyCountOrderByAggregateInputSchema: z.ZodType<Prisma.CompanyCountOrderByAggregateInput> = z.strictObject({
