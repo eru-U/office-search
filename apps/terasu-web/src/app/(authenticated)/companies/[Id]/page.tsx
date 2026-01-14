@@ -1,6 +1,5 @@
 "use client";
-
-import { CompanyDetailHeader } from "./components/header/header";
+import { YearlyInfo } from "./components/details/yearly-info";
 
 /**
  * 企業詳細ページ：メイン
@@ -8,7 +7,9 @@ import { CompanyDetailHeader } from "./components/header/header";
 export default function CompanyDetailPage() {
   return (
     <div className="min-h-screen bg-slate-50/50 pb-20">
-      <main></main>
+      <main>
+        <YearlyInfo />
+      </main>
     </div>
   );
 }
