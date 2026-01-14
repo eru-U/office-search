@@ -7,6 +7,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Calendar, Plus } from "lucide-react";
+import { YearlyInfoAddForm } from "./yearly-info-add-form";
 
 interface Props {
   fetchDateData: { id: string; dataDate: Date }[];
@@ -33,7 +34,9 @@ export const YearlyInfoTabs = ({
                   まずは新しい年度データを追加してください。
                 </EmptyDescription>
               </EmptyHeader>
-              <EmptyContent></EmptyContent>
+              <EmptyContent>
+                <YearlyInfoAddForm />
+              </EmptyContent>
             </Empty>
           </div>
         ) : (
