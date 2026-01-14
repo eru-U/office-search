@@ -98,33 +98,34 @@ export const YearlyInfo = () => {
     fetchFunction();
   }, [Id, tabChange]);
   // ============================================
-  // ...（前略：96行目まで）
-  // ...（前略：96行目まで）
   return (
     <div className="max-w-4xl mx-auto space-y-12 py-8 px-4 md:px-0">
       {/* 年代選択タブナビゲーション */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b pb-4">
-        <div className="flex flex-wrap gap-2 pt-4 justify-center items-center min-h-[calc(100vh-210px)]">
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border-b pb-4">
+        <div className="flex flex-wrap gap-2 pt-4 justify-center items-center">
           {fetchDateData.length === 0 ? (
-            <Empty>
-              <EmptyHeader>
-                <EmptyTitle>年度別データが存在しません</EmptyTitle>
-                <EmptyDescription>
-                  まずは新しい年度データを追加してください。
-                </EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-primary/5 transition-all w-10 h-10"
-                  onClick={() => console.log("Add New Year Data")}
-                  title="新しい年度を追加"
-                >
-                  <Plus className="w-5 h-5 text-muted-foreground" />
-                </Button>
-              </EmptyContent>
-            </Empty>
+            // 230はヘッダー等を考慮した最小高さ
+            <div className="min-h-[calc(100vh-230px)] flex justify-center items-center">
+              <Empty>
+                <EmptyHeader>
+                  <EmptyTitle>年度別データが存在しません</EmptyTitle>
+                  <EmptyDescription>
+                    まずは新しい年度データを追加してください。
+                  </EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-primary/5 transition-all w-10 h-10"
+                    onClick={() => console.log("Add New Year Data")}
+                    title="新しい年度を追加"
+                  >
+                    <Plus className="w-5 h-5 text-muted-foreground" />
+                  </Button>
+                </EmptyContent>
+              </Empty>
+            </div>
           ) : (
             <div>
               {fetchDateData.map((item) => (
