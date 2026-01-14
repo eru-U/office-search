@@ -31,6 +31,7 @@ import { Input } from "@/components/ui/input";
 import { headerEditAction } from "@/actions/companies/detail/header-action/header-edit";
 import { companyDetailSchema } from "@terasu/schema";
 import { useParams } from "next/navigation";
+import { ClientOnly } from "../details/shared/client-only";
 
 interface CompanyDetailHeaderEditModalProps {
   companyId: string;
@@ -70,81 +71,83 @@ export function CompanyDetailHeaderEditModal({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-6 w-6 p-0 hover:bg-primary/10 transition-colors"
-        >
-          <Edit2 className="h-3 w-3 text-muted-foreground" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] rounded-3xl border-none shadow-2xl">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-black">
-            ヘッダーの編集
-          </DialogTitle>
-          <DialogDescription>
-            企業の基本名称と公式サイトのURLを更新します。
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 pt-4"
+    <ClientOnly>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0 hover:bg-primary/10 transition-colors"
           >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
-                    企業名
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      className="h-11 rounded-xl border-slate-200 font-bold focus-visible:ring-primary"
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="websiteUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
-                    公式サイトURL
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      value={field.value ?? ""}
-                      placeholder="https://..."
-                      className="h-11 rounded-xl border-slate-200 font-bold focus-visible:ring-primary"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter className="pt-2">
-              <Button
-                type="submit"
-                className="w-full h-12 rounded-full font-black shadow-lg shadow-primary/20"
-              >
-                保存する
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+            <Edit2 className="h-3 w-3 text-muted-foreground" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-106.25 rounded-3xl border-none shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-black">
+              ヘッダーの編集
+            </DialogTitle>
+            <DialogDescription>
+              企業の基本名称と公式サイトのURLを更新します。
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4 pt-4"
+            >
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
+                      企業名
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="h-11 rounded-xl border-slate-200 font-bold focus-visible:ring-primary"
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="websiteUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
+                      公式サイトURL
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={field.value ?? ""}
+                        placeholder="https://..."
+                        className="h-11 rounded-xl border-slate-200 font-bold focus-visible:ring-primary"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter className="pt-2">
+                <Button
+                  type="submit"
+                  className="w-full h-12 rounded-full font-black shadow-lg shadow-primary/20"
+                >
+                  保存する
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    </ClientOnly>
   );
 }
