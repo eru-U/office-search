@@ -1,9 +1,11 @@
+// biome-ignore assist/source/organizeImports: <>
 import { TrashButton } from "@/components/trash-button";
 import { Button } from "@/components/ui/button";
 import { Contact2, Edit2, Plus } from "lucide-react";
+import type { DetailDataTypes } from "../yearly-info";
 
-export const ContactSection = ({ data }: { data: any }) => (
-  <section className="flex flex-col h-[400px]">
+export const ContactSection = ({ data }: { data: DetailDataTypes }) => (
+  <section className="flex flex-col h-100">
     <div className="flex items-center justify-between border-l-4 border-primary pl-4 mb-6 shrink-0">
       <h2 className="text-xl font-bold">担当者情報</h2>
       <Button
@@ -16,7 +18,7 @@ export const ContactSection = ({ data }: { data: any }) => (
       </Button>
     </div>
     <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-      {data.contactPersons.map((contactPerson: any) => (
+      {data.contactPersons.map((contactPerson) => (
         <div
           key={contactPerson.id}
           className="group p-4 bg-primary/5 border border-primary/10 rounded-2xl flex justify-between items-center hover:border-primary/50 transition-colors shadow-sm mb-3"

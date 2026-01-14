@@ -1,9 +1,11 @@
+// biome-ignore assist/source/organizeImports: <>
 import { TrashButton } from "@/components/trash-button";
 import { Button } from "@/components/ui/button";
 import { Empty } from "@/components/ui/empty";
 import { Edit2, Plus } from "lucide-react";
+import type { DetailDataTypes } from "../yearly-info";
 
-export const WelfareSection = ({ data }: { data: any }) => (
+export const WelfareSection = ({ data }: { data: DetailDataTypes }) => (
   <section className="space-y-6">
     <div className="flex items-center justify-between border-l-4 border-red-500 pl-4">
       <h2 className="text-2xl font-bold">福利厚生</h2>
@@ -18,7 +20,7 @@ export const WelfareSection = ({ data }: { data: any }) => (
     </div>
     {data.welfares.length > 0 ? (
       <div className="space-y-4">
-        {data.welfares.map((welfare: any) => (
+        {data.welfares.map((welfare) => (
           <div
             key={welfare.id}
             className="group relative p-6 border rounded-2xl bg-card shadow-sm hover:shadow-md transition-shadow"
