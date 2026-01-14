@@ -39,3 +39,8 @@ export const createQASchema = z.object({
 
 export type CreateQATypes = z.infer<typeof createQASchema>;
 // ============================================================
+export const yearlyAddSchema = z.object({
+  dataDate: z.string().min(1, "日付を選択してください"),
+});
+export type YearlyAddTypes = z.infer<typeof yearlyAddSchema>;
+// ============================================================
