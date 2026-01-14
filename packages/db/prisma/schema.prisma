@@ -198,7 +198,7 @@ model CompanyYearlyInfo {
   /// 社員数
   employeeCount    Int?
   /// 代表者名
-  representative   String
+  representative   String?
   /// 売上高
   revenue          BigInt?
   /// 副業可否
