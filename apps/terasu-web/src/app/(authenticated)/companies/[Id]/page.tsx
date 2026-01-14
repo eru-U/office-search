@@ -6,7 +6,7 @@ import { YearlyInfo } from "./components/details/yearly-info";
  */
 export default function CompanyDetailPage() {
   return (
-    <div className="min-h-screen bg-slate-50/50 pb-20">
+    <div className="bg-slate-50/50">
       <main>
         <YearlyInfo />
       </main>
