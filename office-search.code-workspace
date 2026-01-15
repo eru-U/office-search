@@ -1,0 +1,31 @@
+{
+  "folders": [
+    {
+      "name": "🚩 ROOT (All Files)",
+      "path": "."
+    },
+    {
+      "name": "🌐 Web Component",
+      "path": "apps/terasu-web/src/components"
+    },
+    {
+      "name": "🌐 Web App",
+      "path": "apps/terasu-web/src/app"
+    },
+    {
+      "name": "🌐 Web Action",
+      "path": "apps/terasu-web/src/actions"
+    },
+    {
+      "name": "📦 Database",
+      "path": "packages/db"
+    },
+    {
+      "name": "📜 Schema",
+      "path": "packages/schema"
+    }
+  ],
+  "settings": {
+    "biome.enabled": true
+  }
+}
