@@ -15,7 +15,7 @@ export const yearlyDataCreate = async (companyId: string, dataDate: Date) => {
       },
     });
   } catch (error) {
-    console.error("Error creating yearly data:", error);
+    console.error("年度情報を作成できませんでした。", error);
     throw error;
   }
 };

@@ -30,7 +30,8 @@ export const basicInfoEditAction = async (
       },
     });
     revalidatePath(`/companies/${id}`);
-  } catch (_error) {
-    console.error("更新に失敗しました", _error);
+  } catch (error) {
+    console.error("基本情報の更新に失敗しました", error);
+    throw error;
   }
 };

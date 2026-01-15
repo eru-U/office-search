@@ -21,7 +21,7 @@ export const yearlyDataFetch = async (id: string) => {
     });
     return result;
   } catch (error) {
-    console.error("Error fetching yearly info:", error);
+    console.error("年度情報を取得できませんでした。", error);
     throw error;
   }
 };

@@ -59,7 +59,7 @@ export const detailDataFetch = async (id: string) => {
     });
     return result;
   } catch (error) {
-    console.error("Error fetching detail data:", error);
+    console.error("企業詳細情報を取得できませんでした。", error);
     throw error;
   }
 };
