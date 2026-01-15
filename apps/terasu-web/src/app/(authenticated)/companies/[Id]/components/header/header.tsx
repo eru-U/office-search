@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Globe, Star } from "lucide-react";
+import { ClientOnly } from "../details/shared/client-only";
 import { CompanyDetailSideSheet } from "../sheet/side-sheet";
 import { CompanyDetailHeaderEditModal } from "./header-edit-modal";
 
@@ -72,8 +73,9 @@ export function CompanyDetailHeader({ data }: CompanyDetailHeaderProps) {
             <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
             評価する
           </Button>
-
-          <CompanyDetailSideSheet />
+          <ClientOnly>
+            <CompanyDetailSideSheet />
+          </ClientOnly>
         </div>
       </div>
     </header>
