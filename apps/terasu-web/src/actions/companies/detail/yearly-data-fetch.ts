@@ -15,6 +15,9 @@ export const yearlyDataFetch = async (id: string) => {
         id: true,
         dataDate: true,
       },
+      orderBy: {
+        dataDate: "asc",
+      },
     });
     return result;
   } catch (error) {
