@@ -1,7 +1,7 @@
-import { TrashButton } from "@/components/trash-button";
 import { Empty } from "@/components/ui/empty";
 import type { YearlyDetailItem } from "../../types";
 import { PhilosophyInfoAdd } from "./philosophy-info-add";
+import { PhilosophyDelete } from "./philosophy-info-delete";
 import { PhilosophyInfoEdit } from "./philosophy-info-edit";
 
 export const PhilosophySection = ({ data }: { data: YearlyDetailItem }) => (
@@ -23,9 +23,7 @@ export const PhilosophySection = ({ data }: { data: YearlyDetailItem }) => (
                 id={philosophy.id}
                 initialContent={philosophy.content ?? ""}
               />
-              <TrashButton
-                onClick={() => console.log("Delete Philosophy:", philosophy.id)}
-              />
+              <PhilosophyDelete id={philosophy.id} />
             </div>
           </div>
         ))}
