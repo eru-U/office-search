@@ -1,3 +1,4 @@
+"use server";
 import { prismaClient } from "@terasu/db";
 
 /**
@@ -7,7 +8,7 @@ import { prismaClient } from "@terasu/db";
  */
 export const yearlyDataCreate = async (companyId: string, dataDate: Date) => {
   try {
-    prismaClient.companyYearlyInfo.create({
+    await prismaClient.companyYearlyInfo.create({
       data: {
         companyId: companyId,
         dataDate: dataDate,
