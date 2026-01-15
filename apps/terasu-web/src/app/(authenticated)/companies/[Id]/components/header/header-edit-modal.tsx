@@ -11,9 +11,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -38,10 +35,6 @@ interface CompanyDetailHeaderEditModalProps {
   initialData: companyDetailSchema.CompanyDetailHeaderEditTypes;
 }
 
-/**
- * 企業ヘッダー情報の編集用モーダル
- * 共有スキーマ updateCompanyHeaderSchema を使用するようにリファクタリングしました。
- */
 export function CompanyDetailHeaderEditModal({
   initialData,
 }: CompanyDetailHeaderEditModalProps) {
@@ -52,7 +45,6 @@ export function CompanyDetailHeaderEditModal({
   const form = useForm<companyDetailSchema.CompanyDetailHeaderEditTypes>({
     resolver: zodResolver(companyDetailSchema.companyDetailHeaderEditSchema),
     defaultValues: {
-      // nameは必須なのでnull合体不要
       name: initialData.name,
       websiteUrl: initialData.websiteUrl ?? "",
     },
@@ -76,74 +68,75 @@ export function CompanyDetailHeaderEditModal({
         <DialogTrigger asChild>
           <Button
             variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0 hover:bg-primary/10 transition-colors"
+            size="icon"
+            className="h-8 w-8 rounded-full hover:bg-primary/10 transition-all active:scale-95"
+            title="ヘッダーを編集"
           >
-            <Edit2 className="h-3 w-3 text-muted-foreground" />
+            <Edit2 className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-106.25 rounded-3xl border-none shadow-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-black">
-              ヘッダーの編集
-            </DialogTitle>
-            <DialogDescription>
-              企業の基本名称と公式サイトのURLを更新します。
-            </DialogDescription>
-          </DialogHeader>
-
+        <DialogContent className="sm:max-w-120">
+          <DialogTitle className="text-xl font-bold border-b pb-4">
+            ヘッダーの編集
+          </DialogTitle>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4 pt-4"
+              className="space-y-6 mt-6"
             >
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
-                      企業名
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        className="h-11 rounded-xl border-slate-200 font-bold focus-visible:ring-primary"
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="websiteUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
-                      公式サイトURL
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value ?? ""}
-                        placeholder="https://..."
-                        className="h-11 rounded-xl border-slate-200 font-bold focus-visible:ring-primary"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <DialogFooter className="pt-2">
+              <div className="space-y-6">
+                {/* 企業名 */}
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">企業名</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="株式会社テラス"
+                          {...field}
+                          value={field.value ?? ""}
+                          className="focus-visible:ring-primary"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 公式サイトURL */}
+                <FormField
+                  control={form.control}
+                  name="websiteUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">
+                        公式サイトURL
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="url"
+                          placeholder="https://example.com"
+                          {...field}
+                          value={field.value ?? ""}
+                          className="focus-visible:ring-primary"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex justify-end pt-4 border-t">
                 <Button
                   type="submit"
-                  className="w-full h-12 rounded-full font-black shadow-lg shadow-primary/20"
+                  className="w-25 font-bold shadow-md hover:opacity-90 transition-opacity"
                 >
                   保存する
                 </Button>
-              </DialogFooter>
+              </div>
             </form>
           </Form>
         </DialogContent>

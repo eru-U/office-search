@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -60,65 +58,67 @@ export const YearlyInfoAddForm = ({ onRefresh, isPrimary }: Props) => {
     });
   };
 
+  // ... (65行目までのロジックは一切変更なし)
   return (
     <ClientOnly>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           {isPrimary ? (
-            <Button size="lg" className="rounded-full px-8 font-bold gap-2">
+            <Button
+              size="lg"
+              className="rounded-full px-8 font-bold gap-2 shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
+            >
               <Plus className="w-5 h-5" /> 最初の年度を作成
             </Button>
           ) : (
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-primary/5 transition-all w-10 h-10"
+              className="h-10 w-10 rounded-full border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-primary/5 transition-all active:scale-95"
               title="新しい年度を追加"
             >
               <Plus className="w-5 h-5 text-muted-foreground" />
             </Button>
           )}
         </DialogTrigger>
-        <DialogContent className="sm:max-w-100 rounded-3xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-black">
-              年度の新規追加
-            </DialogTitle>
-            <DialogDescription>
-              新しく情報を記録する年度を選択してください。
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="sm:max-w-120">
+          <DialogTitle className="text-xl font-bold border-b pb-4">
+            年度の新規追加
+          </DialogTitle>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6 pt-4"
+              className="space-y-6 mt-6"
             >
               <FormField
                 control={form.control}
                 name="dataDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs font-bold ml-1">
+                    <FormLabel className="font-semibold">
                       対象年度の日付
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="date"
                         {...field}
-                        className="h-12 rounded-xl"
+                        className="focus-visible:ring-primary"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button
-                type="submit"
-                disabled={isPending}
-                className="w-full h-12 rounded-full font-black"
-              >
-                {isPending ? "作成中..." : "年度を作成する"}
-              </Button>
+
+              <div className="flex justify-end pt-4 border-t">
+                <Button
+                  type="submit"
+                  disabled={isPending}
+                  className="w-40 font-bold shadow-md hover:opacity-90 transition-opacity"
+                >
+                  {isPending ? "作成中..." : "年度を作成する"}
+                </Button>
+              </div>
             </form>
           </Form>
         </DialogContent>
