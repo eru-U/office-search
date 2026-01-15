@@ -23,9 +23,6 @@ interface CompanyDetailHeaderProps {
  * 企業詳細ページのStickyヘッダー
  */
 export function CompanyDetailHeader({ data }: CompanyDetailHeaderProps) {
-  // 💡 見てください！ useState も useEffect も useParams も全部消えました。
-  // 届いた data をそのまま使うだけです。
-
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="flex h-20 items-center justify-between py-4 px-6">

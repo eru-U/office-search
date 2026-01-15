@@ -3,22 +3,29 @@ import z from "zod";
 /**
  * 企業理念のベーススキーマ
  */
-const philosophySchema = z.object({
+const companyDetailPhilosophySchema = z.object({
   content: z.string().min(1, "企業理念の内容を入力してください"),
 });
 
 /**
  * 企業理念を追加するスキーマ
  */
-export const philosophyAddSchema = philosophySchema;
+export const companyDetailPhilosophyAddSchema = companyDetailPhilosophySchema;
 
-export type PhilosophyAddTypes = z.infer<typeof philosophyAddSchema>;
-export type PhilosophyAddInput = z.input<typeof philosophyAddSchema>;
+export type companyDetailPhilosophyAddTypes = z.infer<
+  typeof companyDetailPhilosophyAddSchema
+>;
+export type companyDetailPhilosophyAddInput = z.input<
+  typeof companyDetailPhilosophyAddSchema
+>;
 
 /**
  * 企業理念を編集するスキーマ
  */
-export const philosophyEditSchema = philosophySchema;
-
-export type PhilosophyEditTypes = z.infer<typeof philosophyEditSchema>;
-export type PhilosophyEditInput = z.input<typeof philosophyEditSchema>;
+export const companyDetailPhilosophyEditSchema = companyDetailPhilosophySchema;
+export type companyDetailPhilosophyEditTypes = z.infer<
+  typeof companyDetailPhilosophyEditSchema
+>;
+export type companyDetailPhilosophyEditInput = z.input<
+  typeof companyDetailPhilosophyEditSchema
+>;

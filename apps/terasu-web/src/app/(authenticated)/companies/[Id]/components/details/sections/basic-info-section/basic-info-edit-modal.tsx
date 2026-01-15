@@ -30,18 +30,18 @@ import { ClientOnly } from "../../shared/client-only";
 import type { YearlyDetailItem } from "../../types";
 
 export const BasicInfoEditModal = ({ data }: { data: YearlyDetailItem }) => {
-  // ========================================
+  // ==================================================
   // コンテキストからデータ取得
-  // ========================================
+  // ==================================================
   const { onRefresh } = useYearlyDetail();
-  // ========================================
+  // ==================================================
   // 状態管理
-  // ========================================
+  // ==================================================
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
-  // ========================================
+  // ==================================================
   // フォームの初期化
-  // ========================================
+  // ==================================================
   const form = useForm<BasicInfoInput>({
     resolver: zodResolver(basicInfoEditSchema),
     defaultValues: {
@@ -53,9 +53,9 @@ export const BasicInfoEditModal = ({ data }: { data: YearlyDetailItem }) => {
       revenue: data.revenue ?? "",
     },
   });
-  // ========================================
+  // ==================================================
   // 送信関数
-  // ========================================
+  // ==================================================
   const onSubmit = async (values: BasicInfoInput) => {
     try {
       const parseData = basicInfoEditSchema.safeParse(values);
@@ -73,7 +73,7 @@ export const BasicInfoEditModal = ({ data }: { data: YearlyDetailItem }) => {
       toast.error("基本情報の更新に失敗しました");
     }
   };
-  // ========================================
+  // ==================================================
   return (
     <ClientOnly>
       <Dialog open={open} onOpenChange={setOpen}>

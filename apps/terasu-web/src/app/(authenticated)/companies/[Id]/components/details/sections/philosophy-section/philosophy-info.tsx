@@ -2,21 +2,18 @@
 import { TrashButton } from "@/components/trash-button";
 import { Button } from "@/components/ui/button";
 import { Empty } from "@/components/ui/empty";
-import { Edit2, Plus } from "lucide-react";
+import { Edit2 } from "lucide-react";
+import { ClientOnly } from "../../shared/client-only";
 import type { YearlyDetailItem } from "../../types";
+import { PhilosophyInfoAdd } from "./philosophy-info-add";
 
 export const PhilosophySection = ({ data }: { data: YearlyDetailItem }) => (
   <section className="space-y-6">
     <div className="flex items-center justify-between border-l-4 border-primary pl-4">
       <h2 className="text-2xl font-bold">企業理念</h2>
-      <Button
-        variant="outline"
-        size="sm"
-        className="rounded-full gap-1"
-        onClick={() => console.log("Add Philosophy")}
-      >
-        <Plus className="w-4 h-4" /> 追加
-      </Button>
+      <ClientOnly>
+        <PhilosophyInfoAdd />
+      </ClientOnly>
     </div>
     {data.company.philosophies.length > 0 ? (
       <div className="grid grid-cols-1 gap-4">
