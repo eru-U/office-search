@@ -72,4 +72,6 @@ export const basicInfoEditSchema = z.object({
   ),
 });
 export type BasicInfoEditTypes = z.infer<typeof basicInfoEditSchema>;
+export type BasicInfoOutput = z.output<typeof basicInfoEditSchema>;
+export type BasicInfoInput = z.input<typeof basicInfoEditSchema>;
 // ============================================================

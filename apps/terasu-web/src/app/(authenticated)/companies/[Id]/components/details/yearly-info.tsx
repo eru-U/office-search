@@ -5,7 +5,7 @@ import { detailDataFetch } from "@/actions/companies/detail/data-fetch";
 import { yearlyDataFetch } from "@/actions/companies/detail/yearly-data-fetch";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { BasicInfoSection } from "./sections/basic-info-section";
+import { BasicInfoSection } from "./sections/basic-info-section/basic-info-section";
 import { BranchSection } from "./sections/branch-section";
 import { ContactSection } from "./sections/contact-section";
 import { PhilosophySection } from "./sections/philosophy-section";

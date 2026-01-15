@@ -26,6 +26,7 @@
     }
   ],
   "settings": {
-    "biome.enabled": true
+    "biome.enabled": true,
+    "cSpell.words": ["cuid", "terasu"]
   }
 }
