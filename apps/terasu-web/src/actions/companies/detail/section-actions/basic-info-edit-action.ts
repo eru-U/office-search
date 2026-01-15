@@ -1,16 +1,20 @@
-import { prismaClient } from "@terasu/db"
+"use server";
+import { prismaClient } from "@terasu/db";
 import type { BasicInfoEditTypes } from "@terasu/schema/models/companyDetailSchema";
-
+import { revalidatePath } from "next/cache";
 
 /**
- * 
+ *
  * @param id 年代ID
  */
-export const basicInfoEditAction = async (id:string, params: BasicInfoEditTypes) => {
+export const basicInfoEditAction = async (
+  id: string,
+  params: BasicInfoEditTypes,
+) => {
   try {
     await prismaClient.companyYearlyInfo.update({
       where: {
-        id: id
+        id: id,
       },
       data: {
         representative: params.representative,
@@ -21,12 +25,12 @@ export const basicInfoEditAction = async (id:string, params: BasicInfoEditTypes)
             establishedDate: params.establishedDate,
             capital: params.capital,
             phoneNumber: params.phoneNumber,
-          }
-        }
-      }
-    })
-  } catch(_error) {
+          },
+        },
+      },
+    });
+    revalidatePath(`/companies/${id}`);
+  } catch (_error) {
     console.error("更新に失敗しました", _error);
-    
   }
-}
+};
