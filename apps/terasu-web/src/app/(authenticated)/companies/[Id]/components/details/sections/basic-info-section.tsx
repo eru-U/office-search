@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Edit2 } from "lucide-react";
 import { InfoBox } from "../shared/info-box";
-import type { DetailDataTypes } from "../yearly-info";
+import type { YearlyDetailItem } from "../types";
 
-export const BasicInfoSection = ({ data }: { data: DetailDataTypes }) => (
+export const BasicInfoSection = ({ data }: { data: YearlyDetailItem }) => (
   <section className="space-y-6">
     <div className="flex items-center justify-between border-l-4 border-primary pl-4">
       <h2 className="text-2xl font-bold">基本情報</h2>

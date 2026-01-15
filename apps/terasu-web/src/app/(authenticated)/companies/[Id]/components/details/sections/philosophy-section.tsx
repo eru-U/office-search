@@ -3,9 +3,9 @@ import { TrashButton } from "@/components/trash-button";
 import { Button } from "@/components/ui/button";
 import { Empty } from "@/components/ui/empty";
 import { Edit2, Plus } from "lucide-react";
-import type { DetailDataTypes } from "../yearly-info";
+import type { YearlyDetailItem } from "../types";
 
-export const PhilosophySection = ({ data }: { data: DetailDataTypes }) => (
+export const PhilosophySection = ({ data }: { data: YearlyDetailItem }) => (
   <section className="space-y-6">
     <div className="flex items-center justify-between border-l-4 border-primary pl-4">
       <h2 className="text-2xl font-bold">企業理念</h2>

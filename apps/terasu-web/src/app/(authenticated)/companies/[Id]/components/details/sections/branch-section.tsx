@@ -2,9 +2,9 @@
 import { TrashButton } from "@/components/trash-button";
 import { Button } from "@/components/ui/button";
 import { Edit2, MapPin, Plus } from "lucide-react";
-import type { DetailDataTypes } from "../yearly-info";
+import type { YearlyDetailItem } from "../types";
 
-export const BranchSection = ({ data }: { data: DetailDataTypes }) => (
+export const BranchSection = ({ data }: { data: YearlyDetailItem }) => (
   <section className="flex flex-col h-100">
     <div className="flex items-center justify-between border-l-4 border-blue-500 pl-4 mb-6 shrink-0">
       <h2 className="text-xl font-bold">拠点情報</h2>
