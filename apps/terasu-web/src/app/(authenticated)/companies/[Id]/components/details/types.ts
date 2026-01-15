@@ -1,20 +1,20 @@
-export interface Philosophy {
+interface Philosophy {
   id: string;
   content: string | null;
 }
 
-export interface Branch {
+interface Branch {
   id: string;
   address: string;
 }
 
-export interface ContactPerson {
+interface ContactPerson {
   id: string;
   name: string;
   position: string;
 }
 
-export interface Welfare {
+interface Welfare {
   id: string;
   name: string;
   content: string | null;
