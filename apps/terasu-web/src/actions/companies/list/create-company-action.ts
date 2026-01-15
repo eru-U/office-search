@@ -41,7 +41,6 @@ export async function createCompanyAction(
         name: result.data.name,
         viewCount: 0,
         isFavorite: false,
-        establishedDate: new Date(),
       },
     });
 

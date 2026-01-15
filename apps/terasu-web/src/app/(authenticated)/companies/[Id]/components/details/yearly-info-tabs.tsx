@@ -57,7 +57,7 @@ export const YearlyInfoTabs = ({
             onClick={() => onTabChange(item.id)}
           >
             <Calendar className="w-4 h-4 mr-2" />
-            {item.dataDate.getFullYear()}年度
+            {`${item.dataDate.getFullYear()}/${item.dataDate.getMonth() + 1}/${item.dataDate.getDate()}`}
           </Button>
         ))}
         <YearlyInfoAddForm onRefresh={onRefresh} />
