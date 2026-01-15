@@ -1,3 +1,4 @@
+"use client";
 // biome-ignore assist/source/organizeImports: <>
 import { Button } from "@/components/ui/button";
 import {
