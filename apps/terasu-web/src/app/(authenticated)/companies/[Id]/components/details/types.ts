@@ -42,8 +42,3 @@ export interface YearDateData {
 }
 
 export type CacheData = Record<string, YearlyDetailItem[]>;
-
-export interface DetailDataProps {
-  data: YearlyDetailItem;
-  onRefresh: () => void;
-}
