@@ -1,5 +1,5 @@
 // biome-ignore assist/source/organizeImports: <>
-import { philosophyInfoAddAction } from "@/actions/companies/detail/philosophy-action/philosophy-info-add-action";
+import { philosophyInfoEditAction } from "@/actions/companies/detail/philosophy-action/philosophy-info-edit-action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,46 +19,44 @@ import { Textarea } from "@/components/ui/textarea";
 import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { companyDetailPhilosophySchema } from "@terasu/schema";
-import type { companyDetailPhilosophyAddInput } from "@terasu/schema/models/companyDetailPhilosophySchema";
-import { Plus } from "lucide-react";
-import { useParams } from "next/navigation";
+import type { companyDetailPhilosophyEditInput } from "@terasu/schema/models/companyDetailPhilosophySchema";
+import { Edit2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { ClientOnly } from "../../shared/client-only";
 
-export const PhilosophyInfoAdd = () => {
+interface Props {
+  id: string;
+  initialContent: string;
+}
+
+export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
   // ==================================================
-  // コンテキスト・データ取得
+  // コンテキスト・状態管理
   // ==================================================
   const { onRefresh } = useYearlyDetail();
-  const params = useParams();
-  const companyId = params.Id as string;
-
-  // ==================================================
-  // 状態管理
-  // ==================================================
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
 
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<companyDetailPhilosophyAddInput>({
+  const form = useForm<companyDetailPhilosophyEditInput>({
     resolver: zodResolver(
-      companyDetailPhilosophySchema.companyDetailPhilosophyAddSchema,
+      companyDetailPhilosophySchema.companyDetailPhilosophyEditSchema,
     ),
     defaultValues: {
-      content: "",
+      content: initialContent ?? "",
     },
   });
 
   // ==================================================
   // 送信関数
   // ==================================================
-  const onSubmit = async (values: companyDetailPhilosophyAddInput) => {
+  const onSubmit = async (values: companyDetailPhilosophyEditInput) => {
     const parseData =
-      companyDetailPhilosophySchema.companyDetailPhilosophyAddSchema.safeParse(
+      companyDetailPhilosophySchema.companyDetailPhilosophyEditSchema.safeParse(
         values,
       );
 
@@ -69,13 +67,12 @@ export const PhilosophyInfoAdd = () => {
 
     startTransition(async () => {
       try {
-        await philosophyInfoAddAction(companyId, parseData.data);
+        await philosophyInfoEditAction(id, parseData.data);
         await onRefresh();
-        toast.success("企業理念を追加しました");
-        form.reset(); // 追加後はフォームを空にする
+        toast.success("企業理念を更新しました");
         setOpen(false);
       } catch (_error) {
-        toast.error("企業理念の追加に失敗しました");
+        toast.error("企業理念の更新に失敗しました");
       }
     });
   };
@@ -87,17 +84,17 @@ export const PhilosophyInfoAdd = () => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button
-            variant="outline"
-            size="sm"
-            className="rounded-full gap-1 font-bold hover:bg-primary/5 transition-all active:scale-95"
-            title="企業理念情報を追加"
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-full hover:bg-primary/10 transition-all active:scale-95"
+            title="企業理念を編集"
           >
-            <Plus className="w-4 h-4" /> 追加
+            <Edit2 className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-140">
           <DialogTitle className="text-xl font-bold border-b pb-4">
-            企業理念の追加
+            企業理念の編集
           </DialogTitle>
           <Form {...form}>
             <form
@@ -113,10 +110,9 @@ export const PhilosophyInfoAdd = () => {
                       企業理念・ビジョン
                     </FormLabel>
                     <FormControl>
-                      {/* 企業理念は複数行になることが多いのでTextareaにしています */}
                       <Textarea
-                        placeholder="例：技術の力で世界をより良くする"
-                        className="min-h-30 focus-visible:ring-primary resize-none"
+                        placeholder="例：世界をより良くする"
+                        className="min-h-32 focus-visible:ring-primary resize-none leading-relaxed"
                         {...field}
                       />
                     </FormControl>
@@ -131,7 +127,7 @@ export const PhilosophyInfoAdd = () => {
                   type="submit"
                   className="w-25 font-bold shadow-md hover:opacity-90 transition-opacity"
                 >
-                  {isPending ? "追加中..." : "追加"}
+                  {isPending ? "保存中..." : "保存"}
                 </Button>
               </div>
             </form>
