@@ -5,23 +5,27 @@
       "path": "."
     },
     {
-      "name": "🌐 Web Component",
+      "name": "🌐 コンテキスト",
+      "path": "apps/terasu-web/src/contexts"
+    },
+    {
+      "name": "🌐 UI コンポーネント",
       "path": "apps/terasu-web/src/components"
     },
     {
-      "name": "🌐 Web App",
+      "name": "🌐 アプリケーション",
       "path": "apps/terasu-web/src/app"
     },
     {
-      "name": "🌐 Web Action",
+      "name": "🌐 サーバーアクション",
       "path": "apps/terasu-web/src/actions"
     },
     {
-      "name": "📦 Database",
+      "name": "📦 データベース",
       "path": "packages/db"
     },
     {
-      "name": "📜 Schema",
+      "name": "📜 スキーマ",
       "path": "packages/schema"
     }
   ],
