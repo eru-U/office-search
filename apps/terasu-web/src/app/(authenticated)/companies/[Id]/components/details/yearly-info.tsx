@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { BasicInfoSection } from "./sections/basic-info-section/basic-info-section";
 import { BranchSection } from "./sections/branch-section";
 import { ContactSection } from "./sections/contact-section";
-import { PhilosophySection } from "./sections/philosophy-section";
+import { PhilosophySection } from "./sections/philosophy-section/philosophy-info";
 import { WelfareSection } from "./sections/welfare-section";
 import type { CacheData, YearDateData, YearlyDetailItem } from "./types";
 import { YearlyInfoTabs } from "./yearly-info-tabs";
