@@ -10,81 +10,60 @@ import { BranchSection } from "./sections/branch-section";
 import { ContactSection } from "./sections/contact-section";
 import { PhilosophySection } from "./sections/philosophy-section";
 import { WelfareSection } from "./sections/welfare-section";
+import type { CacheData, YearDateData, YearlyDetailItem } from "./types";
 import { YearlyInfoTabs } from "./yearly-info-tabs";
 
-export type DetailDataTypes = {
-  company: {
-    establishedDate: Date | null;
-    capital: bigint | null;
-    phoneNumber: string | null;
-    philosophies: {
-      id: string;
-      content: string | null;
-    }[];
-  };
-  id: string;
-  employeeCount: number | null;
-  representative: string | null;
-  revenue: bigint | null;
-  branches: {
-    id: string;
-    address: string;
-  }[];
-  contactPersons: {
-    id: string;
-    name: string;
-    position: string;
-  }[];
-  welfares: {
-    id: string;
-    name: string;
-    content: string | null;
-  }[];
-};
-
 export const YearlyInfo = () => {
-  const [fetchDateData, setFetchDateData] = useState<
-    { id: string; dataDate: Date }[]
-  >([]);
+  const [fetchDateData, setFetchDateData] = useState<YearDateData[]>([]);
   const [selectedTabId, setSelectedTabId] = useState("");
-  const [cacheData, setCacheData] = useState<Record<string, DetailDataTypes[]>>(
-    {},
-  );
+  const [cacheData, setCacheData] = useState<CacheData>({});
 
   const params = useParams();
-  const { Id } = params as { Id: string };
+  const Id = params.Id as string;
 
-  const tabChange = useCallback(async (value: string) => {
-    if (!value) return;
-    const result = await detailDataFetch(value);
-    setCacheData((data) => {
-      if (data[value]) return data;
-      return { ...data, [value]: result };
-    });
-  }, []);
+  // メモ機能の loadMemos 方式を継承
+  const loadYearlyData = useCallback(async () => {
+    const data = await yearlyDataFetch(Id);
+    if (data && data.length > 0) {
+      setFetchDateData(data);
+
+      // 初回またはデータが空だった場合は先頭を選択
+      const targetId = selectedTabId || data[0].id;
+      if (!selectedTabId) setSelectedTabId(targetId);
+
+      // 詳細データも併せて取得/更新
+      const result = await detailDataFetch(targetId);
+      setCacheData((prev) => ({
+        ...prev,
+        [targetId]: result as YearlyDetailItem[],
+      }));
+    }
+  }, [Id, selectedTabId]);
 
   useEffect(() => {
-    const fetchFunction = async () => {
-      const data = await yearlyDataFetch(Id);
-      if (data.length > 0) {
-        setFetchDateData(data);
-        setSelectedTabId(data[0].id);
-        await tabChange(data[0].id);
-      }
-    };
-    fetchFunction();
-  }, [Id, tabChange]);
+    loadYearlyData();
+  }, [loadYearlyData]);
+
+  // タブ切り替え時の処理
+  const handleTabChange = async (value: string) => {
+    setSelectedTabId(value);
+    const result = await detailDataFetch(value);
+    setCacheData((prev) => ({
+      ...prev,
+      [value]: result as YearlyDetailItem[],
+    }));
+  };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-12 py-8 px-4 md:px-0">
+    <div className="max-w-4xl mx-auto space-y-12 py-8 px-4 md:px-0 flex flex-col min-h-[calc(100vh-160px)]">
       <YearlyInfoTabs
         fetchDateData={fetchDateData}
         selectedTabId={selectedTabId}
-        setSelectedTabId={setSelectedTabId}
-        tabChange={tabChange}
+        onTabChange={handleTabChange}
+        onRefresh={loadYearlyData}
       />
 
-      {cacheData[selectedTabId]?.map((data) => (
+      {cacheData[selectedTabId]?.map((data: YearlyDetailItem) => (
         <div
           key={data.id}
           className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500"

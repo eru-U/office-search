@@ -24,44 +24,61 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { companyDetailSchema } from "@terasu/schema";
 import { Plus } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { ClientOnly } from "./shared/client-only";
 
-export const YearlyInfoAddForm = () => {
+interface Props {
+  onRefresh: () => Promise<void>;
+  isPrimary?: boolean;
+}
+
+export const YearlyInfoAddForm = ({ onRefresh, isPrimary }: Props) => {
+  const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const params = useParams();
   const companyId = params.Id as string;
-  // formの初期化
+
   const form = useForm<companyDetailSchema.YearlyAddTypes>({
     resolver: zodResolver(companyDetailSchema.yearlyAddSchema),
-    defaultValues: {
-      dataDate: "",
-    },
+    defaultValues: { dataDate: "" },
   });
 
-  // フォームの送信処理
-  const onSubmit = async (values: companyDetailSchema.YearlyAddTypes) => {
-    try {
-      const data = new Date(values.dataDate);
-      await yearlyDataCreate(companyId, data);
-      console.log("登録に成功しました");
-    } catch (_error) {
-      throw new Error("データの登録中にエラーが発生しました。");
-    }
+  const onSubmit = (values: companyDetailSchema.YearlyAddTypes) => {
+    startTransition(async () => {
+      try {
+        const date = new Date(values.dataDate);
+        await yearlyDataCreate(companyId, date);
+        toast.success("年度を追加しました");
+        await onRefresh();
+        form.reset();
+        setOpen(false);
+      } catch (_error) {
+        toast.error("登録できませんでした");
+      }
+    });
   };
+
   return (
     <ClientOnly>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-primary/5 transition-all w-10 h-10"
-            title="新しい年度を追加"
-          >
-            <Plus className="w-5 h-5 text-muted-foreground" />
-          </Button>
+          {isPrimary ? (
+            <Button size="lg" className="rounded-full px-8 font-bold gap-2">
+              <Plus className="w-5 h-5" /> 最初の年度を作成
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 hover:bg-primary/5 transition-all w-10 h-10"
+              title="新しい年度を追加"
+            >
+              <Plus className="w-5 h-5 text-muted-foreground" />
+            </Button>
+          )}
         </DialogTrigger>
-
         <DialogContent className="sm:max-w-100 rounded-3xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-black">
@@ -71,32 +88,39 @@ export const YearlyInfoAddForm = () => {
               新しく情報を記録する年度を選択してください。
             </DialogDescription>
           </DialogHeader>
-
-          <div className="py-8 text-center text-muted-foreground">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <FormField
-                  control={form.control}
-                  name="dataDate"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel></FormLabel>
-                      <FormControl>
-                        <Input type="date" placeholder="shadcn" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  className="w-full mt-4 rounded-full font-black"
-                >
-                  年度を作成する
-                </Button>
-              </form>
-            </Form>
-          </div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-6 pt-4"
+            >
+              <FormField
+                control={form.control}
+                name="dataDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-bold ml-1">
+                      対象年度の日付
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        className="h-12 rounded-xl"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="w-full h-12 rounded-full font-black"
+              >
+                {isPending ? "作成中..." : "年度を作成する"}
+              </Button>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </ClientOnly>
