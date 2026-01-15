@@ -1,3 +1,4 @@
+"use server";
 import { prismaClient } from "@terasu/db";
 import type { companyDetailPhilosophyAddTypes } from "@terasu/schema/models/companyDetailPhilosophySchema";
 
