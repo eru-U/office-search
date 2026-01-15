@@ -13,7 +13,6 @@ export function ClientOnly({ children }: { children: React.ReactNode }) {
   }, []);
 
   if (!mounted) {
-    // マウント前は何も出さない（またはレイアウトが崩れない程度のスケルトン）
     return null;
   }
 
