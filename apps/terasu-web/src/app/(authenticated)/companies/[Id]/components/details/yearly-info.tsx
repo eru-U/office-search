@@ -3,6 +3,7 @@
 // biome-ignore assist/source/organizeImports: <>
 import { detailDataFetch } from "@/actions/companies/detail/data-fetch";
 import { yearlyDataFetch } from "@/actions/companies/detail/yearly-data-fetch";
+import { YearlyDetailProvider } from "@/contexts/YearlyDetailContext";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { BasicInfoSection } from "./sections/basic-info-section/basic-info-section";
@@ -54,6 +55,18 @@ export const YearlyInfo = () => {
     }));
   };
 
+  /**
+   * 現在選択中のタブのデータだけを再取得してキャッシュを更新する関数
+   */
+  const refreshCurrentData = useCallback(async () => {
+    if (!selectedTabId) return;
+    const result = await detailDataFetch(selectedTabId);
+    setCacheData((prev) => ({
+      ...prev,
+      [selectedTabId]: result as YearlyDetailItem[],
+    }));
+  }, [selectedTabId]);
+
   return (
     <div className="max-w-4xl mx-auto space-y-12 py-8 px-4 md:px-0 flex flex-col min-h-[calc(100vh-160px)]">
       <YearlyInfoTabs
@@ -62,21 +75,22 @@ export const YearlyInfo = () => {
         onTabChange={handleTabChange}
         onRefresh={loadYearlyData}
       />
-
-      {cacheData[selectedTabId]?.map((data: YearlyDetailItem) => (
-        <div
-          key={data.id}
-          className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500"
-        >
-          <BasicInfoSection data={data} />
-          <PhilosophySection data={data} />
-          <WelfareSection data={data} />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-            <BranchSection data={data} />
-            <ContactSection data={data} />
+      <YearlyDetailProvider onRefresh={refreshCurrentData}>
+        {cacheData[selectedTabId]?.map((data: YearlyDetailItem) => (
+          <div
+            key={data.id}
+            className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500"
+          >
+            <BasicInfoSection data={data} />
+            <PhilosophySection data={data} />
+            <WelfareSection data={data} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+              <BranchSection data={data} />
+              <ContactSection data={data} />
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </YearlyDetailProvider>
     </div>
   );
 };

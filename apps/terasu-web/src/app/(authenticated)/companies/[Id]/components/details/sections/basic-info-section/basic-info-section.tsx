@@ -1,7 +1,6 @@
 import { InfoBox } from "../../shared/info-box";
 import type { YearlyDetailItem } from "../../types";
 import { BasicInfoEditModal } from "./basic-info-edit-modal";
-// import { BasicInfoEditModal } from "./basic-info-edit-modal"; // ★追加
 
 export const BasicInfoSection = ({ data }: { data: YearlyDetailItem }) => {
   return (

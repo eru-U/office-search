@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   basicInfoEditSchema,
@@ -29,6 +30,10 @@ import { ClientOnly } from "../../shared/client-only";
 import type { YearlyDetailItem } from "../../types";
 
 export const BasicInfoEditModal = ({ data }: { data: YearlyDetailItem }) => {
+  // ========================================
+  // コンテキストからデータ取得
+  // ========================================
+  const { onRefresh } = useYearlyDetail();
   // ========================================
   // 状態管理
   // ========================================
@@ -60,6 +65,7 @@ export const BasicInfoEditModal = ({ data }: { data: YearlyDetailItem }) => {
       }
       startTransition(async () => {
         await basicInfoEditAction(data.id, parseData.data);
+        await onRefresh();
         toast.success("基本情報を更新しました");
         setOpen(false);
       });
