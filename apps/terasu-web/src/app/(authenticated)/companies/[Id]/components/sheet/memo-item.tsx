@@ -4,6 +4,7 @@ import {
   memoDelete,
   memoEdit,
 } from "@/actions/companies/detail/memo-action/memos";
+import { TrashButton } from "@/components/trash-button";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -91,14 +92,10 @@ export const MemoItem = ({
               <X className="h-3.5 w-3.5" />
             </Button>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 text-slate-400 hover:text-destructive"
-            onClick={() => deleteFunction(memo.id)}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
+          <TrashButton
+            onAction={() => deleteFunction(memo.id)}
+            disabled={isPending}
+          />
         </div>
       </div>
 

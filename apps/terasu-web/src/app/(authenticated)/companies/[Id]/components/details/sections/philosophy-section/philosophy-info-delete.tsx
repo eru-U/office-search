@@ -17,7 +17,6 @@ export const PhilosophyDelete = ({ id }: { id: string }) => {
       try {
         await philosophyInfoDeleteAction(id);
 
-        // Context 経由で親のキャッシュを最新にする
         await onRefresh();
 
         toast.success("企業理念を抹消しました");
