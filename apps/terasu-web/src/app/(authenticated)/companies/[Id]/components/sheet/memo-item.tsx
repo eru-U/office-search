@@ -117,7 +117,7 @@ export const MemoItem = ({
                     <Textarea
                       {...field}
                       disabled={isPending}
-                      className="min-h-[80px] bg-slate-50 text-sm resize-none"
+                      className="min-h-20 bg-slate-50 text-sm resize-none"
                     />
                   </FormControl>
                   <FormMessage />

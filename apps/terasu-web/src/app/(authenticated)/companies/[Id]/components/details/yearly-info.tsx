@@ -1,7 +1,7 @@
 "use client";
 
+// biome-ignore assist/source/organizeImports: <>
 import { detailDataFetch } from "@/actions/companies/detail/data-fetch";
-import { yearlyDataCreate } from "@/actions/companies/detail/yearly-data-create";
 import { yearlyDataFetch } from "@/actions/companies/detail/yearly-data-fetch";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -12,27 +12,47 @@ import { PhilosophySection } from "./sections/philosophy-section";
 import { WelfareSection } from "./sections/welfare-section";
 import { YearlyInfoTabs } from "./yearly-info-tabs";
 
+export type DetailDataTypes = {
+  company: {
+    establishedDate: Date | null;
+    capital: bigint | null;
+    phoneNumber: string | null;
+    philosophies: {
+      id: string;
+      content: string | null;
+    }[];
+  };
+  id: string;
+  employeeCount: number | null;
+  representative: string | null;
+  revenue: bigint | null;
+  branches: {
+    id: string;
+    address: string;
+  }[];
+  contactPersons: {
+    id: string;
+    name: string;
+    position: string;
+  }[];
+  welfares: {
+    id: string;
+    name: string;
+    content: string | null;
+  }[];
+};
+
 export const YearlyInfo = () => {
   const [fetchDateData, setFetchDateData] = useState<
     { id: string; dataDate: Date }[]
   >([]);
   const [selectedTabId, setSelectedTabId] = useState("");
-  const [cacheData, setCacheData] = useState<Record<string, any>>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [cacheData, setCacheData] = useState<Record<string, DetailDataTypes[]>>(
+    {},
+  );
 
   const params = useParams();
   const { Id } = params as { Id: string };
-
-  const createYearlyData = async (date: Date) => {
-    setIsLoading(true);
-    try {
-      await yearlyDataCreate(Id, date);
-    } catch (error) {
-      console.error("年度データの作成に失敗しました:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const tabChange = useCallback(async (value: string) => {
     if (!value) return;
@@ -64,7 +84,7 @@ export const YearlyInfo = () => {
         tabChange={tabChange}
       />
 
-      {cacheData[selectedTabId]?.map((data: any) => (
+      {cacheData[selectedTabId]?.map((data) => (
         <div
           key={data.id}
           className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500"

@@ -37,7 +37,7 @@ export function CompanyDetailSideSheet() {
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="w-[400px] sm:w-[540px] p-0 flex flex-col h-full shadow-2xl">
+      <SheetContent className="w-100 sm:w-135 p-0 flex flex-col h-full shadow-2xl">
         <SheetHeader className="p-6 border-b bg-white shrink-0">
           <SheetTitle className="flex items-center gap-2 text-xl font-black">
             <MessageSquare className="h-6 w-6 text-primary" />

@@ -1,11 +1,12 @@
 "use client";
 
+// biome-ignore assist/source/organizeImports: <>
+import { yearlyDataCreate } from "@/actions/companies/detail/yearly-data-create";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -13,7 +14,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,16 +23,31 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { companyDetailSchema } from "@terasu/schema";
 import { Plus } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { ClientOnly } from "./shared/client-only";
 
 export const YearlyInfoAddForm = () => {
+  const params = useParams();
+  const companyId = params.Id as string;
+  // formの初期化
   const form = useForm<companyDetailSchema.YearlyAddTypes>({
     resolver: zodResolver(companyDetailSchema.yearlyAddSchema),
     defaultValues: {
       dataDate: "",
     },
   });
+
+  // フォームの送信処理
+  const onSubmit = async (values: companyDetailSchema.YearlyAddTypes) => {
+    try {
+      const data = new Date(values.dataDate);
+      await yearlyDataCreate(companyId, data);
+      console.log("登録に成功しました");
+    } catch (_error) {
+      throw new Error("データの登録中にエラーが発生しました。");
+    }
+  };
   return (
     <ClientOnly>
       <Dialog>
@@ -59,7 +74,7 @@ export const YearlyInfoAddForm = () => {
 
           <div className="py-8 text-center text-muted-foreground">
             <Form {...form}>
-              <form>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField
                   control={form.control}
                   name="dataDate"
