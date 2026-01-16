@@ -3,7 +3,7 @@ import { TrashButton } from "@/components/trash-button";
 import { Button } from "@/components/ui/button";
 import { Empty } from "@/components/ui/empty";
 import { Edit2, Plus } from "lucide-react";
-import type { YearlyDetailItem } from "../types";
+import type { YearlyDetailItem } from "../../types";
 
 export const WelfareSection = ({ data }: { data: YearlyDetailItem }) => (
   <section className="space-y-6">
