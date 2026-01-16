@@ -3,7 +3,7 @@ import { prismaClient } from "@terasu/db";
 
 interface WelfareAddTypes {
   name: string;
-  content: string;
+  content?: string;
 }
 /**
  *
@@ -11,8 +11,8 @@ interface WelfareAddTypes {
  * @param yearlyInfoId 年代ID
  */
 export const welfareAddAction = async (
-  data: WelfareAddTypes,
   yearlyInfoId: string,
+  data: WelfareAddTypes,
 ) => {
   try {
     await prismaClient.welfare.create({
