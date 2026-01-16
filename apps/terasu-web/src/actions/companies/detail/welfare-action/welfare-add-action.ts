@@ -3,7 +3,7 @@ import { prismaClient } from "@terasu/db";
 
 interface WelfareAddTypes {
   name: string;
-  content?: string;
+  content?: string | null;
 }
 /**
  *
