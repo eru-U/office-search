@@ -2,6 +2,7 @@ import { TrashButton } from "@/components/trash-button";
 import { Empty } from "@/components/ui/empty";
 import type { YearlyDetailItem } from "../../types";
 import { WelfareInfoAdd } from "./welfare-info-add-modal";
+import { WelfareInfoEditModal } from "./welfare-info-edit-modal";
 
 export const WelfareSection = ({ data }: { data: YearlyDetailItem }) => (
   <section className="space-y-6">
@@ -22,7 +23,7 @@ export const WelfareSection = ({ data }: { data: YearlyDetailItem }) => (
                 {welfare.name}
               </h3>
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                {/* ここに編集ボタン */}
+                <WelfareInfoEditModal id={welfare.id} data={welfare} />
                 <TrashButton
                   onClick={() => console.log("Delete Welfare:", welfare.id)}
                 />

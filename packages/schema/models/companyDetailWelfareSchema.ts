@@ -1,12 +1,13 @@
-import z, { string } from "zod";
+import z from "zod";
+import { emptyToNull } from "../lib/edit";
+
 /**
  * 福利厚生のベーススキーマ
  * 年代IDはユーザー入力ではなくシステム側で保管して送信
  */
 const companyDetailWelfareBaseSchema = z.object({
-  yearlyInfoId: z.string(),
-  name: string().min(1, { message: "福利厚生名を入力してください" }),
-  content: string().optional().nullable(),
+  name: z.string().min(1, { message: "福利厚生名を入力してください" }),
+  content: z.preprocess(emptyToNull, z.string().nullable()),
 });
 
 /**
@@ -16,7 +17,7 @@ export const companyDetailWelfareAddSchema = companyDetailWelfareBaseSchema;
 export type CompanyDetailWelfareAddTypes = z.infer<
   typeof companyDetailWelfareAddSchema
 >;
-export type CompanyDetailWelfareInput = z.input<
+export type CompanyDetailWelfareAddInput = z.input<
   typeof companyDetailWelfareAddSchema
 >;
 

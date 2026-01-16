@@ -3,14 +3,14 @@ import { prismaClient } from "@terasu/db";
 
 interface WelfareEditTypes {
   name: string;
-  content: string;
+  content?: string | null;
 }
 /**
  * 福利厚生編集用アクション
  * @param data
  * @param id 福利厚生ID
  */
-export const welfareEditAction = async (data: WelfareEditTypes, id: string) => {
+export const welfareEditAction = async (id: string, data: WelfareEditTypes) => {
   try {
     await prismaClient.welfare.update({
       where: {
