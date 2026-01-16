@@ -1,21 +1,15 @@
 // biome-ignore assist/source/organizeImports: <>
 import { TrashButton } from "@/components/trash-button";
 import { Button } from "@/components/ui/button";
-import { Edit2, MapPin, Plus } from "lucide-react";
+import { Edit2, MapPin } from "lucide-react";
 import type { YearlyDetailItem } from "../../types";
+import { BranchInfoAdd } from "./branch-info-add";
 
 export const BranchSection = ({ data }: { data: YearlyDetailItem }) => (
   <section className="flex flex-col h-100">
     <div className="flex items-center justify-between border-l-4 border-blue-500 pl-4 mb-6 shrink-0">
       <h2 className="text-xl font-bold">拠点情報</h2>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8"
-        onClick={() => console.log("Add Branch")}
-      >
-        <Plus className="w-4 h-4" />
-      </Button>
+      <BranchInfoAdd />
     </div>
 
     <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
