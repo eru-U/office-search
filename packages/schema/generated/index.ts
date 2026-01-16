@@ -26,7 +26,7 @@ export const IndustryScalarFieldEnumSchema = z.enum(['id','userId','name','sortO
 
 export const CompanyYearlyInfoScalarFieldEnumSchema = z.enum(['id','companyId','recruitmentUrl','dataDate','employeeCount','representative','revenue','isSideJobAllowed','hasShortTimeWork','isDressFree']);
 
-export const BranchScalarFieldEnumSchema = z.enum(['id','yearlyInfoId','address']);
+export const BranchScalarFieldEnumSchema = z.enum(['id','companyId','address']);
 
 export const JobPostingScalarFieldEnumSchema = z.enum(['id','yearlyInfoId','title','probationMonths','employmentStatusId','laborCategoryId','isRemoteAllowed','notes']);
 
@@ -396,9 +396,9 @@ export const BranchSchema = z.object({
    */
   id: z.cuid(),
   /**
-   * 年代ID
+   * 企業ID (yearlyInfoIdからcompanyIdに変更)
    */
-  yearlyInfoId: z.string().nullable(),
+  companyId: z.string(),
   /**
    * 拠点住所
    */
@@ -1312,6 +1312,7 @@ export const CompanyIncludeSchema: z.ZodType<Prisma.CompanyInclude> = z.object({
   philosophies: z.union([z.boolean(),z.lazy(() => CompanyPhilosophyFindManyArgsSchema)]).optional(),
   tags: z.union([z.boolean(),z.lazy(() => TagFindManyArgsSchema)]).optional(),
   industries: z.union([z.boolean(),z.lazy(() => IndustryFindManyArgsSchema)]).optional(),
+  branches: z.union([z.boolean(),z.lazy(() => BranchFindManyArgsSchema)]).optional(),
   axisMatchings: z.union([z.boolean(),z.lazy(() => CompanyAxisMatchingFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => CompanyCountOutputTypeArgsSchema)]).optional(),
 }).strict();
@@ -1331,6 +1332,7 @@ export const CompanyCountOutputTypeSelectSchema: z.ZodType<Prisma.CompanyCountOu
   philosophies: z.boolean().optional(),
   tags: z.boolean().optional(),
   industries: z.boolean().optional(),
+  branches: z.boolean().optional(),
   axisMatchings: z.boolean().optional(),
 }).strict();
 
@@ -1354,6 +1356,7 @@ export const CompanySelectSchema: z.ZodType<Prisma.CompanySelect> = z.object({
   philosophies: z.union([z.boolean(),z.lazy(() => CompanyPhilosophyFindManyArgsSchema)]).optional(),
   tags: z.union([z.boolean(),z.lazy(() => TagFindManyArgsSchema)]).optional(),
   industries: z.union([z.boolean(),z.lazy(() => IndustryFindManyArgsSchema)]).optional(),
+  branches: z.union([z.boolean(),z.lazy(() => BranchFindManyArgsSchema)]).optional(),
   axisMatchings: z.union([z.boolean(),z.lazy(() => CompanyAxisMatchingFindManyArgsSchema)]).optional(),
   _count: z.union([z.boolean(),z.lazy(() => CompanyCountOutputTypeArgsSchema)]).optional(),
 }).strict()
@@ -1395,7 +1398,6 @@ export const IndustrySelectSchema: z.ZodType<Prisma.IndustrySelect> = z.object({
 
 export const CompanyYearlyInfoIncludeSchema: z.ZodType<Prisma.CompanyYearlyInfoInclude> = z.object({
   company: z.union([z.boolean(),z.lazy(() => CompanyArgsSchema)]).optional(),
-  branches: z.union([z.boolean(),z.lazy(() => BranchFindManyArgsSchema)]).optional(),
   jobPostings: z.union([z.boolean(),z.lazy(() => JobPostingFindManyArgsSchema)]).optional(),
   contactPersons: z.union([z.boolean(),z.lazy(() => ContactPersonFindManyArgsSchema)]).optional(),
   businessContents: z.union([z.boolean(),z.lazy(() => BusinessContentFindManyArgsSchema)]).optional(),
@@ -1415,7 +1417,6 @@ export const CompanyYearlyInfoCountOutputTypeArgsSchema: z.ZodType<Prisma.Compan
 }).strict();
 
 export const CompanyYearlyInfoCountOutputTypeSelectSchema: z.ZodType<Prisma.CompanyYearlyInfoCountOutputTypeSelect> = z.object({
-  branches: z.boolean().optional(),
   jobPostings: z.boolean().optional(),
   contactPersons: z.boolean().optional(),
   businessContents: z.boolean().optional(),
@@ -1436,7 +1437,6 @@ export const CompanyYearlyInfoSelectSchema: z.ZodType<Prisma.CompanyYearlyInfoSe
   hasShortTimeWork: z.boolean().optional(),
   isDressFree: z.boolean().optional(),
   company: z.union([z.boolean(),z.lazy(() => CompanyArgsSchema)]).optional(),
-  branches: z.union([z.boolean(),z.lazy(() => BranchFindManyArgsSchema)]).optional(),
   jobPostings: z.union([z.boolean(),z.lazy(() => JobPostingFindManyArgsSchema)]).optional(),
   contactPersons: z.union([z.boolean(),z.lazy(() => ContactPersonFindManyArgsSchema)]).optional(),
   businessContents: z.union([z.boolean(),z.lazy(() => BusinessContentFindManyArgsSchema)]).optional(),
@@ -1450,7 +1450,7 @@ export const CompanyYearlyInfoSelectSchema: z.ZodType<Prisma.CompanyYearlyInfoSe
 //------------------------------------------------------
 
 export const BranchIncludeSchema: z.ZodType<Prisma.BranchInclude> = z.object({
-  yearlyInfo: z.union([z.boolean(),z.lazy(() => CompanyYearlyInfoArgsSchema)]).optional(),
+  company: z.union([z.boolean(),z.lazy(() => CompanyArgsSchema)]).optional(),
 }).strict();
 
 export const BranchArgsSchema: z.ZodType<Prisma.BranchDefaultArgs> = z.object({
@@ -1460,9 +1460,9 @@ export const BranchArgsSchema: z.ZodType<Prisma.BranchDefaultArgs> = z.object({
 
 export const BranchSelectSchema: z.ZodType<Prisma.BranchSelect> = z.object({
   id: z.boolean().optional(),
-  yearlyInfoId: z.boolean().optional(),
+  companyId: z.boolean().optional(),
   address: z.boolean().optional(),
-  yearlyInfo: z.union([z.boolean(),z.lazy(() => CompanyYearlyInfoArgsSchema)]).optional(),
+  company: z.union([z.boolean(),z.lazy(() => CompanyArgsSchema)]).optional(),
 }).strict()
 
 // JOB POSTING
@@ -2471,6 +2471,7 @@ export const CompanyWhereInputSchema: z.ZodType<Prisma.CompanyWhereInput> = z.st
   philosophies: z.lazy(() => CompanyPhilosophyListRelationFilterSchema).optional(),
   tags: z.lazy(() => TagListRelationFilterSchema).optional(),
   industries: z.lazy(() => IndustryListRelationFilterSchema).optional(),
+  branches: z.lazy(() => BranchListRelationFilterSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingListRelationFilterSchema).optional(),
 });
 
@@ -2494,6 +2495,7 @@ export const CompanyOrderByWithRelationInputSchema: z.ZodType<Prisma.CompanyOrde
   philosophies: z.lazy(() => CompanyPhilosophyOrderByRelationAggregateInputSchema).optional(),
   tags: z.lazy(() => TagOrderByRelationAggregateInputSchema).optional(),
   industries: z.lazy(() => IndustryOrderByRelationAggregateInputSchema).optional(),
+  branches: z.lazy(() => BranchOrderByRelationAggregateInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingOrderByRelationAggregateInputSchema).optional(),
 });
 
@@ -2533,6 +2535,7 @@ export const CompanyWhereUniqueInputSchema: z.ZodType<Prisma.CompanyWhereUniqueI
   philosophies: z.lazy(() => CompanyPhilosophyListRelationFilterSchema).optional(),
   tags: z.lazy(() => TagListRelationFilterSchema).optional(),
   industries: z.lazy(() => IndustryListRelationFilterSchema).optional(),
+  branches: z.lazy(() => BranchListRelationFilterSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingListRelationFilterSchema).optional(),
 }));
 
@@ -2649,7 +2652,6 @@ export const CompanyYearlyInfoWhereInputSchema: z.ZodType<Prisma.CompanyYearlyIn
   hasShortTimeWork: z.union([ z.lazy(() => BoolNullableFilterSchema), z.boolean() ]).optional().nullable(),
   isDressFree: z.union([ z.lazy(() => BoolNullableFilterSchema), z.boolean() ]).optional().nullable(),
   company: z.union([ z.lazy(() => CompanyScalarRelationFilterSchema), z.lazy(() => CompanyWhereInputSchema) ]).optional(),
-  branches: z.lazy(() => BranchListRelationFilterSchema).optional(),
   jobPostings: z.lazy(() => JobPostingListRelationFilterSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonListRelationFilterSchema).optional(),
   businessContents: z.lazy(() => BusinessContentListRelationFilterSchema).optional(),
@@ -2670,7 +2672,6 @@ export const CompanyYearlyInfoOrderByWithRelationInputSchema: z.ZodType<Prisma.C
   hasShortTimeWork: z.union([ z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema) ]).optional(),
   isDressFree: z.union([ z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema) ]).optional(),
   company: z.lazy(() => CompanyOrderByWithRelationInputSchema).optional(),
-  branches: z.lazy(() => BranchOrderByRelationAggregateInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingOrderByRelationAggregateInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonOrderByRelationAggregateInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentOrderByRelationAggregateInputSchema).optional(),
@@ -2697,7 +2698,6 @@ export const CompanyYearlyInfoWhereUniqueInputSchema: z.ZodType<Prisma.CompanyYe
   hasShortTimeWork: z.union([ z.lazy(() => BoolNullableFilterSchema), z.boolean() ]).optional().nullable(),
   isDressFree: z.union([ z.lazy(() => BoolNullableFilterSchema), z.boolean() ]).optional().nullable(),
   company: z.union([ z.lazy(() => CompanyScalarRelationFilterSchema), z.lazy(() => CompanyWhereInputSchema) ]).optional(),
-  branches: z.lazy(() => BranchListRelationFilterSchema).optional(),
   jobPostings: z.lazy(() => JobPostingListRelationFilterSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonListRelationFilterSchema).optional(),
   businessContents: z.lazy(() => BusinessContentListRelationFilterSchema).optional(),
@@ -2745,16 +2745,16 @@ export const BranchWhereInputSchema: z.ZodType<Prisma.BranchWhereInput> = z.stri
   OR: z.lazy(() => BranchWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => BranchWhereInputSchema), z.lazy(() => BranchWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
-  yearlyInfoId: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
+  companyId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   address: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
-  yearlyInfo: z.union([ z.lazy(() => CompanyYearlyInfoNullableScalarRelationFilterSchema), z.lazy(() => CompanyYearlyInfoWhereInputSchema) ]).optional().nullable(),
+  company: z.union([ z.lazy(() => CompanyScalarRelationFilterSchema), z.lazy(() => CompanyWhereInputSchema) ]).optional(),
 });
 
 export const BranchOrderByWithRelationInputSchema: z.ZodType<Prisma.BranchOrderByWithRelationInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
-  yearlyInfoId: z.union([ z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema) ]).optional(),
+  companyId: z.lazy(() => SortOrderSchema).optional(),
   address: z.lazy(() => SortOrderSchema).optional(),
-  yearlyInfo: z.lazy(() => CompanyYearlyInfoOrderByWithRelationInputSchema).optional(),
+  company: z.lazy(() => CompanyOrderByWithRelationInputSchema).optional(),
 });
 
 export const BranchWhereUniqueInputSchema: z.ZodType<Prisma.BranchWhereUniqueInput> = z.object({
@@ -2765,14 +2765,14 @@ export const BranchWhereUniqueInputSchema: z.ZodType<Prisma.BranchWhereUniqueInp
   AND: z.union([ z.lazy(() => BranchWhereInputSchema), z.lazy(() => BranchWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => BranchWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => BranchWhereInputSchema), z.lazy(() => BranchWhereInputSchema).array() ]).optional(),
-  yearlyInfoId: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
+  companyId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   address: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
-  yearlyInfo: z.union([ z.lazy(() => CompanyYearlyInfoNullableScalarRelationFilterSchema), z.lazy(() => CompanyYearlyInfoWhereInputSchema) ]).optional().nullable(),
+  company: z.union([ z.lazy(() => CompanyScalarRelationFilterSchema), z.lazy(() => CompanyWhereInputSchema) ]).optional(),
 }));
 
 export const BranchOrderByWithAggregationInputSchema: z.ZodType<Prisma.BranchOrderByWithAggregationInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
-  yearlyInfoId: z.union([ z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema) ]).optional(),
+  companyId: z.lazy(() => SortOrderSchema).optional(),
   address: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => BranchCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => BranchMaxOrderByAggregateInputSchema).optional(),
@@ -2784,7 +2784,7 @@ export const BranchScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Branch
   OR: z.lazy(() => BranchScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => BranchScalarWhereWithAggregatesInputSchema), z.lazy(() => BranchScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
-  yearlyInfoId: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema), z.string() ]).optional().nullable(),
+  companyId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
   address: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
 });
 
@@ -4603,6 +4603,7 @@ export const CompanyCreateInputSchema: z.ZodType<Prisma.CompanyCreateInput> = z.
   philosophies: z.lazy(() => CompanyPhilosophyCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -4625,6 +4626,7 @@ export const CompanyUncheckedCreateInputSchema: z.ZodType<Prisma.CompanyUnchecke
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -4647,6 +4649,7 @@ export const CompanyUpdateInputSchema: z.ZodType<Prisma.CompanyUpdateInput> = z.
   philosophies: z.lazy(() => CompanyPhilosophyUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -4669,6 +4672,7 @@ export const CompanyUncheckedUpdateInputSchema: z.ZodType<Prisma.CompanyUnchecke
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -4782,7 +4786,6 @@ export const CompanyYearlyInfoCreateInputSchema: z.ZodType<Prisma.CompanyYearlyI
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
   company: z.lazy(() => CompanyCreateNestedOneWithoutYearlyInfosInputSchema),
-  branches: z.lazy(() => BranchCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -4802,7 +4805,6 @@ export const CompanyYearlyInfoUncheckedCreateInputSchema: z.ZodType<Prisma.Compa
   isSideJobAllowed: z.boolean().optional().nullable(),
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -4822,7 +4824,6 @@ export const CompanyYearlyInfoUpdateInputSchema: z.ZodType<Prisma.CompanyYearlyI
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   company: z.lazy(() => CompanyUpdateOneRequiredWithoutYearlyInfosNestedInputSchema).optional(),
-  branches: z.lazy(() => BranchUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -4842,7 +4843,6 @@ export const CompanyYearlyInfoUncheckedUpdateInputSchema: z.ZodType<Prisma.Compa
   isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -4892,30 +4892,30 @@ export const CompanyYearlyInfoUncheckedUpdateManyInputSchema: z.ZodType<Prisma.C
 export const BranchCreateInputSchema: z.ZodType<Prisma.BranchCreateInput> = z.strictObject({
   id: z.cuid().optional(),
   address: z.string(),
-  yearlyInfo: z.lazy(() => CompanyYearlyInfoCreateNestedOneWithoutBranchesInputSchema).optional(),
+  company: z.lazy(() => CompanyCreateNestedOneWithoutBranchesInputSchema),
 });
 
 export const BranchUncheckedCreateInputSchema: z.ZodType<Prisma.BranchUncheckedCreateInput> = z.strictObject({
   id: z.cuid().optional(),
-  yearlyInfoId: z.string().optional().nullable(),
+  companyId: z.string(),
   address: z.string(),
 });
 
 export const BranchUpdateInputSchema: z.ZodType<Prisma.BranchUpdateInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  yearlyInfo: z.lazy(() => CompanyYearlyInfoUpdateOneWithoutBranchesNestedInputSchema).optional(),
+  company: z.lazy(() => CompanyUpdateOneRequiredWithoutBranchesNestedInputSchema).optional(),
 });
 
 export const BranchUncheckedUpdateInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  yearlyInfoId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  companyId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 });
 
 export const BranchCreateManyInputSchema: z.ZodType<Prisma.BranchCreateManyInput> = z.strictObject({
   id: z.cuid().optional(),
-  yearlyInfoId: z.string().optional().nullable(),
+  companyId: z.string(),
   address: z.string(),
 });
 
@@ -4926,7 +4926,7 @@ export const BranchUpdateManyMutationInputSchema: z.ZodType<Prisma.BranchUpdateM
 
 export const BranchUncheckedUpdateManyInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateManyInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  yearlyInfoId: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  companyId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 });
 
@@ -6752,6 +6752,12 @@ export const CompanyPhilosophyListRelationFilterSchema: z.ZodType<Prisma.Company
   none: z.lazy(() => CompanyPhilosophyWhereInputSchema).optional(),
 });
 
+export const BranchListRelationFilterSchema: z.ZodType<Prisma.BranchListRelationFilter> = z.strictObject({
+  every: z.lazy(() => BranchWhereInputSchema).optional(),
+  some: z.lazy(() => BranchWhereInputSchema).optional(),
+  none: z.lazy(() => BranchWhereInputSchema).optional(),
+});
+
 export const CompanyAxisMatchingListRelationFilterSchema: z.ZodType<Prisma.CompanyAxisMatchingListRelationFilter> = z.strictObject({
   every: z.lazy(() => CompanyAxisMatchingWhereInputSchema).optional(),
   some: z.lazy(() => CompanyAxisMatchingWhereInputSchema).optional(),
@@ -6767,6 +6773,10 @@ export const CompanyYearlyInfoOrderByRelationAggregateInputSchema: z.ZodType<Pri
 });
 
 export const CompanyPhilosophyOrderByRelationAggregateInputSchema: z.ZodType<Prisma.CompanyPhilosophyOrderByRelationAggregateInput> = z.strictObject({
+  _count: z.lazy(() => SortOrderSchema).optional(),
+});
+
+export const BranchOrderByRelationAggregateInputSchema: z.ZodType<Prisma.BranchOrderByRelationAggregateInput> = z.strictObject({
   _count: z.lazy(() => SortOrderSchema).optional(),
 });
 
@@ -6925,12 +6935,6 @@ export const CompanyScalarRelationFilterSchema: z.ZodType<Prisma.CompanyScalarRe
   isNot: z.lazy(() => CompanyWhereInputSchema).optional(),
 });
 
-export const BranchListRelationFilterSchema: z.ZodType<Prisma.BranchListRelationFilter> = z.strictObject({
-  every: z.lazy(() => BranchWhereInputSchema).optional(),
-  some: z.lazy(() => BranchWhereInputSchema).optional(),
-  none: z.lazy(() => BranchWhereInputSchema).optional(),
-});
-
 export const JobPostingListRelationFilterSchema: z.ZodType<Prisma.JobPostingListRelationFilter> = z.strictObject({
   every: z.lazy(() => JobPostingWhereInputSchema).optional(),
   some: z.lazy(() => JobPostingWhereInputSchema).optional(),
@@ -6965,10 +6969,6 @@ export const TrainingSystemListRelationFilterSchema: z.ZodType<Prisma.TrainingSy
   every: z.lazy(() => TrainingSystemWhereInputSchema).optional(),
   some: z.lazy(() => TrainingSystemWhereInputSchema).optional(),
   none: z.lazy(() => TrainingSystemWhereInputSchema).optional(),
-});
-
-export const BranchOrderByRelationAggregateInputSchema: z.ZodType<Prisma.BranchOrderByRelationAggregateInput> = z.strictObject({
-  _count: z.lazy(() => SortOrderSchema).optional(),
 });
 
 export const JobPostingOrderByRelationAggregateInputSchema: z.ZodType<Prisma.JobPostingOrderByRelationAggregateInput> = z.strictObject({
@@ -7052,26 +7052,21 @@ export const BoolNullableWithAggregatesFilterSchema: z.ZodType<Prisma.BoolNullab
   _max: z.lazy(() => NestedBoolNullableFilterSchema).optional(),
 });
 
-export const CompanyYearlyInfoNullableScalarRelationFilterSchema: z.ZodType<Prisma.CompanyYearlyInfoNullableScalarRelationFilter> = z.strictObject({
-  is: z.lazy(() => CompanyYearlyInfoWhereInputSchema).optional().nullable(),
-  isNot: z.lazy(() => CompanyYearlyInfoWhereInputSchema).optional().nullable(),
-});
-
 export const BranchCountOrderByAggregateInputSchema: z.ZodType<Prisma.BranchCountOrderByAggregateInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
-  yearlyInfoId: z.lazy(() => SortOrderSchema).optional(),
+  companyId: z.lazy(() => SortOrderSchema).optional(),
   address: z.lazy(() => SortOrderSchema).optional(),
 });
 
 export const BranchMaxOrderByAggregateInputSchema: z.ZodType<Prisma.BranchMaxOrderByAggregateInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
-  yearlyInfoId: z.lazy(() => SortOrderSchema).optional(),
+  companyId: z.lazy(() => SortOrderSchema).optional(),
   address: z.lazy(() => SortOrderSchema).optional(),
 });
 
 export const BranchMinOrderByAggregateInputSchema: z.ZodType<Prisma.BranchMinOrderByAggregateInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
-  yearlyInfoId: z.lazy(() => SortOrderSchema).optional(),
+  companyId: z.lazy(() => SortOrderSchema).optional(),
   address: z.lazy(() => SortOrderSchema).optional(),
 });
 
@@ -8509,6 +8504,13 @@ export const IndustryCreateNestedManyWithoutCompaniesInputSchema: z.ZodType<Pris
   connect: z.union([ z.lazy(() => IndustryWhereUniqueInputSchema), z.lazy(() => IndustryWhereUniqueInputSchema).array() ]).optional(),
 });
 
+export const BranchCreateNestedManyWithoutCompanyInputSchema: z.ZodType<Prisma.BranchCreateNestedManyWithoutCompanyInput> = z.strictObject({
+  create: z.union([ z.lazy(() => BranchCreateWithoutCompanyInputSchema), z.lazy(() => BranchCreateWithoutCompanyInputSchema).array(), z.lazy(() => BranchUncheckedCreateWithoutCompanyInputSchema), z.lazy(() => BranchUncheckedCreateWithoutCompanyInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => BranchCreateOrConnectWithoutCompanyInputSchema), z.lazy(() => BranchCreateOrConnectWithoutCompanyInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => BranchCreateManyCompanyInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
+});
+
 export const CompanyAxisMatchingCreateNestedManyWithoutCompanyInputSchema: z.ZodType<Prisma.CompanyAxisMatchingCreateNestedManyWithoutCompanyInput> = z.strictObject({
   create: z.union([ z.lazy(() => CompanyAxisMatchingCreateWithoutCompanyInputSchema), z.lazy(() => CompanyAxisMatchingCreateWithoutCompanyInputSchema).array(), z.lazy(() => CompanyAxisMatchingUncheckedCreateWithoutCompanyInputSchema), z.lazy(() => CompanyAxisMatchingUncheckedCreateWithoutCompanyInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => CompanyAxisMatchingCreateOrConnectWithoutCompanyInputSchema), z.lazy(() => CompanyAxisMatchingCreateOrConnectWithoutCompanyInputSchema).array() ]).optional(),
@@ -8547,6 +8549,13 @@ export const IndustryUncheckedCreateNestedManyWithoutCompaniesInputSchema: z.Zod
   create: z.union([ z.lazy(() => IndustryCreateWithoutCompaniesInputSchema), z.lazy(() => IndustryCreateWithoutCompaniesInputSchema).array(), z.lazy(() => IndustryUncheckedCreateWithoutCompaniesInputSchema), z.lazy(() => IndustryUncheckedCreateWithoutCompaniesInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => IndustryCreateOrConnectWithoutCompaniesInputSchema), z.lazy(() => IndustryCreateOrConnectWithoutCompaniesInputSchema).array() ]).optional(),
   connect: z.union([ z.lazy(() => IndustryWhereUniqueInputSchema), z.lazy(() => IndustryWhereUniqueInputSchema).array() ]).optional(),
+});
+
+export const BranchUncheckedCreateNestedManyWithoutCompanyInputSchema: z.ZodType<Prisma.BranchUncheckedCreateNestedManyWithoutCompanyInput> = z.strictObject({
+  create: z.union([ z.lazy(() => BranchCreateWithoutCompanyInputSchema), z.lazy(() => BranchCreateWithoutCompanyInputSchema).array(), z.lazy(() => BranchUncheckedCreateWithoutCompanyInputSchema), z.lazy(() => BranchUncheckedCreateWithoutCompanyInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => BranchCreateOrConnectWithoutCompanyInputSchema), z.lazy(() => BranchCreateOrConnectWithoutCompanyInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => BranchCreateManyCompanyInputEnvelopeSchema).optional(),
+  connect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
 });
 
 export const CompanyAxisMatchingUncheckedCreateNestedManyWithoutCompanyInputSchema: z.ZodType<Prisma.CompanyAxisMatchingUncheckedCreateNestedManyWithoutCompanyInput> = z.strictObject({
@@ -8652,6 +8661,20 @@ export const IndustryUpdateManyWithoutCompaniesNestedInputSchema: z.ZodType<Pris
   deleteMany: z.union([ z.lazy(() => IndustryScalarWhereInputSchema), z.lazy(() => IndustryScalarWhereInputSchema).array() ]).optional(),
 });
 
+export const BranchUpdateManyWithoutCompanyNestedInputSchema: z.ZodType<Prisma.BranchUpdateManyWithoutCompanyNestedInput> = z.strictObject({
+  create: z.union([ z.lazy(() => BranchCreateWithoutCompanyInputSchema), z.lazy(() => BranchCreateWithoutCompanyInputSchema).array(), z.lazy(() => BranchUncheckedCreateWithoutCompanyInputSchema), z.lazy(() => BranchUncheckedCreateWithoutCompanyInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => BranchCreateOrConnectWithoutCompanyInputSchema), z.lazy(() => BranchCreateOrConnectWithoutCompanyInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => BranchUpsertWithWhereUniqueWithoutCompanyInputSchema), z.lazy(() => BranchUpsertWithWhereUniqueWithoutCompanyInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => BranchCreateManyCompanyInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => BranchUpdateWithWhereUniqueWithoutCompanyInputSchema), z.lazy(() => BranchUpdateWithWhereUniqueWithoutCompanyInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => BranchUpdateManyWithWhereWithoutCompanyInputSchema), z.lazy(() => BranchUpdateManyWithWhereWithoutCompanyInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => BranchScalarWhereInputSchema), z.lazy(() => BranchScalarWhereInputSchema).array() ]).optional(),
+});
+
 export const CompanyAxisMatchingUpdateManyWithoutCompanyNestedInputSchema: z.ZodType<Prisma.CompanyAxisMatchingUpdateManyWithoutCompanyNestedInput> = z.strictObject({
   create: z.union([ z.lazy(() => CompanyAxisMatchingCreateWithoutCompanyInputSchema), z.lazy(() => CompanyAxisMatchingCreateWithoutCompanyInputSchema).array(), z.lazy(() => CompanyAxisMatchingUncheckedCreateWithoutCompanyInputSchema), z.lazy(() => CompanyAxisMatchingUncheckedCreateWithoutCompanyInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => CompanyAxisMatchingCreateOrConnectWithoutCompanyInputSchema), z.lazy(() => CompanyAxisMatchingCreateOrConnectWithoutCompanyInputSchema).array() ]).optional(),
@@ -8734,6 +8757,20 @@ export const IndustryUncheckedUpdateManyWithoutCompaniesNestedInputSchema: z.Zod
   deleteMany: z.union([ z.lazy(() => IndustryScalarWhereInputSchema), z.lazy(() => IndustryScalarWhereInputSchema).array() ]).optional(),
 });
 
+export const BranchUncheckedUpdateManyWithoutCompanyNestedInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateManyWithoutCompanyNestedInput> = z.strictObject({
+  create: z.union([ z.lazy(() => BranchCreateWithoutCompanyInputSchema), z.lazy(() => BranchCreateWithoutCompanyInputSchema).array(), z.lazy(() => BranchUncheckedCreateWithoutCompanyInputSchema), z.lazy(() => BranchUncheckedCreateWithoutCompanyInputSchema).array() ]).optional(),
+  connectOrCreate: z.union([ z.lazy(() => BranchCreateOrConnectWithoutCompanyInputSchema), z.lazy(() => BranchCreateOrConnectWithoutCompanyInputSchema).array() ]).optional(),
+  upsert: z.union([ z.lazy(() => BranchUpsertWithWhereUniqueWithoutCompanyInputSchema), z.lazy(() => BranchUpsertWithWhereUniqueWithoutCompanyInputSchema).array() ]).optional(),
+  createMany: z.lazy(() => BranchCreateManyCompanyInputEnvelopeSchema).optional(),
+  set: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
+  disconnect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
+  delete: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
+  connect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
+  update: z.union([ z.lazy(() => BranchUpdateWithWhereUniqueWithoutCompanyInputSchema), z.lazy(() => BranchUpdateWithWhereUniqueWithoutCompanyInputSchema).array() ]).optional(),
+  updateMany: z.union([ z.lazy(() => BranchUpdateManyWithWhereWithoutCompanyInputSchema), z.lazy(() => BranchUpdateManyWithWhereWithoutCompanyInputSchema).array() ]).optional(),
+  deleteMany: z.union([ z.lazy(() => BranchScalarWhereInputSchema), z.lazy(() => BranchScalarWhereInputSchema).array() ]).optional(),
+});
+
 export const CompanyAxisMatchingUncheckedUpdateManyWithoutCompanyNestedInputSchema: z.ZodType<Prisma.CompanyAxisMatchingUncheckedUpdateManyWithoutCompanyNestedInput> = z.strictObject({
   create: z.union([ z.lazy(() => CompanyAxisMatchingCreateWithoutCompanyInputSchema), z.lazy(() => CompanyAxisMatchingCreateWithoutCompanyInputSchema).array(), z.lazy(() => CompanyAxisMatchingUncheckedCreateWithoutCompanyInputSchema), z.lazy(() => CompanyAxisMatchingUncheckedCreateWithoutCompanyInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => CompanyAxisMatchingCreateOrConnectWithoutCompanyInputSchema), z.lazy(() => CompanyAxisMatchingCreateOrConnectWithoutCompanyInputSchema).array() ]).optional(),
@@ -8808,13 +8845,6 @@ export const CompanyCreateNestedOneWithoutYearlyInfosInputSchema: z.ZodType<Pris
   connect: z.lazy(() => CompanyWhereUniqueInputSchema).optional(),
 });
 
-export const BranchCreateNestedManyWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchCreateNestedManyWithoutYearlyInfoInput> = z.strictObject({
-  create: z.union([ z.lazy(() => BranchCreateWithoutYearlyInfoInputSchema), z.lazy(() => BranchCreateWithoutYearlyInfoInputSchema).array(), z.lazy(() => BranchUncheckedCreateWithoutYearlyInfoInputSchema), z.lazy(() => BranchUncheckedCreateWithoutYearlyInfoInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => BranchCreateOrConnectWithoutYearlyInfoInputSchema), z.lazy(() => BranchCreateOrConnectWithoutYearlyInfoInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => BranchCreateManyYearlyInfoInputEnvelopeSchema).optional(),
-  connect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
-});
-
 export const JobPostingCreateNestedManyWithoutYearlyInfoInputSchema: z.ZodType<Prisma.JobPostingCreateNestedManyWithoutYearlyInfoInput> = z.strictObject({
   create: z.union([ z.lazy(() => JobPostingCreateWithoutYearlyInfoInputSchema), z.lazy(() => JobPostingCreateWithoutYearlyInfoInputSchema).array(), z.lazy(() => JobPostingUncheckedCreateWithoutYearlyInfoInputSchema), z.lazy(() => JobPostingUncheckedCreateWithoutYearlyInfoInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => JobPostingCreateOrConnectWithoutYearlyInfoInputSchema), z.lazy(() => JobPostingCreateOrConnectWithoutYearlyInfoInputSchema).array() ]).optional(),
@@ -8855,13 +8885,6 @@ export const TrainingSystemCreateNestedManyWithoutYearlyInfoInputSchema: z.ZodTy
   connectOrCreate: z.union([ z.lazy(() => TrainingSystemCreateOrConnectWithoutYearlyInfoInputSchema), z.lazy(() => TrainingSystemCreateOrConnectWithoutYearlyInfoInputSchema).array() ]).optional(),
   createMany: z.lazy(() => TrainingSystemCreateManyYearlyInfoInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TrainingSystemWhereUniqueInputSchema), z.lazy(() => TrainingSystemWhereUniqueInputSchema).array() ]).optional(),
-});
-
-export const BranchUncheckedCreateNestedManyWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchUncheckedCreateNestedManyWithoutYearlyInfoInput> = z.strictObject({
-  create: z.union([ z.lazy(() => BranchCreateWithoutYearlyInfoInputSchema), z.lazy(() => BranchCreateWithoutYearlyInfoInputSchema).array(), z.lazy(() => BranchUncheckedCreateWithoutYearlyInfoInputSchema), z.lazy(() => BranchUncheckedCreateWithoutYearlyInfoInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => BranchCreateOrConnectWithoutYearlyInfoInputSchema), z.lazy(() => BranchCreateOrConnectWithoutYearlyInfoInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => BranchCreateManyYearlyInfoInputEnvelopeSchema).optional(),
-  connect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
 });
 
 export const JobPostingUncheckedCreateNestedManyWithoutYearlyInfoInputSchema: z.ZodType<Prisma.JobPostingUncheckedCreateNestedManyWithoutYearlyInfoInput> = z.strictObject({
@@ -8916,20 +8939,6 @@ export const CompanyUpdateOneRequiredWithoutYearlyInfosNestedInputSchema: z.ZodT
   upsert: z.lazy(() => CompanyUpsertWithoutYearlyInfosInputSchema).optional(),
   connect: z.lazy(() => CompanyWhereUniqueInputSchema).optional(),
   update: z.union([ z.lazy(() => CompanyUpdateToOneWithWhereWithoutYearlyInfosInputSchema), z.lazy(() => CompanyUpdateWithoutYearlyInfosInputSchema), z.lazy(() => CompanyUncheckedUpdateWithoutYearlyInfosInputSchema) ]).optional(),
-});
-
-export const BranchUpdateManyWithoutYearlyInfoNestedInputSchema: z.ZodType<Prisma.BranchUpdateManyWithoutYearlyInfoNestedInput> = z.strictObject({
-  create: z.union([ z.lazy(() => BranchCreateWithoutYearlyInfoInputSchema), z.lazy(() => BranchCreateWithoutYearlyInfoInputSchema).array(), z.lazy(() => BranchUncheckedCreateWithoutYearlyInfoInputSchema), z.lazy(() => BranchUncheckedCreateWithoutYearlyInfoInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => BranchCreateOrConnectWithoutYearlyInfoInputSchema), z.lazy(() => BranchCreateOrConnectWithoutYearlyInfoInputSchema).array() ]).optional(),
-  upsert: z.union([ z.lazy(() => BranchUpsertWithWhereUniqueWithoutYearlyInfoInputSchema), z.lazy(() => BranchUpsertWithWhereUniqueWithoutYearlyInfoInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => BranchCreateManyYearlyInfoInputEnvelopeSchema).optional(),
-  set: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
-  disconnect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
-  delete: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
-  update: z.union([ z.lazy(() => BranchUpdateWithWhereUniqueWithoutYearlyInfoInputSchema), z.lazy(() => BranchUpdateWithWhereUniqueWithoutYearlyInfoInputSchema).array() ]).optional(),
-  updateMany: z.union([ z.lazy(() => BranchUpdateManyWithWhereWithoutYearlyInfoInputSchema), z.lazy(() => BranchUpdateManyWithWhereWithoutYearlyInfoInputSchema).array() ]).optional(),
-  deleteMany: z.union([ z.lazy(() => BranchScalarWhereInputSchema), z.lazy(() => BranchScalarWhereInputSchema).array() ]).optional(),
 });
 
 export const JobPostingUpdateManyWithoutYearlyInfoNestedInputSchema: z.ZodType<Prisma.JobPostingUpdateManyWithoutYearlyInfoNestedInput> = z.strictObject({
@@ -9016,20 +9025,6 @@ export const TrainingSystemUpdateManyWithoutYearlyInfoNestedInputSchema: z.ZodTy
   deleteMany: z.union([ z.lazy(() => TrainingSystemScalarWhereInputSchema), z.lazy(() => TrainingSystemScalarWhereInputSchema).array() ]).optional(),
 });
 
-export const BranchUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateManyWithoutYearlyInfoNestedInput> = z.strictObject({
-  create: z.union([ z.lazy(() => BranchCreateWithoutYearlyInfoInputSchema), z.lazy(() => BranchCreateWithoutYearlyInfoInputSchema).array(), z.lazy(() => BranchUncheckedCreateWithoutYearlyInfoInputSchema), z.lazy(() => BranchUncheckedCreateWithoutYearlyInfoInputSchema).array() ]).optional(),
-  connectOrCreate: z.union([ z.lazy(() => BranchCreateOrConnectWithoutYearlyInfoInputSchema), z.lazy(() => BranchCreateOrConnectWithoutYearlyInfoInputSchema).array() ]).optional(),
-  upsert: z.union([ z.lazy(() => BranchUpsertWithWhereUniqueWithoutYearlyInfoInputSchema), z.lazy(() => BranchUpsertWithWhereUniqueWithoutYearlyInfoInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => BranchCreateManyYearlyInfoInputEnvelopeSchema).optional(),
-  set: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
-  disconnect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
-  delete: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
-  connect: z.union([ z.lazy(() => BranchWhereUniqueInputSchema), z.lazy(() => BranchWhereUniqueInputSchema).array() ]).optional(),
-  update: z.union([ z.lazy(() => BranchUpdateWithWhereUniqueWithoutYearlyInfoInputSchema), z.lazy(() => BranchUpdateWithWhereUniqueWithoutYearlyInfoInputSchema).array() ]).optional(),
-  updateMany: z.union([ z.lazy(() => BranchUpdateManyWithWhereWithoutYearlyInfoInputSchema), z.lazy(() => BranchUpdateManyWithWhereWithoutYearlyInfoInputSchema).array() ]).optional(),
-  deleteMany: z.union([ z.lazy(() => BranchScalarWhereInputSchema), z.lazy(() => BranchScalarWhereInputSchema).array() ]).optional(),
-});
-
 export const JobPostingUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema: z.ZodType<Prisma.JobPostingUncheckedUpdateManyWithoutYearlyInfoNestedInput> = z.strictObject({
   create: z.union([ z.lazy(() => JobPostingCreateWithoutYearlyInfoInputSchema), z.lazy(() => JobPostingCreateWithoutYearlyInfoInputSchema).array(), z.lazy(() => JobPostingUncheckedCreateWithoutYearlyInfoInputSchema), z.lazy(() => JobPostingUncheckedCreateWithoutYearlyInfoInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => JobPostingCreateOrConnectWithoutYearlyInfoInputSchema), z.lazy(() => JobPostingCreateOrConnectWithoutYearlyInfoInputSchema).array() ]).optional(),
@@ -9114,20 +9109,18 @@ export const TrainingSystemUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema
   deleteMany: z.union([ z.lazy(() => TrainingSystemScalarWhereInputSchema), z.lazy(() => TrainingSystemScalarWhereInputSchema).array() ]).optional(),
 });
 
-export const CompanyYearlyInfoCreateNestedOneWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyYearlyInfoCreateNestedOneWithoutBranchesInput> = z.strictObject({
-  create: z.union([ z.lazy(() => CompanyYearlyInfoCreateWithoutBranchesInputSchema), z.lazy(() => CompanyYearlyInfoUncheckedCreateWithoutBranchesInputSchema) ]).optional(),
-  connectOrCreate: z.lazy(() => CompanyYearlyInfoCreateOrConnectWithoutBranchesInputSchema).optional(),
-  connect: z.lazy(() => CompanyYearlyInfoWhereUniqueInputSchema).optional(),
+export const CompanyCreateNestedOneWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyCreateNestedOneWithoutBranchesInput> = z.strictObject({
+  create: z.union([ z.lazy(() => CompanyCreateWithoutBranchesInputSchema), z.lazy(() => CompanyUncheckedCreateWithoutBranchesInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => CompanyCreateOrConnectWithoutBranchesInputSchema).optional(),
+  connect: z.lazy(() => CompanyWhereUniqueInputSchema).optional(),
 });
 
-export const CompanyYearlyInfoUpdateOneWithoutBranchesNestedInputSchema: z.ZodType<Prisma.CompanyYearlyInfoUpdateOneWithoutBranchesNestedInput> = z.strictObject({
-  create: z.union([ z.lazy(() => CompanyYearlyInfoCreateWithoutBranchesInputSchema), z.lazy(() => CompanyYearlyInfoUncheckedCreateWithoutBranchesInputSchema) ]).optional(),
-  connectOrCreate: z.lazy(() => CompanyYearlyInfoCreateOrConnectWithoutBranchesInputSchema).optional(),
-  upsert: z.lazy(() => CompanyYearlyInfoUpsertWithoutBranchesInputSchema).optional(),
-  disconnect: z.union([ z.boolean(),z.lazy(() => CompanyYearlyInfoWhereInputSchema) ]).optional(),
-  delete: z.union([ z.boolean(),z.lazy(() => CompanyYearlyInfoWhereInputSchema) ]).optional(),
-  connect: z.lazy(() => CompanyYearlyInfoWhereUniqueInputSchema).optional(),
-  update: z.union([ z.lazy(() => CompanyYearlyInfoUpdateToOneWithWhereWithoutBranchesInputSchema), z.lazy(() => CompanyYearlyInfoUpdateWithoutBranchesInputSchema), z.lazy(() => CompanyYearlyInfoUncheckedUpdateWithoutBranchesInputSchema) ]).optional(),
+export const CompanyUpdateOneRequiredWithoutBranchesNestedInputSchema: z.ZodType<Prisma.CompanyUpdateOneRequiredWithoutBranchesNestedInput> = z.strictObject({
+  create: z.union([ z.lazy(() => CompanyCreateWithoutBranchesInputSchema), z.lazy(() => CompanyUncheckedCreateWithoutBranchesInputSchema) ]).optional(),
+  connectOrCreate: z.lazy(() => CompanyCreateOrConnectWithoutBranchesInputSchema).optional(),
+  upsert: z.lazy(() => CompanyUpsertWithoutBranchesInputSchema).optional(),
+  connect: z.lazy(() => CompanyWhereUniqueInputSchema).optional(),
+  update: z.union([ z.lazy(() => CompanyUpdateToOneWithWhereWithoutBranchesInputSchema), z.lazy(() => CompanyUpdateWithoutBranchesInputSchema), z.lazy(() => CompanyUncheckedUpdateWithoutBranchesInputSchema) ]).optional(),
 });
 
 export const CompanyYearlyInfoCreateNestedOneWithoutJobPostingsInputSchema: z.ZodType<Prisma.CompanyYearlyInfoCreateNestedOneWithoutJobPostingsInput> = z.strictObject({
@@ -10409,6 +10402,7 @@ export const CompanyCreateWithoutUserInputSchema: z.ZodType<Prisma.CompanyCreate
   philosophies: z.lazy(() => CompanyPhilosophyCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -10430,6 +10424,7 @@ export const CompanyUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.Comp
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -11330,7 +11325,6 @@ export const CompanyYearlyInfoCreateWithoutCompanyInputSchema: z.ZodType<Prisma.
   isSideJobAllowed: z.boolean().optional().nullable(),
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
-  branches: z.lazy(() => BranchCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -11349,7 +11343,6 @@ export const CompanyYearlyInfoUncheckedCreateWithoutCompanyInputSchema: z.ZodTyp
   isSideJobAllowed: z.boolean().optional().nullable(),
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -11422,6 +11415,26 @@ export const IndustryUncheckedCreateWithoutCompaniesInputSchema: z.ZodType<Prism
 export const IndustryCreateOrConnectWithoutCompaniesInputSchema: z.ZodType<Prisma.IndustryCreateOrConnectWithoutCompaniesInput> = z.strictObject({
   where: z.lazy(() => IndustryWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => IndustryCreateWithoutCompaniesInputSchema), z.lazy(() => IndustryUncheckedCreateWithoutCompaniesInputSchema) ]),
+});
+
+export const BranchCreateWithoutCompanyInputSchema: z.ZodType<Prisma.BranchCreateWithoutCompanyInput> = z.strictObject({
+  id: z.cuid().optional(),
+  address: z.string(),
+});
+
+export const BranchUncheckedCreateWithoutCompanyInputSchema: z.ZodType<Prisma.BranchUncheckedCreateWithoutCompanyInput> = z.strictObject({
+  id: z.cuid().optional(),
+  address: z.string(),
+});
+
+export const BranchCreateOrConnectWithoutCompanyInputSchema: z.ZodType<Prisma.BranchCreateOrConnectWithoutCompanyInput> = z.strictObject({
+  where: z.lazy(() => BranchWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => BranchCreateWithoutCompanyInputSchema), z.lazy(() => BranchUncheckedCreateWithoutCompanyInputSchema) ]),
+});
+
+export const BranchCreateManyCompanyInputEnvelopeSchema: z.ZodType<Prisma.BranchCreateManyCompanyInputEnvelope> = z.strictObject({
+  data: z.union([ z.lazy(() => BranchCreateManyCompanyInputSchema), z.lazy(() => BranchCreateManyCompanyInputSchema).array() ]),
+  skipDuplicates: z.boolean().optional(),
 });
 
 export const CompanyAxisMatchingCreateWithoutCompanyInputSchema: z.ZodType<Prisma.CompanyAxisMatchingCreateWithoutCompanyInput> = z.strictObject({
@@ -11612,6 +11625,31 @@ export const IndustryUpdateManyWithWhereWithoutCompaniesInputSchema: z.ZodType<P
   data: z.union([ z.lazy(() => IndustryUpdateManyMutationInputSchema), z.lazy(() => IndustryUncheckedUpdateManyWithoutCompaniesInputSchema) ]),
 });
 
+export const BranchUpsertWithWhereUniqueWithoutCompanyInputSchema: z.ZodType<Prisma.BranchUpsertWithWhereUniqueWithoutCompanyInput> = z.strictObject({
+  where: z.lazy(() => BranchWhereUniqueInputSchema),
+  update: z.union([ z.lazy(() => BranchUpdateWithoutCompanyInputSchema), z.lazy(() => BranchUncheckedUpdateWithoutCompanyInputSchema) ]),
+  create: z.union([ z.lazy(() => BranchCreateWithoutCompanyInputSchema), z.lazy(() => BranchUncheckedCreateWithoutCompanyInputSchema) ]),
+});
+
+export const BranchUpdateWithWhereUniqueWithoutCompanyInputSchema: z.ZodType<Prisma.BranchUpdateWithWhereUniqueWithoutCompanyInput> = z.strictObject({
+  where: z.lazy(() => BranchWhereUniqueInputSchema),
+  data: z.union([ z.lazy(() => BranchUpdateWithoutCompanyInputSchema), z.lazy(() => BranchUncheckedUpdateWithoutCompanyInputSchema) ]),
+});
+
+export const BranchUpdateManyWithWhereWithoutCompanyInputSchema: z.ZodType<Prisma.BranchUpdateManyWithWhereWithoutCompanyInput> = z.strictObject({
+  where: z.lazy(() => BranchScalarWhereInputSchema),
+  data: z.union([ z.lazy(() => BranchUpdateManyMutationInputSchema), z.lazy(() => BranchUncheckedUpdateManyWithoutCompanyInputSchema) ]),
+});
+
+export const BranchScalarWhereInputSchema: z.ZodType<Prisma.BranchScalarWhereInput> = z.strictObject({
+  AND: z.union([ z.lazy(() => BranchScalarWhereInputSchema), z.lazy(() => BranchScalarWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => BranchScalarWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => BranchScalarWhereInputSchema), z.lazy(() => BranchScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  companyId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+  address: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
+});
+
 export const CompanyAxisMatchingUpsertWithWhereUniqueWithoutCompanyInputSchema: z.ZodType<Prisma.CompanyAxisMatchingUpsertWithWhereUniqueWithoutCompanyInput> = z.strictObject({
   where: z.lazy(() => CompanyAxisMatchingWhereUniqueInputSchema),
   update: z.union([ z.lazy(() => CompanyAxisMatchingUpdateWithoutCompanyInputSchema), z.lazy(() => CompanyAxisMatchingUncheckedUpdateWithoutCompanyInputSchema) ]),
@@ -11702,6 +11740,7 @@ export const CompanyCreateWithoutIndustriesInputSchema: z.ZodType<Prisma.Company
   yearlyInfos: z.lazy(() => CompanyYearlyInfoCreateNestedManyWithoutCompanyInputSchema).optional(),
   philosophies: z.lazy(() => CompanyPhilosophyCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -11723,6 +11762,7 @@ export const CompanyUncheckedCreateWithoutIndustriesInputSchema: z.ZodType<Prism
   yearlyInfos: z.lazy(() => CompanyYearlyInfoUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -11818,6 +11858,7 @@ export const CompanyCreateWithoutYearlyInfosInputSchema: z.ZodType<Prisma.Compan
   philosophies: z.lazy(() => CompanyPhilosophyCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -11839,32 +11880,13 @@ export const CompanyUncheckedCreateWithoutYearlyInfosInputSchema: z.ZodType<Pris
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
 export const CompanyCreateOrConnectWithoutYearlyInfosInputSchema: z.ZodType<Prisma.CompanyCreateOrConnectWithoutYearlyInfosInput> = z.strictObject({
   where: z.lazy(() => CompanyWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => CompanyCreateWithoutYearlyInfosInputSchema), z.lazy(() => CompanyUncheckedCreateWithoutYearlyInfosInputSchema) ]),
-});
-
-export const BranchCreateWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchCreateWithoutYearlyInfoInput> = z.strictObject({
-  id: z.cuid().optional(),
-  address: z.string(),
-});
-
-export const BranchUncheckedCreateWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchUncheckedCreateWithoutYearlyInfoInput> = z.strictObject({
-  id: z.cuid().optional(),
-  address: z.string(),
-});
-
-export const BranchCreateOrConnectWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchCreateOrConnectWithoutYearlyInfoInput> = z.strictObject({
-  where: z.lazy(() => BranchWhereUniqueInputSchema),
-  create: z.union([ z.lazy(() => BranchCreateWithoutYearlyInfoInputSchema), z.lazy(() => BranchUncheckedCreateWithoutYearlyInfoInputSchema) ]),
-});
-
-export const BranchCreateManyYearlyInfoInputEnvelopeSchema: z.ZodType<Prisma.BranchCreateManyYearlyInfoInputEnvelope> = z.strictObject({
-  data: z.union([ z.lazy(() => BranchCreateManyYearlyInfoInputSchema), z.lazy(() => BranchCreateManyYearlyInfoInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional(),
 });
 
 export const JobPostingCreateWithoutYearlyInfoInputSchema: z.ZodType<Prisma.JobPostingCreateWithoutYearlyInfoInput> = z.strictObject({
@@ -12044,6 +12066,7 @@ export const CompanyUpdateWithoutYearlyInfosInputSchema: z.ZodType<Prisma.Compan
   philosophies: z.lazy(() => CompanyPhilosophyUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -12065,32 +12088,8 @@ export const CompanyUncheckedUpdateWithoutYearlyInfosInputSchema: z.ZodType<Pris
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
-});
-
-export const BranchUpsertWithWhereUniqueWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchUpsertWithWhereUniqueWithoutYearlyInfoInput> = z.strictObject({
-  where: z.lazy(() => BranchWhereUniqueInputSchema),
-  update: z.union([ z.lazy(() => BranchUpdateWithoutYearlyInfoInputSchema), z.lazy(() => BranchUncheckedUpdateWithoutYearlyInfoInputSchema) ]),
-  create: z.union([ z.lazy(() => BranchCreateWithoutYearlyInfoInputSchema), z.lazy(() => BranchUncheckedCreateWithoutYearlyInfoInputSchema) ]),
-});
-
-export const BranchUpdateWithWhereUniqueWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchUpdateWithWhereUniqueWithoutYearlyInfoInput> = z.strictObject({
-  where: z.lazy(() => BranchWhereUniqueInputSchema),
-  data: z.union([ z.lazy(() => BranchUpdateWithoutYearlyInfoInputSchema), z.lazy(() => BranchUncheckedUpdateWithoutYearlyInfoInputSchema) ]),
-});
-
-export const BranchUpdateManyWithWhereWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchUpdateManyWithWhereWithoutYearlyInfoInput> = z.strictObject({
-  where: z.lazy(() => BranchScalarWhereInputSchema),
-  data: z.union([ z.lazy(() => BranchUpdateManyMutationInputSchema), z.lazy(() => BranchUncheckedUpdateManyWithoutYearlyInfoInputSchema) ]),
-});
-
-export const BranchScalarWhereInputSchema: z.ZodType<Prisma.BranchScalarWhereInput> = z.strictObject({
-  AND: z.union([ z.lazy(() => BranchScalarWhereInputSchema), z.lazy(() => BranchScalarWhereInputSchema).array() ]).optional(),
-  OR: z.lazy(() => BranchScalarWhereInputSchema).array().optional(),
-  NOT: z.union([ z.lazy(() => BranchScalarWhereInputSchema), z.lazy(() => BranchScalarWhereInputSchema).array() ]).optional(),
-  id: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
-  yearlyInfoId: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
-  address: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
 });
 
 export const JobPostingUpsertWithWhereUniqueWithoutYearlyInfoInputSchema: z.ZodType<Prisma.JobPostingUpsertWithWhereUniqueWithoutYearlyInfoInput> = z.strictObject({
@@ -12253,96 +12252,108 @@ export const TrainingSystemScalarWhereInputSchema: z.ZodType<Prisma.TrainingSyst
   content: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
 });
 
-export const CompanyYearlyInfoCreateWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyYearlyInfoCreateWithoutBranchesInput> = z.strictObject({
+export const CompanyCreateWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyCreateWithoutBranchesInput> = z.strictObject({
   id: z.cuid().optional(),
-  recruitmentUrl: z.string().optional().nullable(),
-  dataDate: z.coerce.date(),
-  employeeCount: z.number().int().optional().nullable(),
-  representative: z.string().optional().nullable(),
-  revenue: z.bigint().optional().nullable(),
-  isSideJobAllowed: z.boolean().optional().nullable(),
-  hasShortTimeWork: z.boolean().optional().nullable(),
-  isDressFree: z.boolean().optional().nullable(),
-  company: z.lazy(() => CompanyCreateNestedOneWithoutYearlyInfosInputSchema),
-  jobPostings: z.lazy(() => JobPostingCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
-  contactPersons: z.lazy(() => ContactPersonCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
-  businessContents: z.lazy(() => BusinessContentCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
-  holidaySystems: z.lazy(() => HolidaySystemCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
-  welfares: z.lazy(() => WelfareCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
-  trainingSystems: z.lazy(() => TrainingSystemCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
+  name: z.string(),
+  establishedDate: z.coerce.date().optional().nullable(),
+  capital: z.bigint().optional().nullable(),
+  websiteUrl: z.string().optional().nullable(),
+  phoneNumber: z.string().optional().nullable(),
+  ratingScore: z.number().int().optional().nullable(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  aspirationLevel: z.number().int().optional().nullable(),
+  isFavorite: z.boolean().optional(),
+  viewCount: z.number().int().optional(),
+  user: z.lazy(() => UserCreateNestedOneWithoutCompaniesInputSchema),
+  memos: z.lazy(() => MemoCreateNestedManyWithoutCompanyInputSchema).optional(),
+  yearlyInfos: z.lazy(() => CompanyYearlyInfoCreateNestedManyWithoutCompanyInputSchema).optional(),
+  philosophies: z.lazy(() => CompanyPhilosophyCreateNestedManyWithoutCompanyInputSchema).optional(),
+  tags: z.lazy(() => TagCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  industries: z.lazy(() => IndustryCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  axisMatchings: z.lazy(() => CompanyAxisMatchingCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
-export const CompanyYearlyInfoUncheckedCreateWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyYearlyInfoUncheckedCreateWithoutBranchesInput> = z.strictObject({
+export const CompanyUncheckedCreateWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyUncheckedCreateWithoutBranchesInput> = z.strictObject({
   id: z.cuid().optional(),
-  companyId: z.string(),
-  recruitmentUrl: z.string().optional().nullable(),
-  dataDate: z.coerce.date(),
-  employeeCount: z.number().int().optional().nullable(),
-  representative: z.string().optional().nullable(),
-  revenue: z.bigint().optional().nullable(),
-  isSideJobAllowed: z.boolean().optional().nullable(),
-  hasShortTimeWork: z.boolean().optional().nullable(),
-  isDressFree: z.boolean().optional().nullable(),
-  jobPostings: z.lazy(() => JobPostingUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
-  contactPersons: z.lazy(() => ContactPersonUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
-  businessContents: z.lazy(() => BusinessContentUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
-  holidaySystems: z.lazy(() => HolidaySystemUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
-  welfares: z.lazy(() => WelfareUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
-  trainingSystems: z.lazy(() => TrainingSystemUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
+  userId: z.string(),
+  name: z.string(),
+  establishedDate: z.coerce.date().optional().nullable(),
+  capital: z.bigint().optional().nullable(),
+  websiteUrl: z.string().optional().nullable(),
+  phoneNumber: z.string().optional().nullable(),
+  ratingScore: z.number().int().optional().nullable(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  aspirationLevel: z.number().int().optional().nullable(),
+  isFavorite: z.boolean().optional(),
+  viewCount: z.number().int().optional(),
+  memos: z.lazy(() => MemoUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
+  yearlyInfos: z.lazy(() => CompanyYearlyInfoUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
+  philosophies: z.lazy(() => CompanyPhilosophyUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
+  tags: z.lazy(() => TagUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  industries: z.lazy(() => IndustryUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
-export const CompanyYearlyInfoCreateOrConnectWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyYearlyInfoCreateOrConnectWithoutBranchesInput> = z.strictObject({
-  where: z.lazy(() => CompanyYearlyInfoWhereUniqueInputSchema),
-  create: z.union([ z.lazy(() => CompanyYearlyInfoCreateWithoutBranchesInputSchema), z.lazy(() => CompanyYearlyInfoUncheckedCreateWithoutBranchesInputSchema) ]),
+export const CompanyCreateOrConnectWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyCreateOrConnectWithoutBranchesInput> = z.strictObject({
+  where: z.lazy(() => CompanyWhereUniqueInputSchema),
+  create: z.union([ z.lazy(() => CompanyCreateWithoutBranchesInputSchema), z.lazy(() => CompanyUncheckedCreateWithoutBranchesInputSchema) ]),
 });
 
-export const CompanyYearlyInfoUpsertWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyYearlyInfoUpsertWithoutBranchesInput> = z.strictObject({
-  update: z.union([ z.lazy(() => CompanyYearlyInfoUpdateWithoutBranchesInputSchema), z.lazy(() => CompanyYearlyInfoUncheckedUpdateWithoutBranchesInputSchema) ]),
-  create: z.union([ z.lazy(() => CompanyYearlyInfoCreateWithoutBranchesInputSchema), z.lazy(() => CompanyYearlyInfoUncheckedCreateWithoutBranchesInputSchema) ]),
-  where: z.lazy(() => CompanyYearlyInfoWhereInputSchema).optional(),
+export const CompanyUpsertWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyUpsertWithoutBranchesInput> = z.strictObject({
+  update: z.union([ z.lazy(() => CompanyUpdateWithoutBranchesInputSchema), z.lazy(() => CompanyUncheckedUpdateWithoutBranchesInputSchema) ]),
+  create: z.union([ z.lazy(() => CompanyCreateWithoutBranchesInputSchema), z.lazy(() => CompanyUncheckedCreateWithoutBranchesInputSchema) ]),
+  where: z.lazy(() => CompanyWhereInputSchema).optional(),
 });
 
-export const CompanyYearlyInfoUpdateToOneWithWhereWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyYearlyInfoUpdateToOneWithWhereWithoutBranchesInput> = z.strictObject({
-  where: z.lazy(() => CompanyYearlyInfoWhereInputSchema).optional(),
-  data: z.union([ z.lazy(() => CompanyYearlyInfoUpdateWithoutBranchesInputSchema), z.lazy(() => CompanyYearlyInfoUncheckedUpdateWithoutBranchesInputSchema) ]),
+export const CompanyUpdateToOneWithWhereWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyUpdateToOneWithWhereWithoutBranchesInput> = z.strictObject({
+  where: z.lazy(() => CompanyWhereInputSchema).optional(),
+  data: z.union([ z.lazy(() => CompanyUpdateWithoutBranchesInputSchema), z.lazy(() => CompanyUncheckedUpdateWithoutBranchesInputSchema) ]),
 });
 
-export const CompanyYearlyInfoUpdateWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyYearlyInfoUpdateWithoutBranchesInput> = z.strictObject({
+export const CompanyUpdateWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyUpdateWithoutBranchesInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  recruitmentUrl: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  dataDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  employeeCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  representative: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  revenue: z.union([ z.bigint(),z.lazy(() => NullableBigIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  company: z.lazy(() => CompanyUpdateOneRequiredWithoutYearlyInfosNestedInputSchema).optional(),
-  jobPostings: z.lazy(() => JobPostingUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
-  contactPersons: z.lazy(() => ContactPersonUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
-  businessContents: z.lazy(() => BusinessContentUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
-  holidaySystems: z.lazy(() => HolidaySystemUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
-  welfares: z.lazy(() => WelfareUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
-  trainingSystems: z.lazy(() => TrainingSystemUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  establishedDate: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  capital: z.union([ z.bigint(),z.lazy(() => NullableBigIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  websiteUrl: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  phoneNumber: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  ratingScore: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  aspirationLevel: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isFavorite: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  viewCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  user: z.lazy(() => UserUpdateOneRequiredWithoutCompaniesNestedInputSchema).optional(),
+  memos: z.lazy(() => MemoUpdateManyWithoutCompanyNestedInputSchema).optional(),
+  yearlyInfos: z.lazy(() => CompanyYearlyInfoUpdateManyWithoutCompanyNestedInputSchema).optional(),
+  philosophies: z.lazy(() => CompanyPhilosophyUpdateManyWithoutCompanyNestedInputSchema).optional(),
+  tags: z.lazy(() => TagUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  industries: z.lazy(() => IndustryUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  axisMatchings: z.lazy(() => CompanyAxisMatchingUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
-export const CompanyYearlyInfoUncheckedUpdateWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyYearlyInfoUncheckedUpdateWithoutBranchesInput> = z.strictObject({
+export const CompanyUncheckedUpdateWithoutBranchesInputSchema: z.ZodType<Prisma.CompanyUncheckedUpdateWithoutBranchesInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  companyId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  recruitmentUrl: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  dataDate: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  employeeCount: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  representative: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  revenue: z.union([ z.bigint(),z.lazy(() => NullableBigIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  jobPostings: z.lazy(() => JobPostingUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
-  contactPersons: z.lazy(() => ContactPersonUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
-  businessContents: z.lazy(() => BusinessContentUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
-  holidaySystems: z.lazy(() => HolidaySystemUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
-  welfares: z.lazy(() => WelfareUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
-  trainingSystems: z.lazy(() => TrainingSystemUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
+  userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  establishedDate: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  capital: z.union([ z.bigint(),z.lazy(() => NullableBigIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  websiteUrl: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  phoneNumber: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  ratingScore: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  aspirationLevel: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  isFavorite: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
+  viewCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  memos: z.lazy(() => MemoUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
+  yearlyInfos: z.lazy(() => CompanyYearlyInfoUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
+  philosophies: z.lazy(() => CompanyPhilosophyUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
+  tags: z.lazy(() => TagUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  industries: z.lazy(() => IndustryUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
 export const CompanyYearlyInfoCreateWithoutJobPostingsInputSchema: z.ZodType<Prisma.CompanyYearlyInfoCreateWithoutJobPostingsInput> = z.strictObject({
@@ -12356,7 +12367,6 @@ export const CompanyYearlyInfoCreateWithoutJobPostingsInputSchema: z.ZodType<Pri
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
   company: z.lazy(() => CompanyCreateNestedOneWithoutYearlyInfosInputSchema),
-  branches: z.lazy(() => BranchCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -12375,7 +12385,6 @@ export const CompanyYearlyInfoUncheckedCreateWithoutJobPostingsInputSchema: z.Zo
   isSideJobAllowed: z.boolean().optional().nullable(),
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -12557,7 +12566,6 @@ export const CompanyYearlyInfoUpdateWithoutJobPostingsInputSchema: z.ZodType<Pri
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   company: z.lazy(() => CompanyUpdateOneRequiredWithoutYearlyInfosNestedInputSchema).optional(),
-  branches: z.lazy(() => BranchUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -12576,7 +12584,6 @@ export const CompanyYearlyInfoUncheckedUpdateWithoutJobPostingsInputSchema: z.Zo
   isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -13007,6 +13014,7 @@ export const CompanyCreateWithoutMemosInputSchema: z.ZodType<Prisma.CompanyCreat
   philosophies: z.lazy(() => CompanyPhilosophyCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -13028,6 +13036,7 @@ export const CompanyUncheckedCreateWithoutMemosInputSchema: z.ZodType<Prisma.Com
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -13065,6 +13074,7 @@ export const CompanyUpdateWithoutMemosInputSchema: z.ZodType<Prisma.CompanyUpdat
   philosophies: z.lazy(() => CompanyPhilosophyUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -13086,6 +13096,7 @@ export const CompanyUncheckedUpdateWithoutMemosInputSchema: z.ZodType<Prisma.Com
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -13100,7 +13111,6 @@ export const CompanyYearlyInfoCreateWithoutContactPersonsInputSchema: z.ZodType<
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
   company: z.lazy(() => CompanyCreateNestedOneWithoutYearlyInfosInputSchema),
-  branches: z.lazy(() => BranchCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -13119,7 +13129,6 @@ export const CompanyYearlyInfoUncheckedCreateWithoutContactPersonsInputSchema: z
   isSideJobAllowed: z.boolean().optional().nullable(),
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -13154,7 +13163,6 @@ export const CompanyYearlyInfoUpdateWithoutContactPersonsInputSchema: z.ZodType<
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   company: z.lazy(() => CompanyUpdateOneRequiredWithoutYearlyInfosNestedInputSchema).optional(),
-  branches: z.lazy(() => BranchUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -13173,7 +13181,6 @@ export const CompanyYearlyInfoUncheckedUpdateWithoutContactPersonsInputSchema: z
   isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -13526,6 +13533,7 @@ export const CompanyCreateWithoutTagsInputSchema: z.ZodType<Prisma.CompanyCreate
   yearlyInfos: z.lazy(() => CompanyYearlyInfoCreateNestedManyWithoutCompanyInputSchema).optional(),
   philosophies: z.lazy(() => CompanyPhilosophyCreateNestedManyWithoutCompanyInputSchema).optional(),
   industries: z.lazy(() => IndustryCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -13547,6 +13555,7 @@ export const CompanyUncheckedCreateWithoutTagsInputSchema: z.ZodType<Prisma.Comp
   yearlyInfos: z.lazy(() => CompanyYearlyInfoUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -13779,6 +13788,7 @@ export const CompanyCreateWithoutAxisMatchingsInputSchema: z.ZodType<Prisma.Comp
   philosophies: z.lazy(() => CompanyPhilosophyCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
 export const CompanyUncheckedCreateWithoutAxisMatchingsInputSchema: z.ZodType<Prisma.CompanyUncheckedCreateWithoutAxisMatchingsInput> = z.strictObject({
@@ -13800,6 +13810,7 @@ export const CompanyUncheckedCreateWithoutAxisMatchingsInputSchema: z.ZodType<Pr
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
 export const CompanyCreateOrConnectWithoutAxisMatchingsInputSchema: z.ZodType<Prisma.CompanyCreateOrConnectWithoutAxisMatchingsInput> = z.strictObject({
@@ -13860,6 +13871,7 @@ export const CompanyUpdateWithoutAxisMatchingsInputSchema: z.ZodType<Prisma.Comp
   philosophies: z.lazy(() => CompanyPhilosophyUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
 export const CompanyUncheckedUpdateWithoutAxisMatchingsInputSchema: z.ZodType<Prisma.CompanyUncheckedUpdateWithoutAxisMatchingsInput> = z.strictObject({
@@ -13881,6 +13893,7 @@ export const CompanyUncheckedUpdateWithoutAxisMatchingsInputSchema: z.ZodType<Pr
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
 export const JobHuntingAxisUpsertWithoutMatchingsInputSchema: z.ZodType<Prisma.JobHuntingAxisUpsertWithoutMatchingsInput> = z.strictObject({
@@ -14323,6 +14336,7 @@ export const CompanyCreateWithoutPhilosophiesInputSchema: z.ZodType<Prisma.Compa
   yearlyInfos: z.lazy(() => CompanyYearlyInfoCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -14344,6 +14358,7 @@ export const CompanyUncheckedCreateWithoutPhilosophiesInputSchema: z.ZodType<Pri
   yearlyInfos: z.lazy(() => CompanyYearlyInfoUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedCreateNestedManyWithoutCompaniesInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedCreateNestedManyWithoutCompanyInputSchema).optional(),
 });
 
@@ -14381,6 +14396,7 @@ export const CompanyUpdateWithoutPhilosophiesInputSchema: z.ZodType<Prisma.Compa
   yearlyInfos: z.lazy(() => CompanyYearlyInfoUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -14402,6 +14418,7 @@ export const CompanyUncheckedUpdateWithoutPhilosophiesInputSchema: z.ZodType<Pri
   yearlyInfos: z.lazy(() => CompanyYearlyInfoUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -14416,7 +14433,6 @@ export const CompanyYearlyInfoCreateWithoutBusinessContentsInputSchema: z.ZodTyp
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
   company: z.lazy(() => CompanyCreateNestedOneWithoutYearlyInfosInputSchema),
-  branches: z.lazy(() => BranchCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -14435,7 +14451,6 @@ export const CompanyYearlyInfoUncheckedCreateWithoutBusinessContentsInputSchema:
   isSideJobAllowed: z.boolean().optional().nullable(),
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -14470,7 +14485,6 @@ export const CompanyYearlyInfoUpdateWithoutBusinessContentsInputSchema: z.ZodTyp
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   company: z.lazy(() => CompanyUpdateOneRequiredWithoutYearlyInfosNestedInputSchema).optional(),
-  branches: z.lazy(() => BranchUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -14489,7 +14503,6 @@ export const CompanyYearlyInfoUncheckedUpdateWithoutBusinessContentsInputSchema:
   isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   holidaySystems: z.lazy(() => HolidaySystemUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -14838,7 +14851,6 @@ export const CompanyYearlyInfoCreateWithoutHolidaySystemsInputSchema: z.ZodType<
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
   company: z.lazy(() => CompanyCreateNestedOneWithoutYearlyInfosInputSchema),
-  branches: z.lazy(() => BranchCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -14857,7 +14869,6 @@ export const CompanyYearlyInfoUncheckedCreateWithoutHolidaySystemsInputSchema: z
   isSideJobAllowed: z.boolean().optional().nullable(),
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -14892,7 +14903,6 @@ export const CompanyYearlyInfoUpdateWithoutHolidaySystemsInputSchema: z.ZodType<
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   company: z.lazy(() => CompanyUpdateOneRequiredWithoutYearlyInfosNestedInputSchema).optional(),
-  branches: z.lazy(() => BranchUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -14911,7 +14921,6 @@ export const CompanyYearlyInfoUncheckedUpdateWithoutHolidaySystemsInputSchema: z
   isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -14930,7 +14939,6 @@ export const CompanyYearlyInfoCreateWithoutWelfaresInputSchema: z.ZodType<Prisma
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
   company: z.lazy(() => CompanyCreateNestedOneWithoutYearlyInfosInputSchema),
-  branches: z.lazy(() => BranchCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -14949,7 +14957,6 @@ export const CompanyYearlyInfoUncheckedCreateWithoutWelfaresInputSchema: z.ZodTy
   isSideJobAllowed: z.boolean().optional().nullable(),
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -14984,7 +14991,6 @@ export const CompanyYearlyInfoUpdateWithoutWelfaresInputSchema: z.ZodType<Prisma
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   company: z.lazy(() => CompanyUpdateOneRequiredWithoutYearlyInfosNestedInputSchema).optional(),
-  branches: z.lazy(() => BranchUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -15003,7 +15009,6 @@ export const CompanyYearlyInfoUncheckedUpdateWithoutWelfaresInputSchema: z.ZodTy
   isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -15022,7 +15027,6 @@ export const CompanyYearlyInfoCreateWithoutTrainingSystemsInputSchema: z.ZodType
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
   company: z.lazy(() => CompanyCreateNestedOneWithoutYearlyInfosInputSchema),
-  branches: z.lazy(() => BranchCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -15041,7 +15045,6 @@ export const CompanyYearlyInfoUncheckedCreateWithoutTrainingSystemsInputSchema: 
   isSideJobAllowed: z.boolean().optional().nullable(),
   hasShortTimeWork: z.boolean().optional().nullable(),
   isDressFree: z.boolean().optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedCreateNestedManyWithoutYearlyInfoInputSchema).optional(),
@@ -15076,7 +15079,6 @@ export const CompanyYearlyInfoUpdateWithoutTrainingSystemsInputSchema: z.ZodType
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   company: z.lazy(() => CompanyUpdateOneRequiredWithoutYearlyInfosNestedInputSchema).optional(),
-  branches: z.lazy(() => BranchUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -15095,7 +15097,6 @@ export const CompanyYearlyInfoUncheckedUpdateWithoutTrainingSystemsInputSchema: 
   isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -15467,6 +15468,7 @@ export const CompanyUpdateWithoutUserInputSchema: z.ZodType<Prisma.CompanyUpdate
   philosophies: z.lazy(() => CompanyPhilosophyUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -15488,6 +15490,7 @@ export const CompanyUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.Comp
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -15772,6 +15775,11 @@ export const CompanyPhilosophyCreateManyCompanyInputSchema: z.ZodType<Prisma.Com
   content: z.string().optional().nullable(),
 });
 
+export const BranchCreateManyCompanyInputSchema: z.ZodType<Prisma.BranchCreateManyCompanyInput> = z.strictObject({
+  id: z.cuid().optional(),
+  address: z.string(),
+});
+
 export const CompanyAxisMatchingCreateManyCompanyInputSchema: z.ZodType<Prisma.CompanyAxisMatchingCreateManyCompanyInput> = z.strictObject({
   axisId: z.string(),
   score: z.number().int().optional().nullable(),
@@ -15805,7 +15813,6 @@ export const CompanyYearlyInfoUpdateWithoutCompanyInputSchema: z.ZodType<Prisma.
   isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  branches: z.lazy(() => BranchUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -15824,7 +15831,6 @@ export const CompanyYearlyInfoUncheckedUpdateWithoutCompanyInputSchema: z.ZodTyp
   isSideJobAllowed: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   hasShortTimeWork: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isDressFree: z.union([ z.boolean(),z.lazy(() => NullableBoolFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   jobPostings: z.lazy(() => JobPostingUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   contactPersons: z.lazy(() => ContactPersonUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
   businessContents: z.lazy(() => BusinessContentUncheckedUpdateManyWithoutYearlyInfoNestedInputSchema).optional(),
@@ -15899,6 +15905,21 @@ export const IndustryUncheckedUpdateManyWithoutCompaniesInputSchema: z.ZodType<P
   sortOrder: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 });
 
+export const BranchUpdateWithoutCompanyInputSchema: z.ZodType<Prisma.BranchUpdateWithoutCompanyInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+});
+
+export const BranchUncheckedUpdateWithoutCompanyInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateWithoutCompanyInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+});
+
+export const BranchUncheckedUpdateManyWithoutCompanyInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateManyWithoutCompanyInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+});
+
 export const CompanyAxisMatchingUpdateWithoutCompanyInputSchema: z.ZodType<Prisma.CompanyAxisMatchingUpdateWithoutCompanyInput> = z.strictObject({
   score: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   jobAxis: z.lazy(() => JobHuntingAxisUpdateOneRequiredWithoutMatchingsNestedInputSchema).optional(),
@@ -15932,6 +15953,7 @@ export const CompanyUpdateWithoutIndustriesInputSchema: z.ZodType<Prisma.Company
   yearlyInfos: z.lazy(() => CompanyYearlyInfoUpdateManyWithoutCompanyNestedInputSchema).optional(),
   philosophies: z.lazy(() => CompanyPhilosophyUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -15953,6 +15975,7 @@ export const CompanyUncheckedUpdateWithoutIndustriesInputSchema: z.ZodType<Prism
   yearlyInfos: z.lazy(() => CompanyYearlyInfoUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   tags: z.lazy(() => TagUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -15970,11 +15993,6 @@ export const CompanyUncheckedUpdateManyWithoutIndustriesInputSchema: z.ZodType<P
   aspirationLevel: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   isFavorite: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   viewCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-});
-
-export const BranchCreateManyYearlyInfoInputSchema: z.ZodType<Prisma.BranchCreateManyYearlyInfoInput> = z.strictObject({
-  id: z.cuid().optional(),
-  address: z.string(),
 });
 
 export const JobPostingCreateManyYearlyInfoInputSchema: z.ZodType<Prisma.JobPostingCreateManyYearlyInfoInput> = z.strictObject({
@@ -16015,21 +16033,6 @@ export const TrainingSystemCreateManyYearlyInfoInputSchema: z.ZodType<Prisma.Tra
   id: z.cuid().optional(),
   months: z.number(),
   content: z.string().optional().nullable(),
-});
-
-export const BranchUpdateWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchUpdateWithoutYearlyInfoInput> = z.strictObject({
-  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-});
-
-export const BranchUncheckedUpdateWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateWithoutYearlyInfoInput> = z.strictObject({
-  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-});
-
-export const BranchUncheckedUpdateManyWithoutYearlyInfoInputSchema: z.ZodType<Prisma.BranchUncheckedUpdateManyWithoutYearlyInfoInput> = z.strictObject({
-  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  address: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 });
 
 export const JobPostingUpdateWithoutYearlyInfoInputSchema: z.ZodType<Prisma.JobPostingUpdateWithoutYearlyInfoInput> = z.strictObject({
@@ -16456,6 +16459,7 @@ export const CompanyUpdateWithoutTagsInputSchema: z.ZodType<Prisma.CompanyUpdate
   yearlyInfos: z.lazy(() => CompanyYearlyInfoUpdateManyWithoutCompanyNestedInputSchema).optional(),
   philosophies: z.lazy(() => CompanyPhilosophyUpdateManyWithoutCompanyNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 
@@ -16477,6 +16481,7 @@ export const CompanyUncheckedUpdateWithoutTagsInputSchema: z.ZodType<Prisma.Comp
   yearlyInfos: z.lazy(() => CompanyYearlyInfoUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   philosophies: z.lazy(() => CompanyPhilosophyUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   industries: z.lazy(() => IndustryUncheckedUpdateManyWithoutCompaniesNestedInputSchema).optional(),
+  branches: z.lazy(() => BranchUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
   axisMatchings: z.lazy(() => CompanyAxisMatchingUncheckedUpdateManyWithoutCompanyNestedInputSchema).optional(),
 });
 

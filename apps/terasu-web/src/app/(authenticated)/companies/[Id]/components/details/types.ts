@@ -30,8 +30,8 @@ export interface YearlyDetailItem {
     capital: bigint | null;
     phoneNumber: string | null;
     philosophies: Philosophy[];
+    branches: Branch[];
   };
-  branches: Branch[];
   contactPersons: ContactPerson[];
   welfares: Welfare[];
 }

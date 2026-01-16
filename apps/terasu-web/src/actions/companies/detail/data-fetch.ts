@@ -27,6 +27,12 @@ export const detailDataFetch = async (id: string) => {
                 content: true,
               },
             },
+            branches: {
+              select: {
+                id: true,
+                address: true,
+              },
+            },
           },
         },
         welfares: {
@@ -36,12 +42,7 @@ export const detailDataFetch = async (id: string) => {
             content: true,
           },
         },
-        branches: {
-          select: {
-            id: true,
-            address: true,
-          },
-        },
+
         contactPersons: {
           select: {
             id: true,
