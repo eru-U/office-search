@@ -19,10 +19,10 @@ export const BranchInfoDelete = ({ id }: { id: string }) => {
 
         await onRefresh();
 
-        toast.success("事業所情報を抹消しました");
+        toast.success("支店情報を抹消しました");
       } catch (_error) {
         toast.error(
-          "削除に失敗しました。この事業所情報はまだ消されたくないようです。",
+          "削除に失敗しました。この支店情報はまだ消されたくないようです。",
         );
       }
     });

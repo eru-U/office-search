@@ -87,14 +87,14 @@ export const BranchInfoAdd = () => {
             variant="outline"
             size="sm"
             className="rounded-full gap-1 font-bold hover:bg-primary/5 transition-all active:scale-95"
-            title="企業理念情報を追加"
+            title="支店情報を追加"
           >
             <Plus className="w-4 h-4" /> 追加
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-140">
           <DialogTitle className="text-xl font-bold border-b pb-4">
-            企業理念の追加
+            支店情報の追加
           </DialogTitle>
           <Form {...form}>
             <form

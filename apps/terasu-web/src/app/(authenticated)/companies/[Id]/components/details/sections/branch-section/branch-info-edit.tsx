@@ -66,10 +66,10 @@ export const BranchInfoEdit = ({ id, initialContent }: Props) => {
       try {
         await branchEditAction(id, parseData.data);
         await onRefresh();
-        toast.success("事業所情報を更新しました");
+        toast.success("支店情報を更新しました");
         setOpen(false);
       } catch (_error) {
-        toast.error("事業所情報の更新に失敗しました");
+        toast.error("支店情報の更新に失敗しました");
       }
     });
   };
@@ -84,14 +84,14 @@ export const BranchInfoEdit = ({ id, initialContent }: Props) => {
             variant="ghost"
             size="icon"
             className="h-8 w-8 rounded-full hover:bg-primary/10 transition-all active:scale-95"
-            title="事業所情報を編集"
+            title="支店情報を編集"
           >
             <Edit2 className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-140">
           <DialogTitle className="text-xl font-bold border-b pb-4">
-            事業所情報の編集
+            支店情報の編集
           </DialogTitle>
           <Form {...form}>
             <form
@@ -103,7 +103,7 @@ export const BranchInfoEdit = ({ id, initialContent }: Props) => {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-semibold">事業所情報</FormLabel>
+                    <FormLabel className="font-semibold">支店情報</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="例：東京都千代田区丸の内1-1-1"
