@@ -60,6 +60,8 @@ model User {
   accounts           Account[]
   /// 関連：セッション (NextAuth用)
   sessions           Session[]
+  /// 関連：タスク
+  tasks              Task[]
 }
 
 /// 認証連携用アカウント
@@ -166,6 +168,8 @@ model Company {
   branches         Branch[]
   /// 関連：就活軸マッチング
   axisMatchings     CompanyAxisMatching[]
+  /// 関連：タスク
+  tasks             Task[]
   /// 複合ユニーク制約
   @@unique([userId, name])
 }
@@ -449,9 +453,13 @@ model CompanyAxisMatching {
 /// スケジュールに紐づくタスク
 model Task {
   /// タスクID
-  id          String            @id @default(cuid())
-  /// スケジュールID
-  scheduleId  String
+  id          String              @id @default(cuid())
+  /// 所有者（ユーザー）ID
+  userId       String
+  /// 関連する企業ID（任意）
+  companyId    String?
+  /// 関連する選考スケジュールID（任意）
+  scheduleId   String?
   /// タイトル
   title       String
   /// 説明
@@ -459,14 +467,20 @@ model Task {
   /// 完了フラグ
   isCompleted Boolean
   /// 優先度
-  priority    Int
+  priority    Int                @default(0)
   /// 期限
   deadline    DateTime?
   /// 作成日時
-  createdAt   DateTime?         @default(now())
+  createdAt   DateTime           @default(now())
+  /// 更新日時
+  updatedAt   DateTime           @updatedAt
   
+  /// 関連：ユーザー
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 関連：企業
+  company    Company?            @relation(fields: [companyId], references: [id], onDelete: Cascade)
   /// 関連：選考スケジュール
-  schedule    SelectionSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  schedule    SelectionSchedule? @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
 }
 
 /// ユーザーの保有資格
