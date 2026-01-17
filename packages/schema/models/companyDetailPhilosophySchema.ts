@@ -12,10 +12,10 @@ const companyDetailPhilosophySchema = z.object({
  */
 export const companyDetailPhilosophyAddSchema = companyDetailPhilosophySchema;
 
-export type companyDetailPhilosophyAddTypes = z.infer<
+export type CompanyDetailPhilosophyAddTypes = z.infer<
   typeof companyDetailPhilosophyAddSchema
 >;
-export type companyDetailPhilosophyAddInput = z.input<
+export type CompanyDetailPhilosophyAddInput = z.input<
   typeof companyDetailPhilosophyAddSchema
 >;
 
@@ -23,9 +23,9 @@ export type companyDetailPhilosophyAddInput = z.input<
  * 企業理念を編集するスキーマ
  */
 export const companyDetailPhilosophyEditSchema = companyDetailPhilosophySchema;
-export type companyDetailPhilosophyEditTypes = z.infer<
+export type CompanyDetailPhilosophyEditTypes = z.infer<
   typeof companyDetailPhilosophyEditSchema
 >;
-export type companyDetailPhilosophyEditInput = z.input<
+export type CompanyDetailPhilosophyEditInput = z.input<
   typeof companyDetailPhilosophyEditSchema
 >;
