@@ -465,15 +465,13 @@ model Task {
   /// 説明
   description String?
   /// 完了フラグ
-  isCompleted Boolean
-  /// 優先度
-  priority    Int                @default(0)
+  status      String            @default("TODO")
   /// 期限
   deadline    DateTime?
   /// 作成日時
   createdAt   DateTime           @default(now())
-  /// 更新日時
-  updatedAt   DateTime           @updatedAt
+  /// 完了日時
+  completedAt DateTime?
   
   /// 関連：ユーザー
   user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
