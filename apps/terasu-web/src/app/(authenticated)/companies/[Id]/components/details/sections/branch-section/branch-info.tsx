@@ -1,9 +1,8 @@
-// biome-ignore assist/source/organizeImports: <>
-import { TrashButton } from "@/components/trash-button";
-import { Button } from "@/components/ui/button";
-import { Edit2, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import type { YearlyDetailItem } from "../../types";
 import { BranchInfoAdd } from "./branch-info-add";
+import { BranchInfoDelete } from "./branch-info-delete";
+import { BranchInfoEdit } from "./branch-info-edit";
 
 export const BranchSection = ({ data }: { data: YearlyDetailItem }) => (
   <section className="flex flex-col h-100">
@@ -24,17 +23,8 @@ export const BranchSection = ({ data }: { data: YearlyDetailItem }) => (
             <span className="text-sm leading-snug">{branch.address}</span>
           </div>
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => console.log("Edit Branch:", branch.id)}
-            >
-              <Edit2 className="w-3.5 h-3.5" />
-            </Button>
-            <TrashButton
-              onClick={() => console.log("Delete Branch:", branch.id)}
-            />
+            <BranchInfoEdit id={branch.id} initialContent={branch.address} />
+            <BranchInfoDelete id={branch.id} />
           </div>
         </div>
       ))}

@@ -1,13 +1,13 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
-import { philosophyInfoDeleteAction } from "@/actions/companies/detail/philosophy-action/philosophy-info-delete-action";
+import { branchDeleteAction } from "@/actions/companies/detail/branch-action/branch-delete-action";
 import { TrashButton } from "@/components/trash-button";
 import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
-export const PhilosophyDelete = ({ id }: { id: string }) => {
+export const BranchInfoDelete = ({ id }: { id: string }) => {
   const { onRefresh } = useYearlyDetail();
   const [isPending, startTransition] = useTransition();
 
@@ -15,14 +15,14 @@ export const PhilosophyDelete = ({ id }: { id: string }) => {
   const handleDelete = () => {
     startTransition(async () => {
       try {
-        await philosophyInfoDeleteAction(id);
+        await branchDeleteAction(id);
 
         await onRefresh();
 
-        toast.success("企業理念を抹消しました");
+        toast.success("事業所情報を抹消しました");
       } catch (_error) {
         toast.error(
-          "削除に失敗しました。この理念はまだ消されたくないようです。",
+          "削除に失敗しました。この事業所情報はまだ消されたくないようです。",
         );
       }
     });

@@ -1,5 +1,5 @@
 // biome-ignore assist/source/organizeImports: <>
-import { philosophyInfoEditAction } from "@/actions/companies/detail/philosophy-action/philosophy-info-edit-action";
+import { branchEditAction } from "@/actions/companies/detail/branch-action/branch-edit-action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,8 +18,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { companyDetailPhilosophySchema } from "@terasu/schema";
-import type { CompanyDetailPhilosophyEditInput } from "@terasu/schema/models/companyDetailPhilosophySchema";
+import {
+  companyDetailBranchSchema,
+  type CompanyDetailBranchTypes,
+} from "@terasu/schema/models/companyDetailBranchSchema";
 import { Edit2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -31,7 +33,7 @@ interface Props {
   initialContent: string;
 }
 
-export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
+export const BranchInfoEdit = ({ id, initialContent }: Props) => {
   // ==================================================
   // コンテキスト・状態管理
   // ==================================================
@@ -42,23 +44,18 @@ export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<CompanyDetailPhilosophyEditInput>({
-    resolver: zodResolver(
-      companyDetailPhilosophySchema.companyDetailPhilosophyEditSchema,
-    ),
+  const form = useForm<CompanyDetailBranchTypes>({
+    resolver: zodResolver(companyDetailBranchSchema),
     defaultValues: {
-      content: initialContent ?? "",
+      address: initialContent ?? "",
     },
   });
 
   // ==================================================
   // 送信関数
   // ==================================================
-  const onSubmit = async (values: CompanyDetailPhilosophyEditInput) => {
-    const parseData =
-      companyDetailPhilosophySchema.companyDetailPhilosophyEditSchema.safeParse(
-        values,
-      );
+  const onSubmit = async (values: CompanyDetailBranchTypes) => {
+    const parseData = companyDetailBranchSchema.safeParse(values);
 
     if (!parseData.success) {
       toast.error("入力に誤りがあります");
@@ -67,12 +64,12 @@ export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
 
     startTransition(async () => {
       try {
-        await philosophyInfoEditAction(id, parseData.data);
+        await branchEditAction(id, parseData.data);
         await onRefresh();
-        toast.success("企業理念を更新しました");
+        toast.success("事業所情報を更新しました");
         setOpen(false);
       } catch (_error) {
-        toast.error("企業理念の更新に失敗しました");
+        toast.error("事業所情報の更新に失敗しました");
       }
     });
   };
@@ -87,14 +84,14 @@ export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
             variant="ghost"
             size="icon"
             className="h-8 w-8 rounded-full hover:bg-primary/10 transition-all active:scale-95"
-            title="企業理念を編集"
+            title="事業所情報を編集"
           >
             <Edit2 className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-140">
           <DialogTitle className="text-xl font-bold border-b pb-4">
-            企業理念の編集
+            事業所情報の編集
           </DialogTitle>
           <Form {...form}>
             <form
@@ -103,15 +100,13 @@ export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
             >
               <FormField
                 control={form.control}
-                name="content"
+                name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-semibold">
-                      企業理念・ビジョン
-                    </FormLabel>
+                    <FormLabel className="font-semibold">事業所情報</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="例：世界をより良くする"
+                        placeholder="例：東京都千代田区丸の内1-1-1"
                         className="min-h-32 focus-visible:ring-primary resize-none leading-relaxed"
                         {...field}
                       />
