@@ -1,5 +1,3 @@
-export const TaskManagements = () => {
-  return (
-    <h1>test</h1>
-  );
+export default function Tasks() {
+  return <h1>Tasks</h1>;
 }
