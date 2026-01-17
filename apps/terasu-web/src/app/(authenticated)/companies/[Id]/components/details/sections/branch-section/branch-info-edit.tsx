@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { companyDetailPhilosophySchema } from "@terasu/schema";
-import type { companyDetailPhilosophyEditInput } from "@terasu/schema/models/companyDetailPhilosophySchema";
+import type { CompanyDetailPhilosophyEditInput } from "@terasu/schema/models/companyDetailPhilosophySchema";
 import { Edit2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -42,7 +42,7 @@ export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<companyDetailPhilosophyEditInput>({
+  const form = useForm<CompanyDetailPhilosophyEditInput>({
     resolver: zodResolver(
       companyDetailPhilosophySchema.companyDetailPhilosophyEditSchema,
     ),
@@ -54,7 +54,7 @@ export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
   // ==================================================
   // 送信関数
   // ==================================================
-  const onSubmit = async (values: companyDetailPhilosophyEditInput) => {
+  const onSubmit = async (values: CompanyDetailPhilosophyEditInput) => {
     const parseData =
       companyDetailPhilosophySchema.companyDetailPhilosophyEditSchema.safeParse(
         values,
