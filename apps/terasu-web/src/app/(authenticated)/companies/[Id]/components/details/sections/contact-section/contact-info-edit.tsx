@@ -1,5 +1,5 @@
 // biome-ignore assist/source/organizeImports: <>
-import { contactInfoEditAction } from "@/actions/companies/detail/contant-action/contact-edit";
+import { contactInfoEditAction } from "@/actions/companies/detail/contant-action/contact-edit-action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

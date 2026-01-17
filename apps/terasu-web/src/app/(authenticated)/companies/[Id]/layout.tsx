@@ -1,5 +1,5 @@
 // apps/terasu-web/app/(authenticated)/layout.tsx
-import { headerFetch } from "@/actions/companies/detail/header-action/header-fetch";
+import { headerFetch } from "@/actions/companies/detail/header-action/header-fetch-action";
 import { CompanyDetailHeader } from "./components/header/header";
 
 export default async function CompanyDetailLayout({

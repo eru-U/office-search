@@ -1,6 +1,6 @@
 "use server";
 import { prismaClient } from "@terasu/db";
-import type { companyDetailPhilosophyAddTypes } from "@terasu/schema/models/companyDetailPhilosophySchema";
+import type { CompanyDetailPhilosophyAddTypes } from "@terasu/schema/models/companyDetailPhilosophySchema";
 
 /**
  * 企業理念を編集するアクション
@@ -9,7 +9,7 @@ import type { companyDetailPhilosophyAddTypes } from "@terasu/schema/models/comp
  */
 export const philosophyInfoEditAction = async (
   id: string,
-  data: companyDetailPhilosophyAddTypes,
+  data: CompanyDetailPhilosophyAddTypes,
 ) => {
   try {
     await prismaClient.companyPhilosophy.update({

@@ -1,7 +1,7 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
-import { contactInfoDeleteAction } from "@/actions/companies/detail/contant-action/contact-delete";
+import { contactInfoDeleteAction } from "@/actions/companies/detail/contant-action/contact-delete-action";
 import { TrashButton } from "@/components/trash-button";
 import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { useTransition } from "react";

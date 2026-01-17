@@ -25,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 // 共有スキーマからインポート
-import { headerEditAction } from "@/actions/companies/detail/header-action/header-edit";
+import { headerEditAction } from "@/actions/companies/detail/header-action/header-edit-action";
 import { companyDetailHeaderSchema } from "@terasu/schema";
 import { useParams } from "next/navigation";
 import { ClientOnly } from "../details/shared/client-only";

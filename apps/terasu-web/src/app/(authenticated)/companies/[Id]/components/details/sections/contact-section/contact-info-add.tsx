@@ -1,6 +1,6 @@
 // src/components/companies/detail/contact-info-add.tsx
 // biome-ignore assist/source/organizeImports: <>
-import { contactInfoAddAction } from "@/actions/companies/detail/contant-action/contact-add";
+import { contactInfoAddAction } from "@/actions/companies/detail/contant-action/contact-add-action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
