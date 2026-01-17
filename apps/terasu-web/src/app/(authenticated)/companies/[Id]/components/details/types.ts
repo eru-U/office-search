@@ -12,6 +12,7 @@ interface ContactPerson {
   id: string;
   name: string;
   position: string;
+  description: string | null;
 }
 
 interface Welfare {

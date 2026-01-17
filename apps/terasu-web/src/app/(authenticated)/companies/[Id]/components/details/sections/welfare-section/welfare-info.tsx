@@ -1,6 +1,6 @@
 import { Empty } from "@/components/ui/empty";
 import type { YearlyDetailItem } from "../../types";
-import { WelfareDelete } from "./philosophy-info-delete";
+import { WelfareDelete } from "./welfare-info-delete";
 import { WelfareInfoAdd } from "./welfare-info-add-modal";
 import { WelfareInfoEditModal } from "./welfare-info-edit-modal";
 

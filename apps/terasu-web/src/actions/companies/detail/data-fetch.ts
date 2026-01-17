@@ -48,6 +48,7 @@ export const detailDataFetch = async (id: string) => {
             id: true,
             name: true,
             position: true,
+            description: true,
           },
         },
       },

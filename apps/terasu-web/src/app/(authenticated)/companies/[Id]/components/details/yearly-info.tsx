@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { BasicInfoSection } from "./sections/basic-info-section/basic-info-section";
 import { BranchSection } from "./sections/branch-section/branch-info";
-import { ContactSection } from "./sections/contact-section";
+import { ContactSection } from "./sections/contact-section/contact-info";
 import { PhilosophySection } from "./sections/philosophy-section/philosophy-info";
 import { WelfareSection } from "./sections/welfare-section/welfare-info";
 import type { CacheData, YearDateData, YearlyDetailItem } from "./types";

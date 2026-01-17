@@ -3,7 +3,7 @@
   "editor.formatOnSave": true,
   "prisma.pinToPrisma6": true,
   "css.validate": false,
-  "cSpell.words": ["cmdk", "cuid", "Embla", "TERASU", "vaul"],
+  "cSpell.words": ["cmdk", "contant", "cuid", "Embla", "TERASU", "vaul"],
   "files.associations": {
     "*.json": "jsonc"
   },
