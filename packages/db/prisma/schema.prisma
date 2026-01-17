@@ -162,6 +162,8 @@ model Company {
   tags              Tag[]                 @relation("CompanyToTag")
   /// 関連：業界
   industries        Industry[]            @relation("CompanyToIndustry")
+  /// 関連：拠点・支店 (ここに移動)
+  branches         Branch[]
   /// 関連：就活軸マッチング
   axisMatchings     CompanyAxisMatching[]
   /// 複合ユニーク制約
@@ -198,7 +200,7 @@ model CompanyYearlyInfo {
   /// 社員数
   employeeCount    Int?
   /// 代表者名
-  representative   String
+  representative   String?
   /// 売上高
   revenue          BigInt?
   /// 副業可否
@@ -210,8 +212,6 @@ model CompanyYearlyInfo {
 
   /// 関連：企業
   company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  /// 関連：拠点・支店
-  branches         Branch[]
   /// 関連：募集職種
   jobPostings      JobPosting[]
   /// 関連：重要人物
@@ -230,12 +230,12 @@ model CompanyYearlyInfo {
 model Branch {
   /// 拠点ID
   id           String             @id @default(cuid())
-  /// 年代ID
-  yearlyInfoId String?
+  /// 企業ID (yearlyInfoIdからcompanyIdに変更)
+  companyId String
   /// 拠点住所
   address      String
-  /// 関連：年代別企業情報
-  yearlyInfo   CompanyYearlyInfo? @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
+  /// 関連：企業 (年代別から企業本体へリレーションを変更)
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
 
 /// 募集職種の詳細を管理するテーブル

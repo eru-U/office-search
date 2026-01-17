@@ -1,0 +1,36 @@
+{
+  "folders": [
+    {
+      "name": "🚩 ROOT (All Files)",
+      "path": "."
+    },
+    {
+      "name": "🌐 コンテキスト",
+      "path": "apps/terasu-web/src/contexts"
+    },
+    {
+      "name": "🌐 UI コンポーネント",
+      "path": "apps/terasu-web/src/components"
+    },
+    {
+      "name": "🌐 アプリケーション",
+      "path": "apps/terasu-web/src/app"
+    },
+    {
+      "name": "🌐 サーバーアクション",
+      "path": "apps/terasu-web/src/actions"
+    },
+    {
+      "name": "📦 データベース",
+      "path": "packages/db"
+    },
+    {
+      "name": "📜 スキーマ",
+      "path": "packages/schema"
+    }
+  ],
+  "settings": {
+    "biome.enabled": true,
+    "cSpell.words": ["cuid", "terasu"]
+  }
+}

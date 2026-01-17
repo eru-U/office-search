@@ -3,15 +3,12 @@
 // biome-ignore assist/source/organizeImports: <>
 import { getRequiredSession } from "@/lib/requireAuth";
 import { type Prisma, prismaClient } from "@terasu/db";
-import {
-  companyListArraySchema,
-  type SearchCompanySchema,
-} from "@terasu/schema";
+import { companySchema } from "@terasu/schema";
 /**
  * 企業検索アクション
  */
 export async function searchCompaniesAction(
-  params: SearchCompanySchema & { page?: number },
+  params: companySchema.SearchCompanySchema & { page?: number },
 ) {
   const { userId } = await getRequiredSession();
 
@@ -70,7 +67,7 @@ export async function searchCompaniesAction(
       prismaClient.company.count({ where }),
     ]);
 
-    const validatedData = companyListArraySchema.parse(companies);
+    const validatedData = companySchema.companyListArraySchema.parse(companies);
 
     return {
       success: true,

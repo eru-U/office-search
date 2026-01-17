@@ -1,8 +1,8 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
-import { searchCompaniesAction } from "@/app/actions/companies/search-action";
-import { getIndustriesAction } from "@/app/actions/industries/get-industries-action";
+import { searchCompaniesAction } from "@/actions/companies/list/search-action";
+import { getIndustriesAction } from "@/actions/industries/get-industries-action";
 import { CustomPagination } from "@/components/custom-pagination";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +13,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { CompanyListArraySchema } from "@terasu/schema";
+import type { companySchema } from "@terasu/schema";
 import { Plus, SearchX } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -45,7 +45,8 @@ export default function CompanyListPage() {
   const [industries, setIndustries] = useState<{ id: string; name: string }[]>(
     [],
   );
-  const [companies, setCompanies] = useState<CompanyListArraySchema>([]);
+  const [companies, setCompanies] =
+    useState<companySchema.CompanyListArraySchema>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 

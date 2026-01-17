@@ -3,13 +3,15 @@
 // biome-ignore assist/source/organizeImports: <>
 import { getRequiredSession } from "@/lib/requireAuth";
 import { Prisma, prismaClient } from "@terasu/db"; // Prismaのエラー型をインポート
-import { createCompanySchema, type CreateCompanySchema } from "@terasu/schema";
+import { companySchema } from "@terasu/schema";
 import { revalidatePath } from "next/cache";
 
 /**
  * 企業を新規登録するサーバーアクション
  */
-export async function createCompanyAction(data: CreateCompanySchema) {
+export async function createCompanyAction(
+  data: companySchema.CreateCompanySchema,
+) {
   // 1. セッション確認
   const { userId } = await getRequiredSession();
 
@@ -21,7 +23,7 @@ export async function createCompanyAction(data: CreateCompanySchema) {
   }
 
   // 2. 共通スキーマによるバリデーション（形式のチェック）
-  const result = createCompanySchema.safeParse(data);
+  const result = companySchema.createCompanySchema.safeParse(data);
 
   if (!result.success) {
     const errorMessage = result.error.message || "入力内容に不備があります。";
@@ -39,7 +41,6 @@ export async function createCompanyAction(data: CreateCompanySchema) {
         name: result.data.name,
         viewCount: 0,
         isFavorite: false,
-        establishedDate: new Date(),
       },
     });
 
