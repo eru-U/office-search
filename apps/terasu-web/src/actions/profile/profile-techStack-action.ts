@@ -45,10 +45,11 @@ export const profileTechStackEditAction = async (
   },
 ) => {
   try {
-    await getRequiredSession();
+    const { userId } = await getRequiredSession();
 
     return await prismaClient.userTech.update({
       where: {
+        userId: userId,
         id: id,
       },
       data: {
