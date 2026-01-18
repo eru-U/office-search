@@ -530,28 +530,23 @@ model TechStack {
   users       UserTech[]
 }
 
-// --- UserTech 中間テーブルの最新版 ---
-
-/// ユーザーと技術スタックの習熟度を管理する中間テーブル
 model UserTech {
-  /// ユーザーID
+  /// ユーザーのID
   userId      String
-  /// 技術スタックID
+  /// 技術スタックのID
   techStackId String
-  /// 経験年数（0.5年単位なども考慮してFloat）
-  years       Float?
-  /// 具体的な実績や使用感（これが一番重要）
+  /// 経験開始時期（ここから動的に経験年数を算出する）
+  startedAt   DateTime?
+  /// 具体的な実績や使用感
   note        String?
-  /// 登録日（いつから使い始めたかの記録として維持）
+  // データ製作日時
   createdAt   DateTime @default(now())
-  // 更新日時は使用用途がない為記載しない
 
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   techStack   TechStack @relation(fields: [techStackId], references: [id], onDelete: Cascade)
 
   @@id([userId, techStackId])
 }
-
 /// 企業理念
 model CompanyPhilosophy {
   /// 企業理念ID
