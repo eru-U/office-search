@@ -1,7 +1,7 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
-import { getTechStacksAction } from "@/actions/lib/get-tech-stacks-action";
+import { getTechStacksAction } from "@/actions/tech-stack/get-tech-stacks-action";
 import { profileTechStackAddAction } from "@/actions/profile/profile-techStack-action";
 import { Button } from "@/components/ui/button";
 import {
