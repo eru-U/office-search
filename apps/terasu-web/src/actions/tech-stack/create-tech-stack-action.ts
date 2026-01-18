@@ -10,11 +10,15 @@ import { prismaClient } from "@terasu/db";
 export const createTechStackAction = async (name: string) => {
   try {
     const { userId } = await getRequiredSession();
-
+    // 1. 名前を正規化（前後の空白を削除）
+    const normalizedName = name.trim();
     // 同名の技術スタックが既に存在するか確認
     const existingTechStack = await prismaClient.techStack.findFirst({
       where: {
-        name: name,
+        name: {
+          equals: normalizedName,
+          mode: "insensitive",
+        },
         userId: userId,
       },
     });
