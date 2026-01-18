@@ -531,12 +531,13 @@ model TechStack {
 }
 
 model UserTech {
+  id          String @id @default(cuid())
   /// ユーザーのID
   userId      String
   /// 技術スタックのID
   techStackId String
   /// 経験開始時期（ここから動的に経験年数を算出する）
-  startedAt   DateTime?
+  startedAt   DateTime
   /// 具体的な実績や使用感
   note        String?
   // データ製作日時
@@ -544,8 +545,6 @@ model UserTech {
 
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   techStack   TechStack @relation(fields: [techStackId], references: [id], onDelete: Cascade)
-
-  @@id([userId, techStackId])
 }
 /// 企業理念
 model CompanyPhilosophy {

@@ -56,7 +56,7 @@ export const QAScalarFieldEnumSchema = z.enum(['id','scheduleId','question','ans
 
 export const TechStackScalarFieldEnumSchema = z.enum(['id','userId','name']);
 
-export const UserTechScalarFieldEnumSchema = z.enum(['userId','techStackId','startedAt','note','createdAt']);
+export const UserTechScalarFieldEnumSchema = z.enum(['id','userId','techStackId','startedAt','note','createdAt']);
 
 export const CompanyPhilosophyScalarFieldEnumSchema = z.enum(['id','companyId','content']);
 
@@ -882,6 +882,7 @@ export type TechStack = z.infer<typeof TechStackSchema>
 /////////////////////////////////////////
 
 export const UserTechSchema = z.object({
+  id: z.cuid(),
   /**
    * ユーザーのID
    */
@@ -893,7 +894,7 @@ export const UserTechSchema = z.object({
   /**
    * 経験開始時期（ここから動的に経験年数を算出する）
    */
-  startedAt: z.coerce.date().nullable(),
+  startedAt: z.coerce.date(),
   /**
    * 具体的な実績や使用感
    */
@@ -1935,6 +1936,7 @@ export const UserTechArgsSchema: z.ZodType<Prisma.UserTechDefaultArgs> = z.objec
 }).strict();
 
 export const UserTechSelectSchema: z.ZodType<Prisma.UserTechSelect> = z.object({
+  id: z.boolean().optional(),
   userId: z.boolean().optional(),
   techStackId: z.boolean().optional(),
   startedAt: z.boolean().optional(),
@@ -3780,9 +3782,10 @@ export const UserTechWhereInputSchema: z.ZodType<Prisma.UserTechWhereInput> = z.
   AND: z.union([ z.lazy(() => UserTechWhereInputSchema), z.lazy(() => UserTechWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserTechWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserTechWhereInputSchema), z.lazy(() => UserTechWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   techStackId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
-  startedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date() ]).optional().nullable(),
+  startedAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
   note: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema), z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -3790,9 +3793,10 @@ export const UserTechWhereInputSchema: z.ZodType<Prisma.UserTechWhereInput> = z.
 });
 
 export const UserTechOrderByWithRelationInputSchema: z.ZodType<Prisma.UserTechOrderByWithRelationInput> = z.strictObject({
+  id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
   techStackId: z.lazy(() => SortOrderSchema).optional(),
-  startedAt: z.union([ z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema) ]).optional(),
+  startedAt: z.lazy(() => SortOrderSchema).optional(),
   note: z.union([ z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   user: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
@@ -3800,16 +3804,16 @@ export const UserTechOrderByWithRelationInputSchema: z.ZodType<Prisma.UserTechOr
 });
 
 export const UserTechWhereUniqueInputSchema: z.ZodType<Prisma.UserTechWhereUniqueInput> = z.object({
-  userId_techStackId: z.lazy(() => UserTechUserIdTechStackIdCompoundUniqueInputSchema),
+  id: z.cuid(),
 })
 .and(z.strictObject({
-  userId_techStackId: z.lazy(() => UserTechUserIdTechStackIdCompoundUniqueInputSchema).optional(),
+  id: z.cuid().optional(),
   AND: z.union([ z.lazy(() => UserTechWhereInputSchema), z.lazy(() => UserTechWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserTechWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserTechWhereInputSchema), z.lazy(() => UserTechWhereInputSchema).array() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   techStackId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
-  startedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date() ]).optional().nullable(),
+  startedAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
   note: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema), z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -3817,9 +3821,10 @@ export const UserTechWhereUniqueInputSchema: z.ZodType<Prisma.UserTechWhereUniqu
 }));
 
 export const UserTechOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserTechOrderByWithAggregationInput> = z.strictObject({
+  id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
   techStackId: z.lazy(() => SortOrderSchema).optional(),
-  startedAt: z.union([ z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema) ]).optional(),
+  startedAt: z.lazy(() => SortOrderSchema).optional(),
   note: z.union([ z.lazy(() => SortOrderSchema), z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => UserTechCountOrderByAggregateInputSchema).optional(),
@@ -3831,9 +3836,10 @@ export const UserTechScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.User
   AND: z.union([ z.lazy(() => UserTechScalarWhereWithAggregatesInputSchema), z.lazy(() => UserTechScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserTechScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserTechScalarWhereWithAggregatesInputSchema), z.lazy(() => UserTechScalarWhereWithAggregatesInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
   techStackId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
-  startedAt: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema), z.coerce.date() ]).optional().nullable(),
+  startedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema), z.coerce.date() ]).optional(),
   note: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema), z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema), z.coerce.date() ]).optional(),
 });
@@ -5960,7 +5966,8 @@ export const TechStackUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TechStack
 });
 
 export const UserTechCreateInputSchema: z.ZodType<Prisma.UserTechCreateInput> = z.strictObject({
-  startedAt: z.coerce.date().optional().nullable(),
+  id: z.cuid().optional(),
+  startedAt: z.coerce.date(),
   note: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutUserTechsInputSchema),
@@ -5968,15 +5975,17 @@ export const UserTechCreateInputSchema: z.ZodType<Prisma.UserTechCreateInput> = 
 });
 
 export const UserTechUncheckedCreateInputSchema: z.ZodType<Prisma.UserTechUncheckedCreateInput> = z.strictObject({
+  id: z.cuid().optional(),
   userId: z.string(),
   techStackId: z.string(),
-  startedAt: z.coerce.date().optional().nullable(),
+  startedAt: z.coerce.date(),
   note: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
 });
 
 export const UserTechUpdateInputSchema: z.ZodType<Prisma.UserTechUpdateInput> = z.strictObject({
-  startedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  startedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutUserTechsNestedInputSchema).optional(),
@@ -5984,31 +5993,35 @@ export const UserTechUpdateInputSchema: z.ZodType<Prisma.UserTechUpdateInput> = 
 });
 
 export const UserTechUncheckedUpdateInputSchema: z.ZodType<Prisma.UserTechUncheckedUpdateInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   techStackId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  startedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  startedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
 
 export const UserTechCreateManyInputSchema: z.ZodType<Prisma.UserTechCreateManyInput> = z.strictObject({
+  id: z.cuid().optional(),
   userId: z.string(),
   techStackId: z.string(),
-  startedAt: z.coerce.date().optional().nullable(),
+  startedAt: z.coerce.date(),
   note: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
 });
 
 export const UserTechUpdateManyMutationInputSchema: z.ZodType<Prisma.UserTechUpdateManyMutationInput> = z.strictObject({
-  startedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  startedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
 
 export const UserTechUncheckedUpdateManyInputSchema: z.ZodType<Prisma.UserTechUncheckedUpdateManyInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   techStackId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  startedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  startedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
@@ -7874,12 +7887,8 @@ export const TechStackScalarRelationFilterSchema: z.ZodType<Prisma.TechStackScal
   isNot: z.lazy(() => TechStackWhereInputSchema).optional(),
 });
 
-export const UserTechUserIdTechStackIdCompoundUniqueInputSchema: z.ZodType<Prisma.UserTechUserIdTechStackIdCompoundUniqueInput> = z.strictObject({
-  userId: z.string(),
-  techStackId: z.string(),
-});
-
 export const UserTechCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserTechCountOrderByAggregateInput> = z.strictObject({
+  id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
   techStackId: z.lazy(() => SortOrderSchema).optional(),
   startedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -7888,6 +7897,7 @@ export const UserTechCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserTech
 });
 
 export const UserTechMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserTechMaxOrderByAggregateInput> = z.strictObject({
+  id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
   techStackId: z.lazy(() => SortOrderSchema).optional(),
   startedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -7896,6 +7906,7 @@ export const UserTechMaxOrderByAggregateInputSchema: z.ZodType<Prisma.UserTechMa
 });
 
 export const UserTechMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserTechMinOrderByAggregateInput> = z.strictObject({
+  id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
   techStackId: z.lazy(() => SortOrderSchema).optional(),
   startedAt: z.lazy(() => SortOrderSchema).optional(),
@@ -11280,15 +11291,17 @@ export const TaskCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.TaskCreateM
 });
 
 export const UserTechCreateWithoutUserInputSchema: z.ZodType<Prisma.UserTechCreateWithoutUserInput> = z.strictObject({
-  startedAt: z.coerce.date().optional().nullable(),
+  id: z.cuid().optional(),
+  startedAt: z.coerce.date(),
   note: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   techStack: z.lazy(() => TechStackCreateNestedOneWithoutUsersInputSchema),
 });
 
 export const UserTechUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.UserTechUncheckedCreateWithoutUserInput> = z.strictObject({
+  id: z.cuid().optional(),
   techStackId: z.string(),
-  startedAt: z.coerce.date().optional().nullable(),
+  startedAt: z.coerce.date(),
   note: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
 });
@@ -11687,9 +11700,10 @@ export const UserTechScalarWhereInputSchema: z.ZodType<Prisma.UserTechScalarWher
   AND: z.union([ z.lazy(() => UserTechScalarWhereInputSchema), z.lazy(() => UserTechScalarWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserTechScalarWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserTechScalarWhereInputSchema), z.lazy(() => UserTechScalarWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   techStackId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
-  startedAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date() ]).optional().nullable(),
+  startedAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
   note: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
 });
@@ -15244,15 +15258,17 @@ export const JobPostingCreateOrConnectWithoutTechStacksInputSchema: z.ZodType<Pr
 });
 
 export const UserTechCreateWithoutTechStackInputSchema: z.ZodType<Prisma.UserTechCreateWithoutTechStackInput> = z.strictObject({
-  startedAt: z.coerce.date().optional().nullable(),
+  id: z.cuid().optional(),
+  startedAt: z.coerce.date(),
   note: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
   user: z.lazy(() => UserCreateNestedOneWithoutUserTechsInputSchema),
 });
 
 export const UserTechUncheckedCreateWithoutTechStackInputSchema: z.ZodType<Prisma.UserTechUncheckedCreateWithoutTechStackInput> = z.strictObject({
+  id: z.cuid().optional(),
   userId: z.string(),
-  startedAt: z.coerce.date().optional().nullable(),
+  startedAt: z.coerce.date(),
   note: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
 });
@@ -16681,8 +16697,9 @@ export const TaskCreateManyUserInputSchema: z.ZodType<Prisma.TaskCreateManyUserI
 });
 
 export const UserTechCreateManyUserInputSchema: z.ZodType<Prisma.UserTechCreateManyUserInput> = z.strictObject({
+  id: z.cuid().optional(),
   techStackId: z.string(),
-  startedAt: z.coerce.date().optional().nullable(),
+  startedAt: z.coerce.date(),
   note: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
 });
@@ -17030,22 +17047,25 @@ export const TaskUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.Tas
 });
 
 export const UserTechUpdateWithoutUserInputSchema: z.ZodType<Prisma.UserTechUpdateWithoutUserInput> = z.strictObject({
-  startedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  startedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   techStack: z.lazy(() => TechStackUpdateOneRequiredWithoutUsersNestedInputSchema).optional(),
 });
 
 export const UserTechUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.UserTechUncheckedUpdateWithoutUserInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   techStackId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  startedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  startedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
 
 export const UserTechUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.UserTechUncheckedUpdateManyWithoutUserInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   techStackId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  startedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  startedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
@@ -17882,8 +17902,9 @@ export const CompanyAxisMatchingUncheckedUpdateManyWithoutJobAxisInputSchema: z.
 });
 
 export const UserTechCreateManyTechStackInputSchema: z.ZodType<Prisma.UserTechCreateManyTechStackInput> = z.strictObject({
+  id: z.cuid().optional(),
   userId: z.string(),
-  startedAt: z.coerce.date().optional().nullable(),
+  startedAt: z.coerce.date(),
   note: z.string().optional().nullable(),
   createdAt: z.coerce.date().optional(),
 });
@@ -17928,22 +17949,25 @@ export const JobPostingUncheckedUpdateManyWithoutTechStacksInputSchema: z.ZodTyp
 });
 
 export const UserTechUpdateWithoutTechStackInputSchema: z.ZodType<Prisma.UserTechUpdateWithoutTechStackInput> = z.strictObject({
-  startedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  startedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutUserTechsNestedInputSchema).optional(),
 });
 
 export const UserTechUncheckedUpdateWithoutTechStackInputSchema: z.ZodType<Prisma.UserTechUncheckedUpdateWithoutTechStackInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  startedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  startedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
 
 export const UserTechUncheckedUpdateManyWithoutTechStackInputSchema: z.ZodType<Prisma.UserTechUncheckedUpdateManyWithoutTechStackInput> = z.strictObject({
+  id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  startedAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  startedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   note: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
