@@ -62,6 +62,8 @@ model User {
   sessions           Session[]
   /// 関連：タスク
   tasks              Task[]
+  /// 関連：ユーザーが持っている技術スタック
+  userTechs       UserTech[]
 }
 
 /// 認証連携用アカウント
@@ -524,6 +526,30 @@ model TechStack {
   user        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// 関連：募集職種
   jobPostings JobPosting[] @relation("JobToTechStack")
+  // 変更点：ユーザーとの習熟度リレーションを追加
+  users       UserTech[]
+}
+
+// --- UserTech 中間テーブルの最新版 ---
+
+/// ユーザーと技術スタックの習熟度を管理する中間テーブル
+model UserTech {
+  /// ユーザーID
+  userId      String
+  /// 技術スタックID
+  techStackId String
+  /// 経験年数（0.5年単位なども考慮してFloat）
+  years       Float?
+  /// 具体的な実績や使用感（これが一番重要）
+  note        String?
+  /// 登録日（いつから使い始めたかの記録として維持）
+  createdAt   DateTime @default(now())
+  // 更新日時は使用用途がない為記載しない
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  techStack   TechStack @relation(fields: [techStackId], references: [id], onDelete: Cascade)
+
+  @@id([userId, techStackId])
 }
 
 /// 企業理念
