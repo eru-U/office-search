@@ -1,5 +1,6 @@
 import type { ProfileTechStackProps } from "../type";
 import { AddTechStackButton } from "./techStack-add-button";
+import { TechStackDeleteButton } from "./techStack-delete-button";
 import { TechStackEditButton } from "./techStack-edit-button";
 
 export const ProfileTechStack = ({ userTechs }: ProfileTechStackProps) => {
@@ -40,7 +41,7 @@ export const ProfileTechStack = ({ userTechs }: ProfileTechStackProps) => {
                 <span className="inline-flex items-center rounded-md bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-inset ring-blue-700/10">
                   {calculateExperience(tech.startedAt)}
                 </span>
-                <div className="opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                   <TechStackEditButton
                     id={tech.id}
                     initialContent={{
@@ -50,6 +51,7 @@ export const ProfileTechStack = ({ userTechs }: ProfileTechStackProps) => {
                       techStackId: tech.techStack.id,
                     }}
                   />
+                  <TechStackDeleteButton id={tech.id} />
                 </div>
               </div>
               <div className="pr-28">

@@ -1,5 +1,6 @@
 import type { ProfileQualificationsProps } from "../type";
 import { AddQualificationButton } from "./qualification-add-button";
+import { QualificationDeleteButton } from "./qualification-delete-button";
 import { QualificationEditButton } from "./qualification-edit-button";
 
 export const ProfileQualifications = ({
@@ -34,7 +35,7 @@ export const ProfileQualifications = ({
                       : "未登録"}
                   </span>
                 </div>
-                <div className="opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                   <QualificationEditButton
                     id={q.id}
                     initialContent={{
@@ -42,6 +43,7 @@ export const ProfileQualifications = ({
                       obtainedDate: q.obtainedDate ?? new Date(),
                     }}
                   />
+                  <QualificationDeleteButton id={q.id} />
                 </div>
               </div>
             </div>
