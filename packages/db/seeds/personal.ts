@@ -5,8 +5,6 @@ import { prismaClient } from "../lib/client";
  * 個人・マッチングデータのシード
  */
 export const seedPersonalData = async (userId: string) => {
-  console.log("👤 個人・マッチングデータのシードを実行中...");
-
   for (let i = 1; i <= 3; i++) {
     const suffix = `${userId}-${i}`;
 

@@ -5,3 +5,10 @@ export * as companyDetailPhilosophySchema from "./models/companyDetailPhilosophy
 export * as companyDetailSchema from "./models/companyDetailSchema";
 export * as companyDetailWelfareSchema from "./models/companyDetailWelfareSchema";
 export * as companySchema from "./models/companySchema";
+export {
+  taskDescriptionSchema,
+  taskTitleEditSchema,
+  type taskDescriptionInput,
+  type taskDescriptionTypes,
+  type TaskTitleEditTypes,
+} from "./models/tasksSchema";

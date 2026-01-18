@@ -16,7 +16,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { companyDetailSchema } from "@terasu/schema";
-import { Calendar, Edit2, Trash2, X } from "lucide-react";
+import { Calendar, Edit2, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";

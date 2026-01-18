@@ -5,8 +5,6 @@ import { prismaClient } from "../lib/client";
  * 各種カテゴリのマスタデータをシードします。
  */
 export const seedMasters = async (userId: string) => {
-  console.log("📊 マスターデータのシードを開始します...");
-
   const industries = ["IT", "製造", "金融"];
   const empStatuses = ["正社員", "契約社員", "インターン"];
   const laborCats = ["通常労働", "フレックス", "裁量労働"];
@@ -81,6 +79,4 @@ export const seedMasters = async (userId: string) => {
       create: { id, name, userId },
     });
   }
-
-  console.log("✅ マスターデータのシードが正常に完了しました。");
 };

@@ -7,7 +7,6 @@ import { seedPersonalData } from "./personal";
 
 async function main() {
   const targetUserId = SEED_CONFIG.userId;
-  console.log(`🚀 シード開始: ターゲットユーザー [${targetUserId}]`);
 
   try {
     // ユーザーが存在しない場合のみ作成（GitHub連携のアカウント保護）
@@ -26,8 +25,6 @@ async function main() {
     await seedCompanies(targetUserId);
     await seedPersonalData(targetUserId);
     await seedAuth(targetUserId);
-
-    console.log("✅ 全てのデータが正常にセットアップされました。");
   } catch (e) {
     console.error("❌ エラー発生:", e);
     process.exit(1);
