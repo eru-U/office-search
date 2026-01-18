@@ -2,7 +2,7 @@
 
 // biome-ignore assist/source/organizeImports: <>
 import { searchCompaniesAction } from "@/actions/companies/list/search-action";
-import { getIndustriesAction } from "@/actions/industries/get-industries-action";
+import { getIndustriesAction } from "@/actions/lib/get-industries-action";
 import { CustomPagination } from "@/components/custom-pagination";
 import { Button } from "@/components/ui/button";
 import {

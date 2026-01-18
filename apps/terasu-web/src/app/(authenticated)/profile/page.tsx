@@ -2,6 +2,7 @@
 
 // biome-ignore assist/source/organizeImports: <>
 import { profileFetchAction } from "@/actions/profile/profile-fetch-actions";
+import { ProfileProvider } from "@/contexts/profile-context";
 import { useCallback, useEffect, useState } from "react";
 import { ProfileDisplay } from "./components/profile-display";
 import type { ProfileData } from "./components/type";
@@ -12,13 +13,16 @@ export default function Profile() {
 
   const fetchProfileData = useCallback(async () => {
     setIsLoading(true);
-    const result = await profileFetchAction();
+    try {
+      const result = await profileFetchAction();
 
-    // findUnique の結果はオブジェクトまたは null
-    if (result) {
-      setProfile(result as ProfileData);
+      // findUnique の結果はオブジェクトまたは null
+      if (result) {
+        setProfile(result as ProfileData);
+      }
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -46,17 +50,19 @@ export default function Profile() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-4xl">
-        <header className="mb-10 text-center">
-          <h1 className="text-4xl font-black tracking-tight text-slate-900">
-            Profile
-          </h1>
-          <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-blue-500" />
-        </header>
+    <ProfileProvider onRefresh={fetchProfileData}>
+      <main className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <header className="mb-10 text-center">
+            <h1 className="text-4xl font-black tracking-tight text-slate-900">
+              Profile
+            </h1>
+            <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-blue-500" />
+          </header>
 
-        <ProfileDisplay profile={profile} />
-      </div>
-    </main>
+          <ProfileDisplay profile={profile} />
+        </div>
+      </main>
+    </ProfileProvider>
   );
 }

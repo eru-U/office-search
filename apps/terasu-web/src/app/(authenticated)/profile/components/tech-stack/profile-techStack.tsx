@@ -1,4 +1,4 @@
-import { AddTechStackButton } from "./add-techStack-button";
+import { AddTechStackButton } from "./techStack-add-button";
 import type { ProfileTechStackProps } from "../type";
 
 export const ProfileTechStack = ({ userTechs }: ProfileTechStackProps) => {

@@ -1,5 +1,5 @@
 import type { ProfileQualificationsProps } from "../type";
-import { AddQualificationButton } from "./add-qualification-button";
+import { AddQualificationButton } from "./qualification-add-button";
 
 export const ProfileQualifications = ({
   qualifications,

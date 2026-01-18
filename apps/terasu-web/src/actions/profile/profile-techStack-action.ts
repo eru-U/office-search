@@ -11,7 +11,7 @@ import { prismaClient } from "@terasu/db";
 export const profileTechStackAddAction = async (data: {
   techStackId: string;
   startedAt: Date;
-  note?: string;
+  note: string | null;
 }) => {
   try {
     const { userId } = await getRequiredSession();
