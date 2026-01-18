@@ -21,6 +21,7 @@ export const BranchInfoDelete = ({ id }: { id: string }) => {
 
         toast.success("支店情報を抹消しました");
       } catch (_error) {
+        console.error("支店情報の削除に失敗しました", _error);
         toast.error(
           "削除に失敗しました。この支店情報はまだ消されたくないようです。",
         );

@@ -116,6 +116,7 @@ export const AddTechStackButton = () => {
         toast.error(result.error || "技術スタックの登録に失敗しました");
       }
     } catch (_error) {
+      console.error("技術スタックの登録に失敗しました", _error);
       toast.error("技術スタックの登録に失敗しました");
     }
   };
@@ -139,6 +140,7 @@ export const AddTechStackButton = () => {
         form.reset();
         setOpen(false);
       } catch (_error) {
+        console.error("技術スタックの追加に失敗しました", _error);
         toast.error("技術スタックの追加に失敗しました");
       }
     });

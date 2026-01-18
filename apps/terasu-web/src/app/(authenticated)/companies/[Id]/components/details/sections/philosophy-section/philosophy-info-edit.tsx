@@ -72,6 +72,7 @@ export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
         toast.success("企業理念を更新しました");
         setOpen(false);
       } catch (_error) {
+        console.error("企業理念の更新に失敗しました", _error);
         toast.error("企業理念の更新に失敗しました");
       }
     });

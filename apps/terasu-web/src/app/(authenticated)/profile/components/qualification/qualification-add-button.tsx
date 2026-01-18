@@ -73,6 +73,7 @@ export const AddQualificationButton = () => {
         form.reset();
         setOpen(false);
       } catch (_error) {
+        console.error("保有資格の追加に失敗しました", _error);
         toast.error("保有資格の追加に失敗しました");
       }
     });

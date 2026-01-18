@@ -85,6 +85,7 @@ export const WelfareInfoEditModal = ({ id, data }: Props) => {
         toast.success("福利厚生を更新しました");
         setOpen(false);
       } catch (_error) {
+        console.error("福利厚生の更新に失敗しました", _error);
         toast.error("福利厚生の更新に失敗しました");
       }
     });

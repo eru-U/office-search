@@ -19,6 +19,7 @@ export const QualificationDeleteButton = ({ id }: { id: string }) => {
         await onRefresh();
         toast.success("保有資格を削除しました");
       } catch (_error) {
+        console.error("保有資格の削除に失敗しました", _error);
         toast.error("保有資格の削除に失敗しました");
       }
     });

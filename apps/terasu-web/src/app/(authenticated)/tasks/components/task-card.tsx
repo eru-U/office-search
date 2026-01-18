@@ -105,6 +105,7 @@ export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
         titleForm.reset();
         onRefresh();
       } catch (error) {
+        console.error("タスクタイトルの更新に失敗しました", error);
         if (
           error instanceof Error &&
           error.message.includes("タイトルは必須")

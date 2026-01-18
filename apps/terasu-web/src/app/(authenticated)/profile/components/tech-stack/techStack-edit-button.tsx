@@ -81,6 +81,7 @@ export const TechStackEditButton = ({ id, initialContent }: Props) => {
         toast.success("技術スタック情報を更新しました");
         setOpen(false);
       } catch (_error) {
+        console.error("技術スタック情報の更新に失敗しました", _error);
         toast.error("技術スタック情報の更新に失敗しました");
       }
     });

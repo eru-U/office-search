@@ -26,6 +26,7 @@ export const profileTechStackAddAction = async (data: {
       },
     });
   } catch (_error) {
+    console.error("技術スタックの登録に失敗しました", _error);
     throw new Error("技術スタックの登録ができませんでした。");
   }
 };
@@ -56,6 +57,7 @@ export const profileTechStackEditAction = async (
       },
     });
   } catch (_error) {
+    console.error("技術スタックの更新に失敗しました", _error);
     throw new Error("技術スタックの更新ができませんでした。");
   }
 };
@@ -75,6 +77,7 @@ export const profileTechStackDeleteAction = async (id: string) => {
       },
     });
   } catch (_error) {
+    console.error("技術スタックの削除に失敗しました", _error);
     throw new Error("技術スタックの削除ができませんでした。");
   }
 };

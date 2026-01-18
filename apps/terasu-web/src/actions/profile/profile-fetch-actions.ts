@@ -40,6 +40,7 @@ export const profileFetchAction = async () => {
     });
     return result;
   } catch (_error) {
+    console.error("プロフィールの取得に失敗しました", _error);
     throw new Error("Failed to fetch profile");
   }
 };

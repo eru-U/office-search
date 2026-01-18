@@ -69,6 +69,7 @@ export const BranchInfoEdit = ({ id, initialContent }: Props) => {
         toast.success("支店情報を更新しました");
         setOpen(false);
       } catch (_error) {
+        console.error("支店情報の更新に失敗しました", _error);
         toast.error("支店情報の更新に失敗しました");
       }
     });

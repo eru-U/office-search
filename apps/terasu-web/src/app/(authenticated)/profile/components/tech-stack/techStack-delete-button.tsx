@@ -19,6 +19,7 @@ export const TechStackDeleteButton = ({ id }: { id: string }) => {
         await onRefresh();
         toast.success("技術スタックを削除しました");
       } catch (_error) {
+        console.error("技術スタックの削除に失敗しました", _error);
         toast.error("技術スタックの削除に失敗しました");
       }
     });

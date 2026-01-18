@@ -23,6 +23,7 @@ export const profileQualificationsAddAction = async (data: {
       },
     });
   } catch (_error) {
+    console.error("資格の登録に失敗しました", _error);
     throw new Error("資格の登録ができませんでした。");
   }
 };
@@ -52,6 +53,7 @@ export const profileQualificationsEditAction = async (
       },
     });
   } catch (_error) {
+    console.error("資格の更新に失敗しました", _error);
     throw new Error("資格の更新ができませんでした。");
   }
 };
@@ -70,6 +72,7 @@ export const profileQualificationsDeleteAction = async (id: string) => {
       },
     });
   } catch (_error) {
+    console.error("資格の削除に失敗しました", _error);
     throw new Error("資格の削除ができませんでした。");
   }
 };

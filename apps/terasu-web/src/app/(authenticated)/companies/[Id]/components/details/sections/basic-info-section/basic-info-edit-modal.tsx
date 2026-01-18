@@ -70,6 +70,7 @@ export const BasicInfoEditModal = ({ data }: { data: YearlyDetailItem }) => {
         setOpen(false);
       });
     } catch (_error) {
+      console.error("基本情報の更新に失敗しました", _error);
       toast.error("基本情報の更新に失敗しました");
     }
   };

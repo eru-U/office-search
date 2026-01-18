@@ -78,6 +78,7 @@ export const QualificationEditButton = ({ id, initialContent }: Props) => {
         toast.success("保有資格を更新しました");
         setOpen(false);
       } catch (_error) {
+        console.error("保有資格の更新に失敗しました", _error);
         toast.error("保有資格の更新に失敗しました");
       }
     });

@@ -67,6 +67,7 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
         }
       }
     } catch (_error) {
+      console.error("企業の作成に失敗しました", _error);
       toast.error("予期せぬエラーが発生しました");
     } finally {
       setIsPending(false);
