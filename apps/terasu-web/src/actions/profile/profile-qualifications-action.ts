@@ -41,10 +41,11 @@ export const profileQualificationsEditAction = async (
   },
 ) => {
   try {
-    await getRequiredSession();
+    const { userId } = await getRequiredSession();
 
     return await prismaClient.qualification.update({
       where: {
+        userId: userId,
         id: id,
       },
       data: {
