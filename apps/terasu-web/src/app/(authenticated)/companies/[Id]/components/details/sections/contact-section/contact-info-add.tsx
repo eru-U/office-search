@@ -63,6 +63,7 @@ export const ContactInfoAdd = ({ yearlyInfoId }: Props) => {
         form.reset();
         setOpen(false);
       } catch (_error) {
+        console.error("人物情報の保存に失敗しました", _error);
         toast.error("保存中にエラーが発生しました");
       }
     });

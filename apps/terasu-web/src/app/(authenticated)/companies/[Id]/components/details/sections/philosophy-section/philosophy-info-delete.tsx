@@ -21,6 +21,7 @@ export const PhilosophyDelete = ({ id }: { id: string }) => {
 
         toast.success("企業理念を抹消しました");
       } catch (_error) {
+        console.error("企業理念の削除に失敗しました", _error);
         toast.error(
           "削除に失敗しました。この理念はまだ消されたくないようです。",
         );

@@ -66,6 +66,7 @@ export function MemoTab() {
         setIsAddingMemo(false);
         loadMemos();
       } catch (_error) {
+        console.error("メモの追加に失敗しました", _error);
         toast.error("送信できませんでした");
       }
     });

@@ -72,6 +72,7 @@ export const BranchInfoAdd = () => {
         form.reset(); // 追加後はフォームを空にする
         setOpen(false);
       } catch (_error) {
+        console.error("支店情報の追加に失敗しました", _error);
         toast.error("支店情報の追加に失敗しました");
       }
     });

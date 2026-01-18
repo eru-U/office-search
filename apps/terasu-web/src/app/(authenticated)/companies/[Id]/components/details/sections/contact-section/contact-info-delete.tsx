@@ -21,6 +21,7 @@ export const ContactInfoDelete = ({ id }: { id: string }) => {
 
         toast.success("担当者情報を抹消しました");
       } catch (_error) {
+        console.error("人物情報の削除に失敗しました", _error);
         toast.error(
           "削除に失敗しました。この担当者情報はまだ消されたくないようです。",
         );

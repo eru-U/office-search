@@ -47,6 +47,7 @@ export const MemoItem = ({
         setIsEditing(false);
         onRefresh();
       } catch (_error) {
+        console.error("メモの更新に失敗しました", _error);
         toast.error("更新に失敗しました");
       }
     });
@@ -59,6 +60,7 @@ export const MemoItem = ({
         toast.success("メモを削除しました");
         onRefresh();
       } catch (_error) {
+        console.error("メモの削除に失敗しました", _error);
         toast.error("削除に失敗しました");
       }
     });

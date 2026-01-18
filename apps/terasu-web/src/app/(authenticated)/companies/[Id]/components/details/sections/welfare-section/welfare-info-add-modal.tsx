@@ -82,6 +82,7 @@ export const WelfareInfoAdd = ({ yearlyInfoId }: Props) => {
         form.reset(); // 追加後はフォームをリセット
         setOpen(false);
       } catch (_error) {
+        console.error("福利厚生の追加に失敗しました", _error);
         toast.error("福利厚生の追加に失敗しました");
       }
     });

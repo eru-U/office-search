@@ -75,6 +75,7 @@ export const PhilosophyInfoAdd = () => {
         form.reset(); // 追加後はフォームを空にする
         setOpen(false);
       } catch (_error) {
+        console.error("企業理念の追加に失敗しました", _error);
         toast.error("企業理念の追加に失敗しました");
       }
     });

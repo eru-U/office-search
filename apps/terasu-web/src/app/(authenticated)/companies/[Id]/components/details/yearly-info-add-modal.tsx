@@ -53,6 +53,7 @@ export const YearlyInfoAddForm = ({ onRefresh, isPrimary }: Props) => {
         form.reset();
         setOpen(false);
       } catch (_error) {
+        console.error("年度別情報の登録に失敗しました", _error);
         toast.error("登録できませんでした");
       }
     });

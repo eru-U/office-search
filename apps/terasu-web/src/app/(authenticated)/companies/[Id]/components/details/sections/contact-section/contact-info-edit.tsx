@@ -73,6 +73,7 @@ export const ContactInfoEdit = ({ id, initialContent }: Props) => {
         toast.success("連絡先情報を更新しました");
         setOpen(false);
       } catch (_error) {
+        console.error("連絡先情報の更新に失敗しました", _error);
         toast.error("連絡先情報の更新に失敗しました");
       }
     });

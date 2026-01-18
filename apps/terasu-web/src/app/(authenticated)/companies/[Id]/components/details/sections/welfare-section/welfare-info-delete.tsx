@@ -21,6 +21,7 @@ export const WelfareDelete = ({ id }: { id: string }) => {
 
         toast.success("福利厚生を抹消しました");
       } catch (_error) {
+        console.error("福利厚生の削除に失敗しました", _error);
         toast.error(
           "削除に失敗しました。この福利厚生はまだ消されたくないようです。",
         );
