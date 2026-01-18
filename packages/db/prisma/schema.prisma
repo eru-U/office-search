@@ -414,6 +414,13 @@ model Tag {
   companies Company[] @relation("CompanyToTag")
 }
 
+/// 優先度の種別
+enum PriorityType {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 /// 自身の就活の軸
 model JobHuntingAxis {
   /// 就活軸ID
@@ -423,7 +430,7 @@ model JobHuntingAxis {
   /// 軸の内容
   content      String?
   /// 優先度種別
-  priorityType Int?
+  priorityType PriorityType?
   /// 表示順序
   displayOrder Int?
   /// 作成日時

@@ -85,6 +85,11 @@ export const SortOrderSchema = z.enum(['asc','desc']);
 export const QueryModeSchema = z.enum(['default','insensitive']);
 
 export const NullsOrderSchema = z.enum(['first','last']);
+
+export const PriorityTypeSchema = z.enum(['LOW','MEDIUM','HIGH']);
+
+export type PriorityTypeType = `${z.infer<typeof PriorityTypeSchema>}`
+
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
@@ -694,6 +699,10 @@ export type Tag = z.infer<typeof TagSchema>
  */
 export const JobHuntingAxisSchema = z.object({
   /**
+   * 優先度種別
+   */
+  priorityType: PriorityTypeSchema.nullable(),
+  /**
    * 就活軸ID
    */
   id: z.cuid(),
@@ -705,10 +714,6 @@ export const JobHuntingAxisSchema = z.object({
    * 軸の内容
    */
   content: z.string().nullable(),
-  /**
-   * 優先度種別
-   */
-  priorityType: z.number().int().nullable(),
   /**
    * 表示順序
    */
@@ -3414,7 +3419,7 @@ export const JobHuntingAxisWhereInputSchema: z.ZodType<Prisma.JobHuntingAxisWher
   id: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
-  priorityType: z.union([ z.lazy(() => IntNullableFilterSchema), z.number() ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => EnumPriorityTypeNullableFilterSchema), z.lazy(() => PriorityTypeSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.lazy(() => IntNullableFilterSchema), z.number() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date() ]).optional().nullable(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema), z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -3442,7 +3447,7 @@ export const JobHuntingAxisWhereUniqueInputSchema: z.ZodType<Prisma.JobHuntingAx
   NOT: z.union([ z.lazy(() => JobHuntingAxisWhereInputSchema), z.lazy(() => JobHuntingAxisWhereInputSchema).array() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
-  priorityType: z.union([ z.lazy(() => IntNullableFilterSchema), z.number().int() ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => EnumPriorityTypeNullableFilterSchema), z.lazy(() => PriorityTypeSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.lazy(() => IntNullableFilterSchema), z.number().int() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date() ]).optional().nullable(),
   user: z.union([ z.lazy(() => UserScalarRelationFilterSchema), z.lazy(() => UserWhereInputSchema) ]).optional(),
@@ -3470,7 +3475,7 @@ export const JobHuntingAxisScalarWhereWithAggregatesInputSchema: z.ZodType<Prism
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema), z.string() ]).optional().nullable(),
-  priorityType: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema), z.number() ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => EnumPriorityTypeNullableWithAggregatesFilterSchema), z.lazy(() => PriorityTypeSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.lazy(() => IntNullableWithAggregatesFilterSchema), z.number() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeNullableWithAggregatesFilterSchema), z.coerce.date() ]).optional().nullable(),
 });
@@ -5629,7 +5634,7 @@ export const TagUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TagUncheckedUpd
 export const JobHuntingAxisCreateInputSchema: z.ZodType<Prisma.JobHuntingAxisCreateInput> = z.strictObject({
   id: z.cuid().optional(),
   content: z.string().optional().nullable(),
-  priorityType: z.number().int().optional().nullable(),
+  priorityType: z.lazy(() => PriorityTypeSchema).optional().nullable(),
   displayOrder: z.number().int().optional().nullable(),
   createdAt: z.coerce.date().optional().nullable(),
   user: z.lazy(() => UserCreateNestedOneWithoutJobHuntingAxesInputSchema),
@@ -5640,7 +5645,7 @@ export const JobHuntingAxisUncheckedCreateInputSchema: z.ZodType<Prisma.JobHunti
   id: z.cuid().optional(),
   userId: z.string(),
   content: z.string().optional().nullable(),
-  priorityType: z.number().int().optional().nullable(),
+  priorityType: z.lazy(() => PriorityTypeSchema).optional().nullable(),
   displayOrder: z.number().int().optional().nullable(),
   createdAt: z.coerce.date().optional().nullable(),
   matchings: z.lazy(() => CompanyAxisMatchingUncheckedCreateNestedManyWithoutJobAxisInputSchema).optional(),
@@ -5649,7 +5654,7 @@ export const JobHuntingAxisUncheckedCreateInputSchema: z.ZodType<Prisma.JobHunti
 export const JobHuntingAxisUpdateInputSchema: z.ZodType<Prisma.JobHuntingAxisUpdateInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  priorityType: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NullableEnumPriorityTypeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutJobHuntingAxesNestedInputSchema).optional(),
@@ -5660,7 +5665,7 @@ export const JobHuntingAxisUncheckedUpdateInputSchema: z.ZodType<Prisma.JobHunti
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  priorityType: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NullableEnumPriorityTypeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   matchings: z.lazy(() => CompanyAxisMatchingUncheckedUpdateManyWithoutJobAxisNestedInputSchema).optional(),
@@ -5670,7 +5675,7 @@ export const JobHuntingAxisCreateManyInputSchema: z.ZodType<Prisma.JobHuntingAxi
   id: z.cuid().optional(),
   userId: z.string(),
   content: z.string().optional().nullable(),
-  priorityType: z.number().int().optional().nullable(),
+  priorityType: z.lazy(() => PriorityTypeSchema).optional().nullable(),
   displayOrder: z.number().int().optional().nullable(),
   createdAt: z.coerce.date().optional().nullable(),
 });
@@ -5678,7 +5683,7 @@ export const JobHuntingAxisCreateManyInputSchema: z.ZodType<Prisma.JobHuntingAxi
 export const JobHuntingAxisUpdateManyMutationInputSchema: z.ZodType<Prisma.JobHuntingAxisUpdateManyMutationInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  priorityType: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NullableEnumPriorityTypeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 });
@@ -5687,7 +5692,7 @@ export const JobHuntingAxisUncheckedUpdateManyInputSchema: z.ZodType<Prisma.JobH
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  priorityType: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NullableEnumPriorityTypeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 });
@@ -7695,6 +7700,13 @@ export const TagMinOrderByAggregateInputSchema: z.ZodType<Prisma.TagMinOrderByAg
   userId: z.lazy(() => SortOrderSchema).optional(),
 });
 
+export const EnumPriorityTypeNullableFilterSchema: z.ZodType<Prisma.EnumPriorityTypeNullableFilter> = z.strictObject({
+  equals: z.lazy(() => PriorityTypeSchema).optional().nullable(),
+  in: z.lazy(() => PriorityTypeSchema).array().optional().nullable(),
+  notIn: z.lazy(() => PriorityTypeSchema).array().optional().nullable(),
+  not: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NestedEnumPriorityTypeNullableFilterSchema) ]).optional().nullable(),
+});
+
 export const JobHuntingAxisCountOrderByAggregateInputSchema: z.ZodType<Prisma.JobHuntingAxisCountOrderByAggregateInput> = z.strictObject({
   id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
@@ -7705,7 +7717,6 @@ export const JobHuntingAxisCountOrderByAggregateInputSchema: z.ZodType<Prisma.Jo
 });
 
 export const JobHuntingAxisAvgOrderByAggregateInputSchema: z.ZodType<Prisma.JobHuntingAxisAvgOrderByAggregateInput> = z.strictObject({
-  priorityType: z.lazy(() => SortOrderSchema).optional(),
   displayOrder: z.lazy(() => SortOrderSchema).optional(),
 });
 
@@ -7728,8 +7739,17 @@ export const JobHuntingAxisMinOrderByAggregateInputSchema: z.ZodType<Prisma.JobH
 });
 
 export const JobHuntingAxisSumOrderByAggregateInputSchema: z.ZodType<Prisma.JobHuntingAxisSumOrderByAggregateInput> = z.strictObject({
-  priorityType: z.lazy(() => SortOrderSchema).optional(),
   displayOrder: z.lazy(() => SortOrderSchema).optional(),
+});
+
+export const EnumPriorityTypeNullableWithAggregatesFilterSchema: z.ZodType<Prisma.EnumPriorityTypeNullableWithAggregatesFilter> = z.strictObject({
+  equals: z.lazy(() => PriorityTypeSchema).optional().nullable(),
+  in: z.lazy(() => PriorityTypeSchema).array().optional().nullable(),
+  notIn: z.lazy(() => PriorityTypeSchema).array().optional().nullable(),
+  not: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NestedEnumPriorityTypeNullableWithAggregatesFilterSchema) ]).optional().nullable(),
+  _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+  _min: z.lazy(() => NestedEnumPriorityTypeNullableFilterSchema).optional(),
+  _max: z.lazy(() => NestedEnumPriorityTypeNullableFilterSchema).optional(),
 });
 
 export const JobHuntingAxisScalarRelationFilterSchema: z.ZodType<Prisma.JobHuntingAxisScalarRelationFilter> = z.strictObject({
@@ -10141,6 +10161,10 @@ export const CompanyAxisMatchingUncheckedCreateNestedManyWithoutJobAxisInputSche
   connect: z.union([ z.lazy(() => CompanyAxisMatchingWhereUniqueInputSchema), z.lazy(() => CompanyAxisMatchingWhereUniqueInputSchema).array() ]).optional(),
 });
 
+export const NullableEnumPriorityTypeFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableEnumPriorityTypeFieldUpdateOperationsInput> = z.strictObject({
+  set: z.lazy(() => PriorityTypeSchema).optional().nullable(),
+});
+
 export const UserUpdateOneRequiredWithoutJobHuntingAxesNestedInputSchema: z.ZodType<Prisma.UserUpdateOneRequiredWithoutJobHuntingAxesNestedInput> = z.strictObject({
   create: z.union([ z.lazy(() => UserCreateWithoutJobHuntingAxesInputSchema), z.lazy(() => UserUncheckedCreateWithoutJobHuntingAxesInputSchema) ]).optional(),
   connectOrCreate: z.lazy(() => UserCreateOrConnectWithoutJobHuntingAxesInputSchema).optional(),
@@ -10906,6 +10930,23 @@ export const NestedFloatNullableWithAggregatesFilterSchema: z.ZodType<Prisma.Nes
   _max: z.lazy(() => NestedFloatNullableFilterSchema).optional(),
 });
 
+export const NestedEnumPriorityTypeNullableFilterSchema: z.ZodType<Prisma.NestedEnumPriorityTypeNullableFilter> = z.strictObject({
+  equals: z.lazy(() => PriorityTypeSchema).optional().nullable(),
+  in: z.lazy(() => PriorityTypeSchema).array().optional().nullable(),
+  notIn: z.lazy(() => PriorityTypeSchema).array().optional().nullable(),
+  not: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NestedEnumPriorityTypeNullableFilterSchema) ]).optional().nullable(),
+});
+
+export const NestedEnumPriorityTypeNullableWithAggregatesFilterSchema: z.ZodType<Prisma.NestedEnumPriorityTypeNullableWithAggregatesFilter> = z.strictObject({
+  equals: z.lazy(() => PriorityTypeSchema).optional().nullable(),
+  in: z.lazy(() => PriorityTypeSchema).array().optional().nullable(),
+  notIn: z.lazy(() => PriorityTypeSchema).array().optional().nullable(),
+  not: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NestedEnumPriorityTypeNullableWithAggregatesFilterSchema) ]).optional().nullable(),
+  _count: z.lazy(() => NestedIntNullableFilterSchema).optional(),
+  _min: z.lazy(() => NestedEnumPriorityTypeNullableFilterSchema).optional(),
+  _max: z.lazy(() => NestedEnumPriorityTypeNullableFilterSchema).optional(),
+});
+
 export const NestedFloatWithAggregatesFilterSchema: z.ZodType<Prisma.NestedFloatWithAggregatesFilter> = z.strictObject({
   equals: z.number().optional(),
   in: z.number().array().optional(),
@@ -11033,7 +11074,7 @@ export const IndustryCreateManyUserInputEnvelopeSchema: z.ZodType<Prisma.Industr
 export const JobHuntingAxisCreateWithoutUserInputSchema: z.ZodType<Prisma.JobHuntingAxisCreateWithoutUserInput> = z.strictObject({
   id: z.cuid().optional(),
   content: z.string().optional().nullable(),
-  priorityType: z.number().int().optional().nullable(),
+  priorityType: z.lazy(() => PriorityTypeSchema).optional().nullable(),
   displayOrder: z.number().int().optional().nullable(),
   createdAt: z.coerce.date().optional().nullable(),
   matchings: z.lazy(() => CompanyAxisMatchingCreateNestedManyWithoutJobAxisInputSchema).optional(),
@@ -11042,7 +11083,7 @@ export const JobHuntingAxisCreateWithoutUserInputSchema: z.ZodType<Prisma.JobHun
 export const JobHuntingAxisUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.JobHuntingAxisUncheckedCreateWithoutUserInput> = z.strictObject({
   id: z.cuid().optional(),
   content: z.string().optional().nullable(),
-  priorityType: z.number().int().optional().nullable(),
+  priorityType: z.lazy(() => PriorityTypeSchema).optional().nullable(),
   displayOrder: z.number().int().optional().nullable(),
   createdAt: z.coerce.date().optional().nullable(),
   matchings: z.lazy(() => CompanyAxisMatchingUncheckedCreateNestedManyWithoutJobAxisInputSchema).optional(),
@@ -11429,7 +11470,7 @@ export const JobHuntingAxisScalarWhereInputSchema: z.ZodType<Prisma.JobHuntingAx
   id: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   content: z.union([ z.lazy(() => StringNullableFilterSchema), z.string() ]).optional().nullable(),
-  priorityType: z.union([ z.lazy(() => IntNullableFilterSchema), z.number() ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => EnumPriorityTypeNullableFilterSchema), z.lazy(() => PriorityTypeSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.lazy(() => IntNullableFilterSchema), z.number() ]).optional().nullable(),
   createdAt: z.union([ z.lazy(() => DateTimeNullableFilterSchema), z.coerce.date() ]).optional().nullable(),
 });
@@ -14599,7 +14640,7 @@ export const CompanyCreateOrConnectWithoutAxisMatchingsInputSchema: z.ZodType<Pr
 export const JobHuntingAxisCreateWithoutMatchingsInputSchema: z.ZodType<Prisma.JobHuntingAxisCreateWithoutMatchingsInput> = z.strictObject({
   id: z.cuid().optional(),
   content: z.string().optional().nullable(),
-  priorityType: z.number().int().optional().nullable(),
+  priorityType: z.lazy(() => PriorityTypeSchema).optional().nullable(),
   displayOrder: z.number().int().optional().nullable(),
   createdAt: z.coerce.date().optional().nullable(),
   user: z.lazy(() => UserCreateNestedOneWithoutJobHuntingAxesInputSchema),
@@ -14609,7 +14650,7 @@ export const JobHuntingAxisUncheckedCreateWithoutMatchingsInputSchema: z.ZodType
   id: z.cuid().optional(),
   userId: z.string(),
   content: z.string().optional().nullable(),
-  priorityType: z.number().int().optional().nullable(),
+  priorityType: z.lazy(() => PriorityTypeSchema).optional().nullable(),
   displayOrder: z.number().int().optional().nullable(),
   createdAt: z.coerce.date().optional().nullable(),
 });
@@ -14690,7 +14731,7 @@ export const JobHuntingAxisUpdateToOneWithWhereWithoutMatchingsInputSchema: z.Zo
 export const JobHuntingAxisUpdateWithoutMatchingsInputSchema: z.ZodType<Prisma.JobHuntingAxisUpdateWithoutMatchingsInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  priorityType: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NullableEnumPriorityTypeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   user: z.lazy(() => UserUpdateOneRequiredWithoutJobHuntingAxesNestedInputSchema).optional(),
@@ -14700,7 +14741,7 @@ export const JobHuntingAxisUncheckedUpdateWithoutMatchingsInputSchema: z.ZodType
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   userId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  priorityType: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NullableEnumPriorityTypeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 });
@@ -16625,7 +16666,7 @@ export const IndustryCreateManyUserInputSchema: z.ZodType<Prisma.IndustryCreateM
 export const JobHuntingAxisCreateManyUserInputSchema: z.ZodType<Prisma.JobHuntingAxisCreateManyUserInput> = z.strictObject({
   id: z.cuid().optional(),
   content: z.string().optional().nullable(),
-  priorityType: z.number().int().optional().nullable(),
+  priorityType: z.lazy(() => PriorityTypeSchema).optional().nullable(),
   displayOrder: z.number().int().optional().nullable(),
   createdAt: z.coerce.date().optional().nullable(),
 });
@@ -16815,7 +16856,7 @@ export const IndustryUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma
 export const JobHuntingAxisUpdateWithoutUserInputSchema: z.ZodType<Prisma.JobHuntingAxisUpdateWithoutUserInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  priorityType: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NullableEnumPriorityTypeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   matchings: z.lazy(() => CompanyAxisMatchingUpdateManyWithoutJobAxisNestedInputSchema).optional(),
@@ -16824,7 +16865,7 @@ export const JobHuntingAxisUpdateWithoutUserInputSchema: z.ZodType<Prisma.JobHun
 export const JobHuntingAxisUncheckedUpdateWithoutUserInputSchema: z.ZodType<Prisma.JobHuntingAxisUncheckedUpdateWithoutUserInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  priorityType: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NullableEnumPriorityTypeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   matchings: z.lazy(() => CompanyAxisMatchingUncheckedUpdateManyWithoutJobAxisNestedInputSchema).optional(),
@@ -16833,7 +16874,7 @@ export const JobHuntingAxisUncheckedUpdateWithoutUserInputSchema: z.ZodType<Pris
 export const JobHuntingAxisUncheckedUpdateManyWithoutUserInputSchema: z.ZodType<Prisma.JobHuntingAxisUncheckedUpdateManyWithoutUserInput> = z.strictObject({
   id: z.union([ z.cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.union([ z.string(),z.lazy(() => NullableStringFieldUpdateOperationsInputSchema) ]).optional().nullable(),
-  priorityType: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
+  priorityType: z.union([ z.lazy(() => PriorityTypeSchema), z.lazy(() => NullableEnumPriorityTypeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   displayOrder: z.union([ z.number().int(),z.lazy(() => NullableIntFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => NullableDateTimeFieldUpdateOperationsInputSchema) ]).optional().nullable(),
 });
