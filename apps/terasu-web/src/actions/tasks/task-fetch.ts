@@ -1,5 +1,6 @@
 "use server";
 
+// biome-ignore assist/source/organizeImports: <>
 import { getRequiredSession } from "@/lib/requireAuth";
 import { prismaClient } from "@terasu/db";
 
@@ -34,10 +35,7 @@ export const taskFetch = async () => {
           },
         },
       },
-      orderBy: {
-        deadline: "asc",
-        createdAt: "desc",
-      },
+      orderBy: [{ deadline: "asc" }, { createdAt: "desc" }],
     });
     return result;
   } catch (error) {
