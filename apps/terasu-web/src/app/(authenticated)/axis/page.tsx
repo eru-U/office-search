@@ -43,7 +43,7 @@ export default function AxisPage() {
       const result = await axisFetchAction();
       setAxes(result as JobHuntingAxis[]);
     } catch (_error) {
-      console.error("[AxisPage] Fetch failed:", _error);
+      console.error("[AxisPage] フェッチに失敗しました:", _error);
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +59,7 @@ export default function AxisPage() {
     fetchAxes,
   );
 
-  // 各セクションのアイテムをメモ化して、SortableContext に ID の配列を渡す
+  // カテゴリごとのフィルタリング
   const highAxes = useMemo(
     () => axes.filter((a) => a.priorityType === "HIGH"),
     [axes],
@@ -74,17 +74,13 @@ export default function AxisPage() {
   );
 
   /**
-   * カスタム衝突検知：
-   * アイテムとの重なり（rectIntersection）を優先し、
-   * 何もない場合は中心距離（closestCenter）でコンテナを探す。
+   * 衝突検知ロジック
    */
   const collisionDetectionStrategy: CollisionDetection = useCallback((args) => {
-    // まず矩形交差で判定（アイテム同士の入れ替えに強い）
     const intersections = rectIntersection(args);
     if (intersections.length > 0) {
       return intersections;
     }
-    // 交差がない場合は最も近い中心点（空のコンテナへの移動に強い）
     return closestCenter(args);
   }, []);
 
@@ -103,11 +99,14 @@ export default function AxisPage() {
           <header className="mb-10 flex items-center justify-between">
             <div className="space-y-1">
               <h1 className="text-3xl font-black tracking-tighter text-slate-900 flex items-center gap-2">
-                Job Hunting Axis
+                就活軸設定
                 {isUpdating && (
                   <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
                 )}
               </h1>
+              <p className="text-sm text-slate-500 font-medium">
+                優先度に合わせてドラッグ&ドロップで並び替えができます
+              </p>
             </div>
             <AxisAddButton />
           </header>
@@ -118,9 +117,9 @@ export default function AxisPage() {
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
           >
-            {/* --- HIGH SECTION --- */}
+            {/* --- 高優先度 (Must) --- */}
             <AxisSectionHeader
-              title="Must (絶対条件)"
+              title="必須（絶対に譲れない）"
               icon={
                 <Star className="h-4 w-4 fill-orange-500 text-orange-500" />
               }
@@ -136,15 +135,15 @@ export default function AxisPage() {
                 ))}
                 {highAxes.length === 0 && (
                   <div className="py-8 text-center text-xs text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl">
-                    ここにドロップして追加
+                    ここにドロップして「必須条件」を追加
                   </div>
                 )}
               </AxisSection>
             </SortableContext>
 
-            {/* --- MEDIUM SECTION --- */}
+            {/* --- 中優先度 (Should) --- */}
             <AxisSectionHeader
-              title="Should (できれば)"
+              title="優先（できれば叶えたい）"
               icon={<ChevronUp className="h-4 w-4 text-blue-500" />}
               colorClass="text-blue-600 border-blue-200"
             />
@@ -158,15 +157,15 @@ export default function AxisPage() {
                 ))}
                 {mediumAxes.length === 0 && (
                   <div className="py-8 text-center text-xs text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl">
-                    ここにドロップして追加
+                    ここにドロップして「優先条件」を追加
                   </div>
                 )}
               </AxisSection>
             </SortableContext>
 
-            {/* --- LOW SECTION --- */}
+            {/* --- 低優先度 (May) --- */}
             <AxisSectionHeader
-              title="May (あれば尚良)"
+              title="許容（あれば嬉しい）"
               icon={<ChevronDown className="h-4 w-4 text-slate-400" />}
               colorClass="text-slate-500 border-slate-200"
             />
@@ -180,7 +179,7 @@ export default function AxisPage() {
                 ))}
                 {lowAxes.length === 0 && (
                   <div className="py-8 text-center text-xs text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl">
-                    ここにドロップして追加
+                    ここにドロップして「許容条件」を追加
                   </div>
                 )}
               </AxisSection>
