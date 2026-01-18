@@ -1,7 +1,7 @@
-import { ProfileAvatar } from "./ProfileAvatar";
-import { ProfileInfo } from "./ProfileInfo";
-import { ProfileQualifications } from "./ProfileQualifications";
-import { ProfileTechStack } from "./ProfileTechStack";
+import { ProfileAvatar } from "./profile-avatar";
+import { ProfileInfo } from "./profile-info";
+import { ProfileQualifications } from "./profile-qualifications";
+import { ProfileTechStack } from "./profile-techStack";
 import type { ProfileData } from "./type";
 
 export const ProfileDisplay = ({ profile }: { profile: ProfileData }) => {

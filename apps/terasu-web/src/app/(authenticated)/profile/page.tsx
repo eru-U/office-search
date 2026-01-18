@@ -3,7 +3,7 @@
 // biome-ignore assist/source/organizeImports: <>
 import { profileFetchAction } from "@/actions/profile/profile-fetch-actions";
 import { useCallback, useEffect, useState } from "react";
-import { ProfileDisplay } from "./components/ProfileDisplay";
+import { ProfileDisplay } from "./components/profile-display";
 import type { ProfileData } from "./components/type";
 
 export default function Profile() {
