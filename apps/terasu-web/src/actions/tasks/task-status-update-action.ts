@@ -12,9 +12,6 @@ import { prismaClient } from "@terasu/db";
  */
 export const taskUpdateStatus = async (taskId: string, newStatus: string) => {
   try {
-    console.log(newStatus);
-    console.log(newStatus === "DONE" ? new Date() : null);
-
     await getRequiredSession();
 
     // DONEに移動する場合は完了日をセット、それ以外はnullに戻す

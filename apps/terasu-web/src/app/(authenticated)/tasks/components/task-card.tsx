@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { taskDescriptionSchema, taskTitleEditSchema } from "@terasu/schema";
 import { format, isBefore, isSameDay, startOfDay } from "date-fns";
 import {
   ArrowRight,
@@ -41,7 +42,7 @@ import type { FC } from "react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
+import type { z } from "zod";
 import type { Task } from "./type";
 
 interface Props {
@@ -50,17 +51,13 @@ interface Props {
   isOverlay?: boolean;
 }
 
-const taskUpdateSchema = z.object({
-  description: z.string().nullable(),
-});
-
-type TaskUpdateValues = z.infer<typeof taskUpdateSchema>;
+type TaskTitleValues = z.infer<typeof taskTitleEditSchema>;
+type TaskDescriptionValues = z.infer<typeof taskDescriptionSchema>;
 
 export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
   const [isEditingDescription, setIsEditingDescription] =
     useState<boolean>(false);
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
-  const [titleValue, setTitleValue] = useState<string>(task?.title ?? "");
   const [isPending, startTransition] = useTransition();
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -73,8 +70,17 @@ export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
     opacity: isDragging && !isOverlay ? 0.3 : 1,
   };
 
-  const form = useForm<TaskUpdateValues>({
-    resolver: zodResolver(taskUpdateSchema),
+  // タイトル編集フォーム
+  const titleForm = useForm<TaskTitleValues>({
+    resolver: zodResolver(taskTitleEditSchema),
+    defaultValues: {
+      title: task?.title ?? "",
+    },
+  });
+
+  // 説明編集フォーム
+  const descriptionForm = useForm<TaskDescriptionValues>({
+    resolver: zodResolver(taskDescriptionSchema),
     defaultValues: {
       description: task.description ?? "",
     },
@@ -90,25 +96,37 @@ export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
     }
   };
 
-  const onDescriptionSubmit = (data: TaskUpdateValues): void => {
+  const onTitleSubmit = (data: TaskTitleValues): void => {
+    startTransition(async () => {
+      try {
+        await taskUpdateTitle(task.id, data.title);
+        toast.success("タイトルを更新しました");
+        setIsEditingTitle(false);
+        titleForm.reset();
+        onRefresh();
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.includes("タイトルは必須")
+        ) {
+          titleForm.setError("title", {
+            type: "manual",
+            message: "タイトルは必須です",
+          });
+        } else {
+          toast.error("更新に失敗しました");
+        }
+      }
+    });
+  };
+
+  const onDescriptionSubmit = (data: TaskDescriptionValues): void => {
     startTransition(async () => {
       try {
         await taskUpdateDescription(task.id, data.description ?? null);
         toast.success("詳細を更新しました");
         setIsEditingDescription(false);
-        onRefresh();
-      } catch {
-        toast.error("更新に失敗しました");
-      }
-    });
-  };
-
-  const onTitleSubmit = (): void => {
-    startTransition(async () => {
-      try {
-        await taskUpdateTitle(task.id, titleValue);
-        toast.success("タイトルを更新しました");
-        setIsEditingTitle(false);
+        descriptionForm.reset();
         onRefresh();
       } catch {
         toast.error("更新に失敗しました");
@@ -134,9 +152,14 @@ export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
       className={isOverlay ? "pointer-events-none" : ""}
     >
       <Sheet
-        onOpenChange={(open: boolean) =>
-          !open && setIsEditingDescription(false)
-        }
+        onOpenChange={(open: boolean) => {
+          if (!open) {
+            setIsEditingDescription(false);
+            setIsEditingTitle(false);
+            descriptionForm.reset();
+            titleForm.reset();
+          }
+        }}
       >
         <SheetTrigger asChild>
           <Card
@@ -209,48 +232,61 @@ export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
                     )}
                   </button>
                 ) : (
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={titleValue}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setTitleValue(e.target.value)
-                      }
-                      placeholder="タイトルを入力"
-                      className="text-xl font-bold h-10"
-                      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          onTitleSubmit();
-                        }
-                        if (e.key === "Escape") {
+                  <Form {...titleForm}>
+                    <form
+                      onSubmit={titleForm.handleSubmit(onTitleSubmit)}
+                      className="flex items-center gap-2"
+                    >
+                      <FormField
+                        control={titleForm.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem className="flex-1">
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="タイトルを入力"
+                                className="text-xl font-bold h-10"
+                                disabled={isPending}
+                                autoFocus
+                                onKeyDown={(
+                                  e: React.KeyboardEvent<HTMLInputElement>,
+                                ) => {
+                                  if (e.key === "Escape") {
+                                    e.preventDefault();
+                                    setIsEditingTitle(false);
+                                    titleForm.reset();
+                                  }
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs" />
+                          </FormItem>
+                        )}
+                      />
+                      <Button
+                        type="submit"
+                        variant="default"
+                        size="sm"
+                        className="h-8 px-4 text-[11px] font-black rounded-full"
+                        disabled={isPending}
+                      >
+                        {isPending ? "更新中..." : "保存"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => {
                           setIsEditingTitle(false);
-                          setTitleValue(task?.title ?? "");
-                        }
-                      }}
-                      disabled={isPending}
-                      autoFocus
-                    />
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="h-8 px-4 text-[11px] font-black rounded-full"
-                      onClick={onTitleSubmit}
-                      disabled={isPending}
-                    >
-                      {isPending ? "更新中..." : "保存"}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => {
-                        setIsEditingTitle(false);
-                        setTitleValue(task?.title ?? "");
-                      }}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
+                          titleForm.reset();
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </form>
+                  </Form>
                 )}
               </SheetTitle>
 
@@ -314,7 +350,7 @@ export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
                         className="h-6 w-6"
                         onClick={() => {
                           setIsEditingDescription(false);
-                          form.reset();
+                          descriptionForm.reset();
                         }}
                       >
                         <X className="h-3 w-3" />
@@ -323,13 +359,15 @@ export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
                   </div>
 
                   {isEditingDescription ? (
-                    <Form {...form}>
+                    <Form {...descriptionForm}>
                       <form
-                        onSubmit={form.handleSubmit(onDescriptionSubmit)}
+                        onSubmit={descriptionForm.handleSubmit(
+                          onDescriptionSubmit,
+                        )}
                         className="space-y-3"
                       >
                         <FormField
-                          control={form.control}
+                          control={descriptionForm.control}
                           name="description"
                           render={({ field }) => (
                             <FormItem>

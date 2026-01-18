@@ -5,8 +5,6 @@ import { prismaClient } from "../lib/client";
  * 企業データの詳細シード
  */
 export const seedCompanies = async (userId: string) => {
-  console.log("🏢 企業データの詳細シードを実行中...");
-
   const lab = await prismaClient.laborCategory.findFirst({ where: { userId } });
   const sc = await prismaClient.salaryCategory.findFirst();
   const emp = await prismaClient.employmentStatus.findFirst({

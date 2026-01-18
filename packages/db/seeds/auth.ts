@@ -5,8 +5,6 @@ import { prismaClient } from "../lib/client";
  * 認証関連データのシード
  */
 export const seedAuth = async (userId: string) => {
-  console.log("🔑 認証関連テーブルのシードを実行中...");
-
   // Accountの作成
   await prismaClient.account.upsert({
     where: {
