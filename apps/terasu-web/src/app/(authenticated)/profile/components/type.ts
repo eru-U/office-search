@@ -5,11 +5,16 @@ export type Qualification = {
 };
 
 export type UserTech = {
+  /** UserTechレコード固有のID（更新・削除に使用） */
+  id: string;
+  /** 紐付いている技術スタックのマスター情報 */
   techStack: {
     id: string;
     name: string | null;
   };
-  startedAt: Date | null; // years から変更
+  /** 経験開始時期 */
+  startedAt: Date | null;
+  /** 実績・メモ */
   note: string | null;
 };
 

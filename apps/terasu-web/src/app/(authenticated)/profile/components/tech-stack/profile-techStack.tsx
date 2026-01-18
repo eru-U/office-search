@@ -1,5 +1,6 @@
-import { AddTechStackButton } from "./techStack-add-button";
 import type { ProfileTechStackProps } from "../type";
+import { AddTechStackButton } from "./techStack-add-button";
+import { TechStackEditButton } from "./techStack-edit-button";
 
 export const ProfileTechStack = ({ userTechs }: ProfileTechStackProps) => {
   const calculateExperience = (startedAt: Date | null): string => {
@@ -33,12 +34,23 @@ export const ProfileTechStack = ({ userTechs }: ProfileTechStackProps) => {
           {userTechs.map((tech, index) => (
             <div
               key={`${tech.techStack.id}-${index}`}
-              className="relative group rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-200 hover:bg-blue-50/30"
+              className="group relative rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-blue-200 hover:bg-blue-50/30"
             >
-              <div className="absolute top-6 right-6">
+              <div className="absolute top-6 right-6 flex items-center gap-2">
                 <span className="inline-flex items-center rounded-md bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-inset ring-blue-700/10">
                   {calculateExperience(tech.startedAt)}
                 </span>
+                <div className="opacity-0 transition-opacity group-hover:opacity-100">
+                  <TechStackEditButton
+                    id={tech.id}
+                    initialContent={{
+                      startedAt: tech.startedAt,
+                      note: tech.note,
+                      techStackName: tech.techStack.name ?? "不明",
+                      techStackId: tech.techStack.id,
+                    }}
+                  />
+                </div>
               </div>
               <div className="pr-28">
                 <h4 className="text-lg font-bold text-slate-800">

@@ -25,6 +25,7 @@ export const profileFetchAction = async () => {
         },
         userTechs: {
           select: {
+            id: true,
             techStack: {
               select: {
                 id: true,

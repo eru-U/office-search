@@ -6,12 +6,13 @@ import { prismaClient } from "@terasu/db";
 
 /**
  * ユーザーと技術スタックを紐づけます（UserTechの新規登録）。
- * * @param data - 登録する技術の情報（技術ID、開始時期、メモ）
+ *
+ * @param data - 登録する技術の情報（技術ID、開始時期、メモ）
  */
 export const profileTechStackAddAction = async (data: {
   techStackId: string;
   startedAt: Date;
-  note: string | null;
+  note?: string | null;
 }) => {
   try {
     const { userId } = await getRequiredSession();
@@ -31,14 +32,15 @@ export const profileTechStackAddAction = async (data: {
 
 /**
  * ユーザーの技術スタック紐づけ情報を更新します。
- * * @param id - UserTechの固有ID
+ *
+ * @param id - UserTechの固有ID
  * @param data - 更新内容（開始時期、メモ）
  */
 export const profileTechStackEditAction = async (
   id: string,
   data: {
     startedAt?: Date;
-    note?: string;
+    note?: string | null;
   },
 ) => {
   try {
@@ -60,7 +62,8 @@ export const profileTechStackEditAction = async (
 
 /**
  * ユーザーの技術スタック紐づけを解除します。
- * * @param id - 削除対象のUserTech固有ID
+ *
+ * @param id - 削除対象のUserTech固有ID
  */
 export const profileTechStackDeleteAction = async (id: string) => {
   try {
