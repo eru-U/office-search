@@ -65,10 +65,11 @@ export const profileQualificationsEditAction = async (
  */
 export const profileQualificationsDeleteAction = async (id: string) => {
   try {
-    await getRequiredSession();
+    const { userId } = await getRequiredSession();
 
     return await prismaClient.qualification.delete({
       where: {
+        userId: userId,
         id: id,
       },
     });

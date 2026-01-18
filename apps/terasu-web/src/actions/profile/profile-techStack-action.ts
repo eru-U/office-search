@@ -70,10 +70,11 @@ export const profileTechStackEditAction = async (
  */
 export const profileTechStackDeleteAction = async (id: string) => {
   try {
-    await getRequiredSession();
+    const { userId } = await getRequiredSession();
 
     return await prismaClient.userTech.delete({
       where: {
+        userId: userId,
         id: id,
       },
     });
