@@ -1,10 +1,21 @@
+"use client";
+
 import type { ProfileTechStackProps } from "../type";
 import { AddTechStackButton } from "./techStack-add-button";
 import { TechStackDeleteButton } from "./techStack-delete-button";
 import { TechStackEditButton } from "./techStack-edit-button";
 
+/**
+ * ユーザーの所持技術スタック一覧を表示するコンポーネントです。
+ * 経験年数の計算および、改行を考慮したメモの表示を行います。
+ */
 export const ProfileTechStack = ({ userTechs }: ProfileTechStackProps) => {
-  const calculateExperience = (startedAt: Date | null): string => {
+  /**
+   * 開始日から現在までの経験年数を算出します。
+   * @param startedAt - 経験開始日
+   * @returns 算出された期間の文字列
+   */
+  const calculateExperience = (startedAt: Date | null) => {
     if (!startedAt) return "期間未登録";
     const now = new Date();
     const start = new Date(startedAt);
@@ -59,7 +70,7 @@ export const ProfileTechStack = ({ userTechs }: ProfileTechStackProps) => {
                   {tech.techStack.name ?? "不明"}
                 </h4>
                 {tech.note && (
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600 whitespace-pre-wrap">
                     {tech.note}
                   </p>
                 )}
