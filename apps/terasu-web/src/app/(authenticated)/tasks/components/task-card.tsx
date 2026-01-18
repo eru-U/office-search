@@ -1,28 +1,44 @@
 "use client";
 
 import { taskUpdateStatus } from "@/actions/tasks/task-status-update-action";
+import { taskUpdateDescription } from "@/actions/tasks/task-update-description";
+import { taskUpdateTitle } from "@/actions/tasks/task-update-title";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { format, isBefore, isSameDay, startOfDay } from "date-fns";
 import {
   ArrowRight,
   Calendar,
   CheckCircle2,
   CheckSquare,
+  Edit2,
   History,
   RotateCcw,
+  X,
 } from "lucide-react";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import * as z from "zod";
 import type { Task } from "./type";
 
 interface Props {
@@ -31,7 +47,18 @@ interface Props {
   isOverlay?: boolean;
 }
 
+const taskUpdateSchema = z.object({
+  description: z.string().nullable(),
+});
+
+type TaskUpdateValues = z.infer<typeof taskUpdateSchema>;
+
 export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [titleValue, setTitleValue] = useState<string>(task?.title ?? "");
+  const [isPending, startTransition] = useTransition();
+
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: task.id,
@@ -42,6 +69,13 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
     opacity: isDragging && !isOverlay ? 0.3 : 1,
   };
 
+  const form = useForm<TaskUpdateValues>({
+    resolver: zodResolver(taskUpdateSchema),
+    defaultValues: {
+      description: task.description ?? "",
+    },
+  });
+
   const handleStatusChange = async (newStatus: string) => {
     try {
       await taskUpdateStatus(task.id, newStatus);
@@ -50,6 +84,32 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
     } catch {
       toast.error("更新に失敗しました");
     }
+  };
+
+  const onDescriptionSubmit = (data: TaskUpdateValues) => {
+    startTransition(async () => {
+      try {
+        await taskUpdateDescription(task.id, data.description ?? null);
+        toast.success("詳細を更新しました");
+        setIsEditingDescription(false);
+        onRefresh();
+      } catch {
+        toast.error("更新に失敗しました");
+      }
+    });
+  };
+
+  const onTitleSubmit = () => {
+    startTransition(async () => {
+      try {
+        await taskUpdateTitle(task.id, titleValue);
+        toast.success("タイトルを更新しました");
+        setIsEditingTitle(false);
+        onRefresh();
+      } catch {
+        toast.error("更新に失敗しました");
+      }
+    });
   };
 
   const getDeadlineColor = (date: Date | null) => {
@@ -69,7 +129,7 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
       {...attributes}
       className={isOverlay ? "pointer-events-none" : ""}
     >
-      <Sheet>
+      <Sheet onOpenChange={(open) => !open && setIsEditingDescription(false)}>
         <SheetTrigger asChild>
           <Card
             className={`cursor-grab active:cursor-grabbing transition-all bg-white overflow-hidden ${
@@ -123,14 +183,63 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
                   {task?.status}
                 </Badge>
               </div>
-              <SheetTitle className="text-xl font-bold leading-tight">
-                {task?.title}
-              </SheetTitle>
+              {!isEditingTitle ? (
+                <button
+                  type="button"
+                  className="text-left w-full text-xl font-bold leading-tight text-slate-900 hover:bg-slate-50 rounded-md px-1 py-1"
+                  onClick={() => setIsEditingTitle(true)}
+                >
+                  {task?.title || (
+                    <span className="text-slate-400 italic">
+                      無題（クリックして編集）
+                    </span>
+                  )}
+                </button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={titleValue}
+                    onChange={(e) => setTitleValue(e.target.value)}
+                    placeholder="タイトルを入力"
+                    className="text-xl font-bold h-10"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        onTitleSubmit();
+                      }
+                      if (e.key === "Escape") {
+                        setIsEditingTitle(false);
+                        setTitleValue(task?.title ?? "");
+                      }
+                    }}
+                    disabled={isPending}
+                  />
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="h-8 px-4 text-[11px] font-black rounded-full"
+                    onClick={onTitleSubmit}
+                    disabled={isPending}
+                  >
+                    {isPending ? "更新中..." : "保存"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => {
+                      setIsEditingTitle(false);
+                      setTitleValue(task?.title ?? "");
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </SheetHeader>
 
             <div className="space-y-8 text-sm mx-2">
               <div className="space-y-4">
-                {/* メタ情報（日付）エリア：小さく、かつ情報を網羅 */}
                 <div className="flex flex-wrap gap-x-4 gap-y-1 px-1">
                   <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                     <History className="w-3 h-3 opacity-60" />
@@ -162,13 +271,84 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
                   )}
                 </div>
 
-                <div className="space-y-3">
-                  <h4 className="text-[11px] font-bold text-muted-foreground uppercase px-1 tracking-widest">
-                    詳細・メモ
-                  </h4>
-                  <div className="bg-slate-50 px-5 py-5 rounded-2xl min-h-48 whitespace-pre-wrap leading-relaxed shadow-inner border border-slate-100 text-slate-700">
-                    {task?.description || "詳細はありません。"}
+                <div className="space-y-3 group/memo">
+                  <div className="flex items-center justify-between px-1">
+                    <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+                      詳細・メモ
+                    </h4>
+                    {!isEditingDescription ? (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 opacity-0 group-hover/memo:opacity-100 transition-opacity"
+                        onClick={() => setIsEditingDescription(true)}
+                      >
+                        <Edit2 className="h-3 w-3" />
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => {
+                          setIsEditingDescription(false);
+                          form.reset();
+                        }}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    )}
                   </div>
+
+                  {isEditingDescription ? (
+                    <Form {...form}>
+                      <form
+                        onSubmit={form.handleSubmit(onDescriptionSubmit)}
+                        className="space-y-3"
+                      >
+                        <FormField
+                          control={form.control}
+                          name="description"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Textarea
+                                  {...field}
+                                  value={field.value ?? ""}
+                                  disabled={isPending}
+                                  className="min-h-48 bg-slate-50 text-sm resize-none rounded-2xl p-5 leading-relaxed focus-visible:ring-primary/20"
+                                  placeholder="詳細を入力してください..."
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <div className="flex justify-end">
+                          <Button
+                            type="submit"
+                            disabled={isPending}
+                            size="sm"
+                            className="h-8 px-4 text-[11px] font-black rounded-full"
+                          >
+                            {isPending ? "更新中..." : "内容を保存"}
+                          </Button>
+                        </div>
+                      </form>
+                    </Form>
+                  ) : (
+                    <button
+                      type="button"
+                      className="w-full text-left items-start bg-slate-50 px-5 py-5 rounded-2xl min-h-48 whitespace-pre-wrap leading-relaxed shadow-inner border border-slate-100 text-slate-700 cursor-pointer hover:bg-slate-100/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                      onClick={() => setIsEditingDescription(true)}
+                    >
+                      {task?.description || (
+                        <span className="text-slate-400 italic">
+                          詳細はありません。クリックして入力
+                        </span>
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
 
