@@ -1,35 +1,32 @@
 "use client";
 
-// biome-ignore assist/source/organizeImports: <>
+import type { CollisionDetection } from "@dnd-kit/core";
 import {
   closestCenter,
   DndContext,
   KeyboardSensor,
   PointerSensor,
+  rectIntersection,
   useSensor,
   useSensors,
-  type DragEndEvent,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { ChevronDown, ChevronUp, Info, Loader2, Star } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { ChevronDown, ChevronUp, Loader2, Star } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { axisFetchAction } from "@/actions/axis/axis-fetch-action";
 import { AxisProvider } from "@/contexts/axis-context";
 import { AxisAddButton } from "./components/axis-add-button";
 import { AxisCard } from "./components/axis-card";
+import { AxisSection } from "./components/axis-section";
 import { AxisSectionHeader } from "./components/axis-section-header";
 import type { JobHuntingAxis } from "./components/type";
+import { useAxisOrderUpdate } from "./components/use-axis-order-update";
 
-/**
- * 就活軸設定ページ
- * データの取得、表示、および AxisProvider による状態管理の統合を行います。
- */
 export default function AxisPage() {
   const [axes, setAxes] = useState<JobHuntingAxis[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -41,54 +38,60 @@ export default function AxisPage() {
     }),
   );
 
-  /**
-   * データベースから最新の就活軸データを取得します
-   */
   const fetchAxes = useCallback(async () => {
-    setIsLoading(true);
     try {
       const result = await axisFetchAction();
-      // 取得したデータを型安全に state へ格納します
       setAxes(result as JobHuntingAxis[]);
     } catch (_error) {
-      console.error("[AxisPage] Fetch Error:", _error);
+      console.error("[AxisPage] Fetch failed:", _error);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // 初回レンダリング時にデータを取得
   useEffect(() => {
     fetchAxes();
   }, [fetchAxes]);
 
+  const { handleDragOver, handleDragEnd, isUpdating } = useAxisOrderUpdate(
+    axes,
+    setAxes,
+    fetchAxes,
+  );
+
+  // 各セクションのアイテムをメモ化して、SortableContext に ID の配列を渡す
+  const highAxes = useMemo(
+    () => axes.filter((a) => a.priorityType === "HIGH"),
+    [axes],
+  );
+  const mediumAxes = useMemo(
+    () => axes.filter((a) => a.priorityType === "MEDIUM"),
+    [axes],
+  );
+  const lowAxes = useMemo(
+    () => axes.filter((a) => a.priorityType === "LOW"),
+    [axes],
+  );
+
   /**
-   * ドラッグ終了時のハンドリング
-   * 現時点ではUI上の並び替えのみ。永続化アクションは別途実装。
+   * カスタム衝突検知：
+   * アイテムとの重なり（rectIntersection）を優先し、
+   * 何もない場合は中心距離（closestCenter）でコンテナを探す。
    */
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      setAxes((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-
-        const newArray = arrayMove(items, oldIndex, newIndex);
-
-        // 表示順序（displayOrder）を配列のインデックスに基づいて仮更新
-        return newArray.map((item, idx) => ({
-          ...item,
-          displayOrder: idx + 1,
-        }));
-      });
+  const collisionDetectionStrategy: CollisionDetection = useCallback((args) => {
+    // まず矩形交差で判定（アイテム同士の入れ替えに強い）
+    const intersections = rectIntersection(args);
+    if (intersections.length > 0) {
+      return intersections;
     }
+    // 交差がない場合は最も近い中心点（空のコンテナへの移動に強い）
+    return closestCenter(args);
   }, []);
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+        <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
       </div>
     );
   }
@@ -97,104 +100,92 @@ export default function AxisPage() {
     <AxisProvider onRefresh={fetchAxes}>
       <main className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl">
-          {/* ヘッダーセクション */}
           <header className="mb-10 flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-black tracking-tighter text-slate-900">
+            <div className="space-y-1">
+              <h1 className="text-3xl font-black tracking-tighter text-slate-900 flex items-center gap-2">
                 Job Hunting Axis
+                {isUpdating && (
+                  <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+                )}
               </h1>
-              <p className="mt-1 text-sm text-slate-500">
-                優先順位を整理して、ブレない就活を実現しましょう。
-              </p>
             </div>
-            {/* 共通のUIパーツに差し替え */}
             <AxisAddButton />
           </header>
 
           <DndContext
             sensors={sensors}
-            collisionDetection={closestCenter}
+            collisionDetection={collisionDetectionStrategy}
+            onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
           >
+            {/* --- HIGH SECTION --- */}
+            <AxisSectionHeader
+              title="Must (絶対条件)"
+              icon={
+                <Star className="h-4 w-4 fill-orange-500 text-orange-500" />
+              }
+              colorClass="text-orange-600 border-orange-200"
+            />
             <SortableContext
-              items={axes}
+              items={highAxes.map((a) => a.id)}
               strategy={verticalListSortingStrategy}
             >
-              {/* MUST ZONE (HIGH) */}
-              <AxisSectionHeader
-                title="Must (絶対条件)"
-                icon={
-                  <Star className="h-4 w-4 fill-orange-500 text-orange-500" />
-                }
-                colorClass="text-orange-600 border-orange-200"
-              />
-              <div className="min-h-10">
-                {axes.filter((a) => a.priorityType === "HIGH").length > 0 ? (
-                  axes
-                    .filter((a) => a.priorityType === "HIGH")
-                    .map((axis) => <AxisCard key={axis.id} axis={axis} />)
-                ) : (
-                  <p className="py-6 text-center text-xs text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
-                    「絶対条件」をドラッグまたは追加してください
-                  </p>
+              <AxisSection id="CONTAINER_HIGH">
+                {highAxes.map((axis) => (
+                  <AxisCard key={axis.id} axis={axis} />
+                ))}
+                {highAxes.length === 0 && (
+                  <div className="py-8 text-center text-xs text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl">
+                    ここにドロップして追加
+                  </div>
                 )}
-              </div>
+              </AxisSection>
+            </SortableContext>
 
-              {/* SHOULD ZONE (MEDIUM) */}
-              <AxisSectionHeader
-                title="Should (できれば)"
-                icon={<ChevronUp className="h-4 w-4 text-blue-500" />}
-                colorClass="text-blue-600 border-blue-200"
-              />
-              <div className="min-h-10">
-                {axes.filter((a) => a.priorityType === "MEDIUM").length > 0 ? (
-                  axes
-                    .filter((a) => a.priorityType === "MEDIUM")
-                    .map((axis) => <AxisCard key={axis.id} axis={axis} />)
-                ) : (
-                  <p className="py-6 text-center text-xs text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
-                    「できれば」な条件を整理しましょう
-                  </p>
+            {/* --- MEDIUM SECTION --- */}
+            <AxisSectionHeader
+              title="Should (できれば)"
+              icon={<ChevronUp className="h-4 w-4 text-blue-500" />}
+              colorClass="text-blue-600 border-blue-200"
+            />
+            <SortableContext
+              items={mediumAxes.map((a) => a.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <AxisSection id="CONTAINER_MEDIUM">
+                {mediumAxes.map((axis) => (
+                  <AxisCard key={axis.id} axis={axis} />
+                ))}
+                {mediumAxes.length === 0 && (
+                  <div className="py-8 text-center text-xs text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl">
+                    ここにドロップして追加
+                  </div>
                 )}
-              </div>
+              </AxisSection>
+            </SortableContext>
 
-              {/* MAY ZONE (LOW) */}
-              <AxisSectionHeader
-                title="May (あれば尚良)"
-                icon={<ChevronDown className="h-4 w-4 text-slate-400" />}
-                colorClass="text-slate-500 border-slate-200"
-              />
-              <div className="min-h-10">
-                {axes.filter((a) => a.priorityType === "LOW").length > 0 ? (
-                  axes
-                    .filter((a) => a.priorityType === "LOW")
-                    .map((axis) => <AxisCard key={axis.id} axis={axis} />)
-                ) : (
-                  <p className="py-6 text-center text-xs text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
-                    あると嬉しい条件をここに追加
-                  </p>
+            {/* --- LOW SECTION --- */}
+            <AxisSectionHeader
+              title="May (あれば尚良)"
+              icon={<ChevronDown className="h-4 w-4 text-slate-400" />}
+              colorClass="text-slate-500 border-slate-200"
+            />
+            <SortableContext
+              items={lowAxes.map((a) => a.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <AxisSection id="CONTAINER_LOW">
+                {lowAxes.map((axis) => (
+                  <AxisCard key={axis.id} axis={axis} />
+                ))}
+                {lowAxes.length === 0 && (
+                  <div className="py-8 text-center text-xs text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl">
+                    ここにドロップして追加
+                  </div>
                 )}
-              </div>
+              </AxisSection>
             </SortableContext>
           </DndContext>
-
-          {/* インフォメーションフッター */}
-          <footer className="mt-12 rounded-2xl bg-white p-6 shadow-inner border border-slate-100">
-            <div className="flex gap-4 items-start">
-              <div className="mt-1 rounded-full bg-blue-100 p-2 text-blue-600">
-                <Info className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-sm font-bold text-slate-800">
-                  プロのアドバイス
-                </h3>
-                <p className="mt-1 text-xs leading-relaxed text-slate-500">
-                  軸は絞るほど、あなたの「本当に行きたい企業」が明確になります。
-                  迷ったら、一度すべての軸を「May」に置いて、下から順に自分に問いかけてみてください。
-                </p>
-              </div>
-            </div>
-          </footer>
         </div>
       </main>
     </AxisProvider>
