@@ -1,8 +1,9 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <>
-import { getTechStacksAction } from "@/actions/tech-stack/get-tech-stacks-action";
 import { profileTechStackAddAction } from "@/actions/profile/profile-techStack-action";
+import { createTechStackAction } from "@/actions/tech-stack/create-tech-stack-action";
+import { getTechStacksAction } from "@/actions/tech-stack/get-tech-stacks-action";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -43,7 +44,7 @@ import {
   type ProfileTechStackCreateInput,
 } from "@terasu/schema/models/profiles/profileTechStackSchema";
 import { Check, ChevronsUpDown, Code, Plus } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -59,6 +60,7 @@ export const AddTechStackButton = () => {
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
   const [comboboxOpen, setComboboxOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const [techStacks, setTechStacks] = useState<
     { label: string; value: string }[]
   >([]);
@@ -66,15 +68,17 @@ export const AddTechStackButton = () => {
   // ==================================================
   // 技術スタック一覧の取得
   // ==================================================
-  useEffect(() => {
-    const fetchTechStacks = async () => {
-      const result = await getTechStacksAction();
-      if (result.success) {
-        setTechStacks(result.data);
-      }
-    };
-    fetchTechStacks();
+  // useCallbackでメモ化することで、関数の参照を固定し、依存配列のエラーを解消します。
+  const fetchTechStacks = useCallback(async () => {
+    const result = await getTechStacksAction();
+    if (result.success) {
+      setTechStacks(result.data);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchTechStacks();
+  }, [fetchTechStacks]);
 
   // ==================================================
   // フォームの初期化
@@ -87,6 +91,34 @@ export const AddTechStackButton = () => {
       note: "",
     },
   });
+
+  // ==================================================
+  // 新しい技術スタックを登録する関数
+  // ==================================================
+  const handleCreateTechStack = async (name: string) => {
+    if (!name.trim()) {
+      toast.error("技術スタック名を入力してください");
+      return;
+    }
+
+    try {
+      const result = await createTechStackAction(name.trim());
+
+      if (result.success && result.data) {
+        toast.success(`「${name}」を技術スタックマスタに登録しました`);
+        // 技術スタック一覧を再取得
+        await fetchTechStacks();
+        // フォームに新しく作成した技術スタックのIDをセット
+        form.setValue("techStackId", result.data.id);
+        setComboboxOpen(false);
+        setSearchValue("");
+      } else {
+        toast.error(result.error || "技術スタックの登録に失敗しました");
+      }
+    } catch (_error) {
+      toast.error("技術スタックの登録に失敗しました");
+    }
+  };
 
   // ==================================================
   // 送信関数
@@ -177,9 +209,31 @@ export const AddTechStackButton = () => {
                       align="start"
                     >
                       <Command>
-                        <CommandInput placeholder="技術スタックを検索..." />
+                        <CommandInput
+                          placeholder="技術スタックを検索..."
+                          value={searchValue}
+                          onValueChange={setSearchValue}
+                        />
                         <CommandList>
-                          <CommandEmpty>見つかりません</CommandEmpty>
+                          <CommandEmpty>
+                            <div className="py-6 text-center">
+                              <p className="text-sm text-muted-foreground mb-3">
+                                「{searchValue}」は見つかりません
+                              </p>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  handleCreateTechStack(searchValue)
+                                }
+                                className="gap-2"
+                              >
+                                <Plus className="h-4 w-4" />「{searchValue}
+                                」を新規登録
+                              </Button>
+                            </div>
+                          </CommandEmpty>
                           <CommandGroup>
                             {techStacks.map((techStack) => (
                               <CommandItem
@@ -188,6 +242,7 @@ export const AddTechStackButton = () => {
                                 onSelect={() => {
                                   form.setValue("techStackId", techStack.value);
                                   setComboboxOpen(false);
+                                  setSearchValue("");
                                 }}
                               >
                                 <Check
