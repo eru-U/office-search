@@ -17,7 +17,9 @@ import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,6 +37,7 @@ import {
   RotateCcw,
   X,
 } from "lucide-react";
+import type { FC } from "react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -53,9 +56,10 @@ const taskUpdateSchema = z.object({
 
 type TaskUpdateValues = z.infer<typeof taskUpdateSchema>;
 
-export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
-  const [isEditingDescription, setIsEditingDescription] = useState(false);
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
+export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
+  const [isEditingDescription, setIsEditingDescription] =
+    useState<boolean>(false);
+  const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [titleValue, setTitleValue] = useState<string>(task?.title ?? "");
   const [isPending, startTransition] = useTransition();
 
@@ -76,7 +80,7 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
     },
   });
 
-  const handleStatusChange = async (newStatus: string) => {
+  const handleStatusChange = async (newStatus: string): Promise<void> => {
     try {
       await taskUpdateStatus(task.id, newStatus);
       onRefresh();
@@ -86,7 +90,7 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
     }
   };
 
-  const onDescriptionSubmit = (data: TaskUpdateValues) => {
+  const onDescriptionSubmit = (data: TaskUpdateValues): void => {
     startTransition(async () => {
       try {
         await taskUpdateDescription(task.id, data.description ?? null);
@@ -99,7 +103,7 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
     });
   };
 
-  const onTitleSubmit = () => {
+  const onTitleSubmit = (): void => {
     startTransition(async () => {
       try {
         await taskUpdateTitle(task.id, titleValue);
@@ -112,7 +116,7 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
     });
   };
 
-  const getDeadlineColor = (date: Date | null) => {
+  const getDeadlineColor = (date: Date | null): string => {
     if (!date) return "text-slate-400";
     const today = startOfDay(new Date());
     const target = startOfDay(new Date(date));
@@ -129,7 +133,11 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
       {...attributes}
       className={isOverlay ? "pointer-events-none" : ""}
     >
-      <Sheet onOpenChange={(open) => !open && setIsEditingDescription(false)}>
+      <Sheet
+        onOpenChange={(open: boolean) =>
+          !open && setIsEditingDescription(false)
+        }
+      >
         <SheetTrigger asChild>
           <Card
             className={`cursor-grab active:cursor-grabbing transition-all bg-white overflow-hidden ${
@@ -174,7 +182,7 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
 
         {!isOverlay && (
           <SheetContent className="sm:max-w-md overflow-y-auto">
-            <SheetHeader className="border-b pb-4 mb-6">
+            <SheetHeader className="border-b pb-4 mb-6 text-left">
               <div className="flex items-center gap-2 mb-2">
                 <Badge
                   variant="secondary"
@@ -183,59 +191,73 @@ export const TaskCard = ({ task, onRefresh, isOverlay = false }: Props) => {
                   {task?.status}
                 </Badge>
               </div>
-              {!isEditingTitle ? (
-                <button
-                  type="button"
-                  className="text-left w-full text-xl font-bold leading-tight text-slate-900 hover:bg-slate-50 rounded-md px-1 py-1"
-                  onClick={() => setIsEditingTitle(true)}
-                >
-                  {task?.title || (
-                    <span className="text-slate-400 italic">
-                      無題（クリックして編集）
-                    </span>
-                  )}
-                </button>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Input
-                    value={titleValue}
-                    onChange={(e) => setTitleValue(e.target.value)}
-                    placeholder="タイトルを入力"
-                    className="text-xl font-bold h-10"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        onTitleSubmit();
+
+              {/* エラー解決のキモ: SheetTitle で編集ロジックを包む。
+                  asChild を使うことで、button や div が直接タイトルの役割を果たすようにします。
+              */}
+              <SheetTitle asChild>
+                {!isEditingTitle ? (
+                  <button
+                    type="button"
+                    className="text-left w-full text-xl font-bold leading-tight text-slate-900 hover:bg-slate-50 rounded-md px-1 py-1 transition-colors"
+                    onClick={() => setIsEditingTitle(true)}
+                  >
+                    {task?.title || (
+                      <span className="text-slate-400 italic">
+                        無題（クリックして編集）
+                      </span>
+                    )}
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={titleValue}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setTitleValue(e.target.value)
                       }
-                      if (e.key === "Escape") {
+                      placeholder="タイトルを入力"
+                      className="text-xl font-bold h-10"
+                      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          onTitleSubmit();
+                        }
+                        if (e.key === "Escape") {
+                          setIsEditingTitle(false);
+                          setTitleValue(task?.title ?? "");
+                        }
+                      }}
+                      disabled={isPending}
+                      autoFocus
+                    />
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="h-8 px-4 text-[11px] font-black rounded-full"
+                      onClick={onTitleSubmit}
+                      disabled={isPending}
+                    >
+                      {isPending ? "更新中..." : "保存"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => {
                         setIsEditingTitle(false);
                         setTitleValue(task?.title ?? "");
-                      }
-                    }}
-                    disabled={isPending}
-                  />
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="h-8 px-4 text-[11px] font-black rounded-full"
-                    onClick={onTitleSubmit}
-                    disabled={isPending}
-                  >
-                    {isPending ? "更新中..." : "保存"}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => {
-                      setIsEditingTitle(false);
-                      setTitleValue(task?.title ?? "");
-                    }}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </SheetTitle>
+
+              {/* アクセシビリティのために説明文を追加（見た目上不要なら sr-only クラスなどで隠しても良い） */}
+              <SheetDescription className="text-xs text-slate-500">
+                タスクの詳細情報を確認・編集できます。
+              </SheetDescription>
             </SheetHeader>
 
             <div className="space-y-8 text-sm mx-2">
