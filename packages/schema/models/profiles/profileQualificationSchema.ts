@@ -6,7 +6,7 @@ import z from "zod";
 export const profileQualificationSchema = z.object({
   name: z.string().min(1, "資格名称を入力してください"),
   obtainedDate: z.date({
-    error: "有効な日付を選択してください",
+    message: "有効な日付を選択してください",
   }),
 });
 

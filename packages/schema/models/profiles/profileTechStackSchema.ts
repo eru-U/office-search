@@ -8,7 +8,7 @@ import { emptyToNull } from "../../lib/edit";
 export const profileTechStackCreateSchema = z.object({
   techStackId: z.string().min(1, "技術スタックを入力してください"),
   startedAt: z.date({
-    error: "有効な日付を選択してください",
+    message: "有効な日付を選択してください",
   }),
   note: z.preprocess(emptyToNull, z.string().nullable()),
 });
@@ -19,7 +19,7 @@ export const profileTechStackCreateSchema = z.object({
  */
 export const profileTechStackUpdateSchema = z.object({
   startedAt: z.date({
-    error: "有効な日付を選択してください",
+    message: "有効な日付を選択してください",
   }),
   note: z.preprocess(emptyToNull, z.string().nullable()),
 });
