@@ -41,7 +41,7 @@ export const YearlyInfoAddForm = ({ onRefresh, isPrimary }: Props) => {
   const params = useParams();
   const companyId = params.Id as string;
 
-  const form = useForm<YearlyAddTypes>({
+  const form = useForm({
     resolver: zodResolver(yearlyAddSchema),
     defaultValues: { dataDate: "" },
   });

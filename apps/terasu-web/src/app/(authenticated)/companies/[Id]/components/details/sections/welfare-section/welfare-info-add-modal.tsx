@@ -54,7 +54,6 @@ export const WelfareInfoAdd = ({ yearlyInfoId }: Props) => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  // Zodのpreprocessによる型崩れを防ぐため、CompanyDetailWelfareAddTypesを指定
   const form = useForm({
     resolver: zodResolver(companyDetailWelfareAddSchema),
     defaultValues: {

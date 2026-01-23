@@ -46,7 +46,7 @@ export const BranchInfoAdd = () => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<CompanyDetailBranchTypes>({
+  const form = useForm({
     resolver: zodResolver(companyDetailBranchSchema),
     defaultValues: {
       address: "",
