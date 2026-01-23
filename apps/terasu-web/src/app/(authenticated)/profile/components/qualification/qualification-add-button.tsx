@@ -46,7 +46,7 @@ export const AddQualificationButton = () => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<ProfileQualificationTypes>({
+  const form = useForm({
     resolver: zodResolver(profileQualificationSchema),
     defaultValues: {
       name: "",

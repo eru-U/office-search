@@ -15,17 +15,11 @@ export const companyDetailPhilosophyAddSchema = companyDetailPhilosophySchema;
 export type CompanyDetailPhilosophyAddTypes = z.infer<
   typeof companyDetailPhilosophyAddSchema
 >;
-export type CompanyDetailPhilosophyAddInput = z.input<
-  typeof companyDetailPhilosophyAddSchema
->;
 
 /**
  * 企業理念を編集するスキーマ
  */
 export const companyDetailPhilosophyEditSchema = companyDetailPhilosophySchema;
 export type CompanyDetailPhilosophyEditTypes = z.infer<
-  typeof companyDetailPhilosophyEditSchema
->;
-export type CompanyDetailPhilosophyEditInput = z.input<
   typeof companyDetailPhilosophyEditSchema
 >;

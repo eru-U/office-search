@@ -29,7 +29,7 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
 
-  const form = useForm<companySchema.CreateCompanySchema>({
+  const form = useForm({
     resolver: zodResolver(companySchema.createCompanySchema),
     defaultValues: {
       name: "",

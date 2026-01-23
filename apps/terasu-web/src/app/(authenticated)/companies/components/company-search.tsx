@@ -60,7 +60,7 @@ export const CompanySearch = ({ industries = [] }: CompanySearchProps) => {
   const searchParams = useSearchParams();
   const [open, setOpen] = React.useState(false);
 
-  const form = useForm<companySchema.SearchCompanySchema>({
+  const form = useForm({
     resolver: zodResolver(companySchema.searchCompanySchema),
     defaultValues: {
       aspirationLevel: Number(searchParams.get("aspirationLevel")) || 0,

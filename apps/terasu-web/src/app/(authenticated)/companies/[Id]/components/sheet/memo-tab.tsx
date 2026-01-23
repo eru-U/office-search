@@ -52,7 +52,7 @@ export function MemoTab() {
   }, [loadMemos]);
 
   // 新規追加用フォーム
-  const addForm = useForm<companyDetailSchema.CompanyMemoTypes>({
+  const addForm = useForm({
     resolver: zodResolver(companyDetailSchema.companyMemoSchema),
     defaultValues: { content: "" },
   });

@@ -10,7 +10,3 @@ export const companyDetailContactSchema = z.object({
 export type CompanyDetailContactTypes = z.infer<
   typeof companyDetailContactSchema
 >;
-
-export type CompanyDetailContactInput = z.input<
-  typeof companyDetailContactSchema
->;

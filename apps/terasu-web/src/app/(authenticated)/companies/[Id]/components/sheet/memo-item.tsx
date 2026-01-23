@@ -1,5 +1,6 @@
 "use client";
 
+// biome-ignore assist/source/organizeImports: <>
 import {
   memoDelete,
   memoEdit,
@@ -34,7 +35,7 @@ export const MemoItem = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const editForm = useForm<companyDetailSchema.CompanyMemoTypes>({
+  const editForm = useForm({
     resolver: zodResolver(companyDetailSchema.companyMemoSchema),
     defaultValues: { content: memo.content ?? "" },
   });
