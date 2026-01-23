@@ -22,8 +22,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  type CompanyDetailWelfareAddInput,
   companyDetailWelfareAddSchema,
+  type CompanyDetailWelfareAddTypes,
 } from "@terasu/schema/models/companyDetailWelfareSchema";
 import { Plus } from "lucide-react";
 import { useState, useTransition } from "react";
@@ -55,7 +55,7 @@ export const WelfareInfoAdd = ({ yearlyInfoId }: Props) => {
   // フォームの初期化
   // ==================================================
   // Zodのpreprocessによる型崩れを防ぐため、CompanyDetailWelfareAddTypesを指定
-  const form = useForm<CompanyDetailWelfareAddInput>({
+  const form = useForm({
     resolver: zodResolver(companyDetailWelfareAddSchema),
     defaultValues: {
       name: "",
@@ -66,7 +66,7 @@ export const WelfareInfoAdd = ({ yearlyInfoId }: Props) => {
   // ==================================================
   // 送信関数
   // ==================================================
-  const onSubmit = async (values: CompanyDetailWelfareAddInput) => {
+  const onSubmit = async (values: CompanyDetailWelfareAddTypes) => {
     const parseData = companyDetailWelfareAddSchema.safeParse(values);
 
     if (!parseData.success) {

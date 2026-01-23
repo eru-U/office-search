@@ -19,7 +19,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { companySchema } from "@terasu/schema";
+import {
+  type CreateCompanyTypes,
+  createCompanySchema,
+} from "@terasu/schema/models/companySchema";
 
 interface CompanyCreateFormProps {
   onSuccess?: () => void;
@@ -30,14 +33,14 @@ export function CompanyCreateForm({ onSuccess }: CompanyCreateFormProps) {
   const router = useRouter();
 
   const form = useForm({
-    resolver: zodResolver(companySchema.createCompanySchema),
+    resolver: zodResolver(createCompanySchema),
     defaultValues: {
       name: "",
     },
   });
 
   const processSubmit = async (
-    data: companySchema.CreateCompanySchema,
+    data: CreateCompanyTypes,
     shouldRedirect: boolean,
   ) => {
     setIsPending(true);

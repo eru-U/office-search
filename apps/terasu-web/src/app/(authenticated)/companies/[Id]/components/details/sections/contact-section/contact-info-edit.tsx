@@ -19,10 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type {
-  CompanyDetailContactInput,
-  CompanyDetailContactTypes,
-} from "@terasu/schema/models/companyDetailContactSchema";
+import type { CompanyDetailContactTypes } from "@terasu/schema/models/companyDetailContactSchema";
 import { companyDetailContactSchema } from "@terasu/schema/models/companyDetailContactSchema";
 import { Edit2 } from "lucide-react";
 import { useState, useTransition } from "react";
@@ -46,7 +43,7 @@ export const ContactInfoEdit = ({ id, initialContent }: Props) => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<CompanyDetailContactInput>({
+  const form = useForm({
     resolver: zodResolver(companyDetailContactSchema),
     defaultValues: {
       name: initialContent.name ?? "",
@@ -58,7 +55,7 @@ export const ContactInfoEdit = ({ id, initialContent }: Props) => {
   // ==================================================
   // 送信関数
   // ==================================================
-  const onSubmit = async (values: CompanyDetailContactInput) => {
+  const onSubmit = async (values: CompanyDetailContactTypes) => {
     const parseData = companyDetailContactSchema.safeParse(values);
 
     if (!parseData.success) {

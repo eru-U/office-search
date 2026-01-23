@@ -20,8 +20,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { CompanyDetailContactInput } from "@terasu/schema/models/companyDetailContactSchema";
-import { companyDetailContactSchema } from "@terasu/schema/models/companyDetailContactSchema";
+import {
+  companyDetailContactSchema,
+  type CompanyDetailContactTypes,
+} from "@terasu/schema/models/companyDetailContactSchema";
 import { Plus } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -37,16 +39,16 @@ export const ContactInfoAdd = ({ yearlyInfoId }: Props) => {
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
 
-  const form = useForm<CompanyDetailContactInput>({
+  const form = useForm({
     resolver: zodResolver(companyDetailContactSchema),
     defaultValues: {
       name: "",
       position: "",
       description: "",
-    } as CompanyDetailContactInput,
+    },
   });
 
-  const onSubmit = async (values: CompanyDetailContactInput) => {
+  const onSubmit = async (values: CompanyDetailContactTypes) => {
     // zodResolverが検証済みですが、安全のために残しています
     const parseData = companyDetailContactSchema.safeParse(values);
 

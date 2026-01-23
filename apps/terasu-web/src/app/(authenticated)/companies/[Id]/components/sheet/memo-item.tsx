@@ -16,7 +16,10 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { companyDetailSchema } from "@terasu/schema";
+import {
+  companyMemoSchema,
+  type CompanyMemoTypes,
+} from "@terasu/schema/models/companyDetailSchema";
 import { Calendar, Edit2, X } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -36,11 +39,11 @@ export const MemoItem = ({
   const [isPending, startTransition] = useTransition();
 
   const editForm = useForm({
-    resolver: zodResolver(companyDetailSchema.companyMemoSchema),
+    resolver: zodResolver(companyMemoSchema),
     defaultValues: { content: memo.content ?? "" },
   });
 
-  const onEditSubmit = (data: companyDetailSchema.CompanyMemoTypes) => {
+  const onEditSubmit = (data: CompanyMemoTypes) => {
     startTransition(async () => {
       try {
         await memoEdit(memo.id, data.content);

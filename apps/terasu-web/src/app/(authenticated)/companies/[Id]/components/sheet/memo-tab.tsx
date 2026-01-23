@@ -17,7 +17,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { companyDetailSchema } from "@terasu/schema";
+import {
+  companyMemoSchema,
+  type CompanyMemoTypes,
+} from "@terasu/schema/models/companyDetailSchema";
 import { Plus, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
@@ -53,11 +56,11 @@ export function MemoTab() {
 
   // 新規追加用フォーム
   const addForm = useForm({
-    resolver: zodResolver(companyDetailSchema.companyMemoSchema),
+    resolver: zodResolver(companyMemoSchema),
     defaultValues: { content: "" },
   });
 
-  const addOnSubmit = (data: companyDetailSchema.CompanyMemoTypes) => {
+  const addOnSubmit = (data: CompanyMemoTypes) => {
     startTransition(async () => {
       try {
         await memoAdd(companyId, data.content);
