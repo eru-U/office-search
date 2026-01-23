@@ -150,7 +150,7 @@ export function QaTab() {
                         <div className="space-y-3">
                           <Textarea
                             placeholder="聞いた回答をここにメモ..."
-                            className="bg-white text-xs min-h-[90px] shadow-inner border-none"
+                            className="bg-white text-xs min-h-22.5 shadow-inner border-none"
                           />
                           <Button
                             size="sm"

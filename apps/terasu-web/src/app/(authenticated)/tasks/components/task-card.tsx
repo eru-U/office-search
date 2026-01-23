@@ -1,5 +1,6 @@
 "use client";
 
+// biome-ignore assist/source/organizeImports: <>
 import { taskUpdateStatus } from "@/actions/tasks/task-status-update-action";
 import { taskUpdateDescription } from "@/actions/tasks/task-update-description";
 import { taskUpdateTitle } from "@/actions/tasks/task-update-title";
@@ -71,7 +72,7 @@ export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
   };
 
   // タイトル編集フォーム
-  const titleForm = useForm<TaskTitleValues>({
+  const titleForm = useForm({
     resolver: zodResolver(taskTitleEditSchema),
     defaultValues: {
       title: task?.title ?? "",
@@ -79,7 +80,7 @@ export const TaskCard: FC<Props> = ({ task, onRefresh, isOverlay = false }) => {
   });
 
   // 説明編集フォーム
-  const descriptionForm = useForm<TaskDescriptionValues>({
+  const descriptionForm = useForm({
     resolver: zodResolver(taskDescriptionSchema),
     defaultValues: {
       description: task.description ?? "",

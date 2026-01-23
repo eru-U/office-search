@@ -26,13 +26,16 @@ import { Input } from "@/components/ui/input";
 
 // 共有スキーマからインポート
 import { headerEditAction } from "@/actions/companies/detail/header-action/header-edit-action";
-import { companyDetailHeaderSchema } from "@terasu/schema";
+import {
+  companyDetailHeaderEditSchema,
+  type CompanyDetailHeaderEditTypes,
+} from "@terasu/schema/models/companyDetailHeaderSchema";
 import { useParams } from "next/navigation";
 import { ClientOnly } from "../details/shared/client-only";
 
 interface CompanyDetailHeaderEditModalProps {
   companyId: string;
-  initialData: companyDetailHeaderSchema.CompanyDetailHeaderEditTypes;
+  initialData: CompanyDetailHeaderEditTypes;
 }
 
 export function CompanyDetailHeaderEditModal({
@@ -42,19 +45,15 @@ export function CompanyDetailHeaderEditModal({
   const params = useParams();
   const companyId = params.Id as string;
 
-  const form = useForm<companyDetailHeaderSchema.CompanyDetailHeaderEditTypes>({
-    resolver: zodResolver(
-      companyDetailHeaderSchema.companyDetailHeaderEditSchema,
-    ),
+  const form = useForm({
+    resolver: zodResolver(companyDetailHeaderEditSchema),
     defaultValues: {
       name: initialData.name,
       websiteUrl: initialData.websiteUrl ?? "",
     },
   });
 
-  const onSubmit = async (
-    values: companyDetailHeaderSchema.CompanyDetailHeaderEditTypes,
-  ) => {
+  const onSubmit = async (values: CompanyDetailHeaderEditTypes) => {
     await headerEditAction({
       id: companyId,
       name: values.name,

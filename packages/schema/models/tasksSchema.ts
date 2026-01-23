@@ -10,5 +10,4 @@ export const taskDescriptionSchema = z.object({
   description: z.string().nullable(),
 });
 
-export type taskDescriptionInput = z.input<typeof taskDescriptionSchema>;
 export type taskDescriptionTypes = z.infer<typeof taskDescriptionSchema>;

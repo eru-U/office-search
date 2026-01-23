@@ -19,7 +19,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { companyDetailSchema } from "@terasu/schema";
+import {
+  yearlyAddSchema,
+  type YearlyAddTypes,
+} from "@terasu/schema/models/companyDetailSchema";
 import { Plus } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -38,12 +41,12 @@ export const YearlyInfoAddForm = ({ onRefresh, isPrimary }: Props) => {
   const params = useParams();
   const companyId = params.Id as string;
 
-  const form = useForm<companyDetailSchema.YearlyAddTypes>({
-    resolver: zodResolver(companyDetailSchema.yearlyAddSchema),
+  const form = useForm({
+    resolver: zodResolver(yearlyAddSchema),
     defaultValues: { dataDate: "" },
   });
 
-  const onSubmit = (values: companyDetailSchema.YearlyAddTypes) => {
+  const onSubmit = (values: YearlyAddTypes) => {
     startTransition(async () => {
       try {
         const date = new Date(values.dataDate);

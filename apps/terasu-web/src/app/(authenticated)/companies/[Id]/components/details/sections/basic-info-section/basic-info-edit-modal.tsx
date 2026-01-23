@@ -20,7 +20,7 @@ import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   basicInfoEditSchema,
-  type BasicInfoInput,
+  type BasicInfoEditTypes,
 } from "@terasu/schema/models/companyDetailSchema";
 import { Edit2 } from "lucide-react";
 import { useState, useTransition } from "react";
@@ -42,7 +42,7 @@ export const BasicInfoEditModal = ({ data }: { data: YearlyDetailItem }) => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<BasicInfoInput>({
+  const form = useForm({
     resolver: zodResolver(basicInfoEditSchema),
     defaultValues: {
       establishedDate: data.company.establishedDate ?? "",
@@ -56,7 +56,7 @@ export const BasicInfoEditModal = ({ data }: { data: YearlyDetailItem }) => {
   // ==================================================
   // 送信関数
   // ==================================================
-  const onSubmit = async (values: BasicInfoInput) => {
+  const onSubmit = async (values: BasicInfoEditTypes) => {
     try {
       const parseData = basicInfoEditSchema.safeParse(values);
       if (!parseData.success) {

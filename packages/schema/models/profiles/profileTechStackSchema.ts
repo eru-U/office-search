@@ -27,13 +27,13 @@ export const profileTechStackUpdateSchema = z.object({
 /**
  * 追加用型定義
  */
-export type ProfileTechStackCreateInput = z.input<
+export type ProfileTechStackCreateTypes = z.infer<
   typeof profileTechStackCreateSchema
 >;
 
 /**
  * 編集用型定義
  */
-export type ProfileTechStackUpdateInput = z.input<
+export type ProfileTechStackUpdateTypes = z.infer<
   typeof profileTechStackUpdateSchema
 >;

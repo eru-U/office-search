@@ -18,8 +18,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { companyDetailPhilosophySchema } from "@terasu/schema";
-import type { CompanyDetailPhilosophyEditInput } from "@terasu/schema/models/companyDetailPhilosophySchema";
+import {
+  companyDetailPhilosophyEditSchema,
+  type CompanyDetailPhilosophyEditTypes,
+} from "@terasu/schema/models/companyDetailPhilosophySchema";
 import { Edit2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -42,10 +44,8 @@ export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<CompanyDetailPhilosophyEditInput>({
-    resolver: zodResolver(
-      companyDetailPhilosophySchema.companyDetailPhilosophyEditSchema,
-    ),
+  const form = useForm({
+    resolver: zodResolver(companyDetailPhilosophyEditSchema),
     defaultValues: {
       content: initialContent ?? "",
     },
@@ -54,11 +54,8 @@ export const PhilosophyInfoEdit = ({ id, initialContent }: Props) => {
   // ==================================================
   // 送信関数
   // ==================================================
-  const onSubmit = async (values: CompanyDetailPhilosophyEditInput) => {
-    const parseData =
-      companyDetailPhilosophySchema.companyDetailPhilosophyEditSchema.safeParse(
-        values,
-      );
+  const onSubmit = async (values: CompanyDetailPhilosophyEditTypes) => {
+    const parseData = companyDetailPhilosophyEditSchema.safeParse(values);
 
     if (!parseData.success) {
       toast.error("入力に誤りがあります");

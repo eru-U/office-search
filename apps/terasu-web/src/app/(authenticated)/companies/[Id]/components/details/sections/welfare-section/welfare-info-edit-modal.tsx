@@ -23,7 +23,7 @@ import { useYearlyDetail } from "@/contexts/YearlyDetailContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   companyDetailWelfareEditSchema,
-  type CompanyDetailWelfareEditInput,
+  type CompanyDetailWelfareEditTypes,
 } from "@terasu/schema/models/companyDetailWelfareSchema";
 import { Edit2 } from "lucide-react";
 import { useState, useTransition } from "react";
@@ -59,7 +59,7 @@ export const WelfareInfoEditModal = ({ id, data }: Props) => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<CompanyDetailWelfareEditInput>({
+  const form = useForm({
     resolver: zodResolver(companyDetailWelfareEditSchema),
     defaultValues: {
       name: data.name,
@@ -70,7 +70,7 @@ export const WelfareInfoEditModal = ({ id, data }: Props) => {
   // ==================================================
   // 送信関数
   // ==================================================
-  const onSubmit = async (values: CompanyDetailWelfareEditInput) => {
+  const onSubmit = async (values: CompanyDetailWelfareEditTypes) => {
     const parseData = companyDetailWelfareEditSchema.safeParse(values);
 
     if (!parseData.success) {

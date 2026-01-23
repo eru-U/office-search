@@ -17,17 +17,11 @@ export const companyDetailWelfareAddSchema = companyDetailWelfareBaseSchema;
 export type CompanyDetailWelfareAddTypes = z.infer<
   typeof companyDetailWelfareAddSchema
 >;
-export type CompanyDetailWelfareAddInput = z.input<
-  typeof companyDetailWelfareAddSchema
->;
 
 /**
  * 編集用スキーマ
  */
 export const companyDetailWelfareEditSchema = companyDetailWelfareBaseSchema;
 export type CompanyDetailWelfareEditTypes = z.infer<
-  typeof companyDetailWelfareEditSchema
->;
-export type CompanyDetailWelfareEditInput = z.input<
   typeof companyDetailWelfareEditSchema
 >;

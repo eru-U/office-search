@@ -41,7 +41,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   profileTechStackCreateSchema,
-  type ProfileTechStackCreateInput,
+  type ProfileTechStackCreateTypes,
 } from "@terasu/schema/models/profiles/profileTechStackSchema";
 import { Check, ChevronsUpDown, Code, Plus } from "lucide-react";
 import { useCallback, useEffect, useState, useTransition } from "react";
@@ -83,7 +83,7 @@ export const AddTechStackButton = () => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<ProfileTechStackCreateInput>({
+  const form = useForm({
     resolver: zodResolver(profileTechStackCreateSchema),
     defaultValues: {
       techStackId: "",
@@ -124,7 +124,7 @@ export const AddTechStackButton = () => {
   // ==================================================
   // 送信関数
   // ==================================================
-  const onSubmit = async (values: ProfileTechStackCreateInput) => {
+  const onSubmit = async (values: ProfileTechStackCreateTypes) => {
     const parseData = profileTechStackCreateSchema.safeParse(values);
 
     if (!parseData.success) {

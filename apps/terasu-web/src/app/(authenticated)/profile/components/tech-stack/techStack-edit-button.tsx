@@ -23,7 +23,7 @@ import { useProfile } from "@/contexts/profile-context";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   profileTechStackUpdateSchema,
-  type ProfileTechStackUpdateInput,
+  type ProfileTechStackUpdateTypes,
 } from "@terasu/schema/models/profiles/profileTechStackSchema";
 import { Edit2 } from "lucide-react";
 import { useState, useTransition } from "react";
@@ -55,7 +55,7 @@ export const TechStackEditButton = ({ id, initialContent }: Props) => {
   // ==================================================
   // フォームの初期化
   // ==================================================
-  const form = useForm<ProfileTechStackUpdateInput>({
+  const form = useForm({
     resolver: zodResolver(profileTechStackUpdateSchema),
     defaultValues: {
       startedAt: initialContent.startedAt ?? new Date(),
@@ -66,7 +66,7 @@ export const TechStackEditButton = ({ id, initialContent }: Props) => {
   // ==================================================
   // 送信関数
   // ==================================================
-  const onSubmit = async (values: ProfileTechStackUpdateInput) => {
+  const onSubmit = async (values: ProfileTechStackUpdateTypes) => {
     const parseData = profileTechStackUpdateSchema.safeParse(values);
 
     if (!parseData.success) {

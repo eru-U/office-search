@@ -47,5 +47,4 @@ export const basicInfoEditSchema = z.object({
   revenue: z.preprocess(emptyToNull, z.coerce.bigint().nullable()),
 });
 export type BasicInfoEditTypes = z.infer<typeof basicInfoEditSchema>;
-export type BasicInfoInput = z.input<typeof basicInfoEditSchema>;
 // ============================================================
