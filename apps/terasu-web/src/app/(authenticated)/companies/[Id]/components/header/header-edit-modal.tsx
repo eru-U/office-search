@@ -45,7 +45,7 @@ export function CompanyDetailHeaderEditModal({
   const params = useParams();
   const companyId = params.Id as string;
 
-  const form = useForm<CompanyDetailHeaderEditTypes>({
+  const form = useForm({
     resolver: zodResolver(companyDetailHeaderEditSchema),
     defaultValues: {
       name: initialData.name,
