@@ -1,0 +1,11 @@
+{
+  "デフォルトエクスポート関数": {
+    "prefix": "ex-def",
+    "body": [
+      "export default function ${TM_DIRECTORY/.*[\\\\\\/](.)(.*)/${1:/upcase}${2}/}() {",
+      "  return <h1>${TM_DIRECTORY/.*[\\\\\\/](.)(.*)/${1:/upcase}${2}/}</h1>;",
+      "}"
+    ],
+    "description": "フォルダ名の頭文字を大文字にして関数名にする"
+  }
+}

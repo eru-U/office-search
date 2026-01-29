@@ -1,15 +1,33 @@
 {
-  "name": "office-search",
+  "name": "@terasu/root",
+  "description": "A project for the Terasu application",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "format": "turbo format",
+    "db:up": "pnpm --filter @terasu/db db:dc:up",
+    "db:down": "pnpm --filter @terasu/db db:dc:down",
+    "db:generate": "pnpm --filter @terasu/db db:pr:generate",
+    "db:migrate": "pnpm --filter @terasu/db db:pr:migrate",
+    "db:studio": "turbo db:pr:studio",
+    "postinstall": "turbo db:pr:generate",
+    "gen-env": "tsx scripts/gen-env-example.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.15.0",
   "devDependencies": {
-    "@biomejs/biome": "2.3.6"
+    "@biomejs/biome": "2.3.6",
+    "@types/node": "^25.0.3",
+    "tsx": "^4.21.0",
+    "turbo": "^2.7.3"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "volta": {
+    "node": "22.21.1",
+    "pnpm": "10.15.0"
   }
 }

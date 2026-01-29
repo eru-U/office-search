@@ -1,0 +1,723 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider = "zod-prisma-types"
+  output   = "../../schema/generated"
+  relationModel = true
+  generateClientErrors = true
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- モデル定義 ---
+
+/// ユーザー情報を管理するテーブル
+model User {
+  /// ユーザーID
+  id            String    @id @default(cuid())
+  /// 名前
+  name          String?
+  /// メールアドレス (NextAuth: @unique が必須)
+  email         String?   @unique
+  /// メール認証日時
+  emailVerified DateTime?
+  /// アイコンURL
+  image         String?
+  /// 作成日
+  createdAt     DateTime  @default(now())
+  /// 更新日
+  updatedAt     DateTime  @updatedAt
+
+  /// 関連：企業
+  companies          Company[]
+  /// 関連：TODO
+  todos              Todo[]
+  /// 関連：業界マスタ
+  industries         Industry[]
+  /// 関連：就活軸
+  jobHuntingAxes     JobHuntingAxis[]
+  /// 関連：保有資格
+  qualifications     Qualification[]
+  /// 関連：タグマスタ
+  tags               Tag[]
+  /// 関連：技術スタックマスタ
+  techStacks         TechStack[]
+  /// 関連：労働区分マスタ
+  laborCategories    LaborCategory[]
+  /// 関連：雇用形態マスタ
+  employmentStatuses EmploymentStatus[]
+  /// 関連：キャリアビジョン
+  careerVisions      CareerVision[]
+  /// 関連：連携用アカウント (NextAuth用)
+  accounts           Account[]
+  /// 関連：セッション (NextAuth用)
+  sessions           Session[]
+  /// 関連：タスク
+  tasks              Task[]
+  /// 関連：ユーザーが持っている技術スタック
+  userTechs       UserTech[]
+}
+
+/// 認証連携用アカウント
+model Account {
+  /// 内部ID
+  id                 String  @id @default(cuid())
+  /// ユーザーID
+  userId             String
+  /// プロバイダー種別（NextAuthに必須）
+  type               String
+  /// プロバイダー名（google等）
+  provider           String
+  /// プロバイダー側のアカウントID
+  providerAccountId  String
+  /// リフレッシュトークン
+  refresh_token      String? @db.Text
+  /// アクセストークン
+  access_token       String? @db.Text
+  /// 有効期限
+  expires_at         Int?
+  /// トークン種別
+  token_type         String?
+  /// スコープ
+  scope              String?
+  /// IDトークン
+  id_token           String? @db.Text
+  /// セッション状態
+  session_state      String?
+  
+  /// 関連：ユーザー
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+/// セッション管理
+model Session {
+  /// 内部ID
+  id           String   @id @default(cuid())
+  /// セッショントークン (NextAuth: @unique が必須)
+  sessionToken String   @unique
+  /// ユーザーID
+  userId       String
+  /// 有効期限
+  expires      DateTime
+  
+  /// 関連：ユーザー
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// メール認証用トークン
+model VerificationToken {
+  /// 識別子 (NextAuth: identifier に変更)
+  identifier String
+  /// トークン (NextAuth: @unique が必須)
+  token      String   @unique
+  /// 有効期限
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+/// 企業情報を管理するテーブル
+model Company {
+  /// 企業ID
+  id               String   @id @default(cuid())
+  /// ユーザーID
+  userId           String
+  /// 会社名
+  name             String
+  /// 設立年月日
+  establishedDate  DateTime?
+  /// 資本金
+  capital          BigInt?
+  /// 公式サイトURL
+  websiteUrl       String?
+  /// 電話番号
+  phoneNumber      String?
+  /// 総合評価スコア
+  ratingScore      Int?
+  /// 作成日時
+  createdAt        DateTime @default(now())
+  /// 更新日時
+  updatedAt        DateTime @updatedAt
+  /// 志望度（0～5の5段階評価）
+  aspirationLevel  Int?
+  /// お気に入りフラグ
+  isFavorite       Boolean @default(false)
+  /// 閲覧回数
+  viewCount        Int @default(0)
+  /// 関連：ユーザー
+  user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 関連：メモ
+  memos             Memo[]
+  /// 関連：年代別企業情報
+  yearlyInfos       CompanyYearlyInfo[]
+  /// 関連：企業理念
+  philosophies      CompanyPhilosophy[]
+  /// 関連：タグ
+  tags              Tag[]                 @relation("CompanyToTag")
+  /// 関連：業界
+  industries        Industry[]            @relation("CompanyToIndustry")
+  /// 関連：拠点・支店 (ここに移動)
+  branches         Branch[]
+  /// 関連：就活軸マッチング
+  axisMatchings     CompanyAxisMatching[]
+  /// 関連：タスク
+  tasks             Task[]
+  /// 複合ユニーク制約
+  @@unique([userId, name])
+}
+
+/// 業界情報を管理するマスタテーブル
+model Industry {
+  /// 業界ID
+  id        String  @id @default(cuid())
+  /// ユーザーID
+  userId    String?
+  /// 業界名
+  name      String?
+  /// 表示順序
+  sortOrder Int     @default(0)
+
+  /// 関連：ユーザー
+  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 関連：企業
+  companies Company[] @relation("CompanyToIndustry")
+}
+
+/// 年代別の企業詳細情報を管理するテーブル
+model CompanyYearlyInfo {
+  /// 年代ID
+  id               String   @id @default(cuid())
+  /// 企業ID
+  companyId        String
+  /// 採用サイトURL
+  recruitmentUrl   String?
+  /// データ取得日
+  dataDate         DateTime
+  /// 社員数
+  employeeCount    Int?
+  /// 代表者名
+  representative   String?
+  /// 売上高
+  revenue          BigInt?
+  /// 副業可否
+  isSideJobAllowed Boolean?
+  /// 時短勤務有無
+  hasShortTimeWork Boolean?
+  /// 服装自由
+  isDressFree      Boolean?
+
+  /// 関連：企業
+  company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  /// 関連：募集職種
+  jobPostings      JobPosting[]
+  /// 関連：重要人物
+  contactPersons   ContactPerson[]
+  /// 関連：事業内容
+  businessContents BusinessContent[]
+  /// 関連：休日制度
+  holidaySystems   HolidaySystem[]
+  /// 関連：福利厚生
+  welfares         Welfare[]
+  /// 関連：研修制度
+  trainingSystems  TrainingSystem[]
+}
+
+/// 拠点の住所情報を管理するテーブル
+model Branch {
+  /// 拠点ID
+  id           String             @id @default(cuid())
+  /// 企業ID (yearlyInfoIdからcompanyIdに変更)
+  companyId String
+  /// 拠点住所
+  address      String
+  /// 関連：企業 (年代別から企業本体へリレーションを変更)
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+/// 募集職種の詳細を管理するテーブル
+model JobPosting {
+  /// 募集職種ID
+  id                 String   @id @default(cuid())
+  /// 年代ID
+  yearlyInfoId       String
+  /// 募集職種名
+  title              String
+  /// 試用期間（月）
+  probationMonths    Float?
+  /// 雇用形態ID
+  employmentStatusId String?
+  /// 労働区分ID
+  laborCategoryId    String
+  /// リモートワーク可否
+  isRemoteAllowed    Boolean
+  /// 備考
+  notes              String?
+
+  /// 関連：年代別企業情報
+  yearlyInfo       CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
+  /// 関連：雇用形態
+  employmentStatus EmploymentStatus? @relation(fields: [employmentStatusId], references: [id], onDelete: Cascade)
+  /// 関連：労働区分
+  laborCategory    LaborCategory     @relation(fields: [laborCategoryId], references: [id], onDelete: Cascade)
+  /// 関連：給与
+  salaries         Salary[]
+  /// 関連：選考スケジュール
+  selectionSchedules SelectionSchedule[]
+  /// 関連：労働時間
+  workingHours     WorkingHours[]
+  /// 関連：技術スタック
+  techStacks       TechStack[]       @relation("JobToTechStack")
+}
+
+/// 給与形態マスタ（例：年収、月収）
+model SalaryCategory {
+  /// カテゴリID
+  id        String   @id @default(cuid())
+  /// カテゴリ名
+  categoryName      String
+  /// 表示順序
+  sortOrder Int      @default(0)
+
+  /// 関連：給与
+  salaries  Salary[]
+}
+
+/// 給与情報を管理するテーブル
+model Salary {
+  /// 給与ID
+  id               String         @id @default(cuid())
+  /// 募集職種ID
+  jobPostingId     String
+  /// 給与形態マスタID
+  salaryCategoryId String
+  /// 給与額
+  amount           Int?
+  /// 基本給
+  baseSalary       Int?
+
+  /// 関連：募集職種
+  jobPosting     JobPosting     @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  /// 関連：給与形態マスタ
+  salaryCategory SalaryCategory @relation(fields: [salaryCategoryId], references: [id])
+  /// 関連：手当
+  allowances     Allowance[]
+  /// 関連：賞与
+  bonuses        Bonus[]
+}
+
+/// 企業に関するメモ
+model Memo {
+  /// メモID
+  id        String   @id @default(cuid())
+  /// 企業ID
+  companyId String
+  /// メモ内容
+  content   String
+  /// 作成日時
+  createdAt DateTime @default(now())
+  
+  /// 関連：企業
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+/// 企業の重要人物や連絡先
+model ContactPerson {
+  /// 重要人物ID
+  id           String            @id @default(cuid())
+  /// 年代ID
+  yearlyInfoId String
+  /// 氏名
+  name         String
+  /// 役職
+  position     String
+  /// 特徴メモ
+  description  String?
+  
+  /// 関連：年代別企業情報
+  yearlyInfo   CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
+}
+
+/// 選考のスケジュールを管理するテーブル
+model SelectionSchedule {
+  /// 選考スケジュールID
+  id              String    @id @default(cuid())
+  /// 親選考スケジュールID
+  parentId        String?
+  /// 募集職種ID
+  jobPostingId    String
+  /// タイトル
+  title           String
+  /// 選考日時
+  scheduledAt     DateTime?
+  /// 詳細メモ
+  notes           String?
+  /// 完了フラグ
+  isCompleted     Boolean
+  /// 合否結果
+  passed          Boolean?
+  /// ステータス更新日
+  statusUpdatedAt DateTime?
+  /// 場所・URL
+  locationUrl     String?
+
+  /// 関連：募集職種
+  jobPosting JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+  /// 関連：タスク
+  tasks      Task[]
+  /// 関連：QA
+  qas        QA[]
+}
+
+/// ユーザーのTODOリスト
+model Todo {
+  /// TODOID
+  id          String    @id @default(cuid())
+  /// ユーザーID
+  userId      String
+  /// タイトル
+  title       String
+  /// 開始日
+  startDate   DateTime?
+  /// 終了日
+  endDate     DateTime?
+  /// 備考
+  notes       String?
+  /// 完了フラグ
+  isCompleted Boolean
+  
+  /// 関連：ユーザー
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// 汎用的なタグ
+model Tag {
+  /// タグID
+  id        String    @id @default(cuid())
+  /// タグ名
+  name      String
+  /// ユーザーID
+  userId    String
+  
+  /// 関連：ユーザー
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 関連：企業
+  companies Company[] @relation("CompanyToTag")
+}
+
+/// 優先度の種別
+enum PriorityType {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+/// 自身の就活の軸
+model JobHuntingAxis {
+  /// 就活軸ID
+  id           String                @id @default(cuid())
+  /// ユーザーID
+  userId       String
+  /// 軸の内容
+  content      String?
+  /// 優先度種別
+  priorityType PriorityType?
+  /// 表示順序
+  displayOrder Int?
+  /// 作成日時
+  createdAt    DateTime?             @default(now())
+  
+  /// 関連：ユーザー
+  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 関連：企業マッチング
+  matchings    CompanyAxisMatching[]
+}
+
+/// 企業と就活軸のマッチング状況
+model CompanyAxisMatching {
+  /// 企業ID
+  companyId String
+  /// 就活軸ID
+  axisId    String
+  /// 適合スコア
+  score     Int?
+  
+  /// 関連：企業
+  company   Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  /// 関連：就活軸
+  jobAxis   JobHuntingAxis @relation(fields: [axisId], references: [id], onDelete: Cascade)
+
+  @@id([companyId, axisId])
+}
+
+/// スケジュールに紐づくタスク
+model Task {
+  /// タスクID
+  id          String              @id @default(cuid())
+  /// 所有者（ユーザー）ID
+  userId       String
+  /// 関連する企業ID（任意）
+  companyId    String?
+  /// 関連する選考スケジュールID（任意）
+  scheduleId   String?
+  /// タイトル
+  title       String
+  /// 説明
+  description String?
+  /// 完了フラグ
+  status      String            @default("TODO")
+  /// 期限
+  deadline    DateTime?
+  /// 作成日時
+  createdAt   DateTime           @default(now())
+  /// 完了日時
+  completedAt DateTime?
+  
+  /// 関連：ユーザー
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 関連：企業
+  company    Company?            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  /// 関連：選考スケジュール
+  schedule    SelectionSchedule? @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+}
+
+/// ユーザーの保有資格
+model Qualification {
+  /// 保有資格ID
+  id           String    @id @default(cuid())
+  /// ユーザーID
+  userId       String
+  /// 資格名
+  name         String?
+  /// 取得年月
+  obtainedDate DateTime?
+  
+  /// 関連：ユーザー
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// 面接などのQA記録
+model QA {
+  /// QAID
+  id         String            @id @default(cuid())
+  /// 選考スケジュールID
+  scheduleId String
+  /// 質問内容
+  question   String
+  /// 回答内容
+  answer     String?
+  
+  /// 関連：選考スケジュール
+  schedule   SelectionSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+}
+
+/// 技術スタックのマスタ
+model TechStack {
+  /// 技術スタックID
+  id          String       @id @default(cuid())
+  /// ユーザーID
+  userId      String?
+  /// 技術スタック名
+  name        String?
+  
+  /// 関連：ユーザー
+  user        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 関連：募集職種
+  jobPostings JobPosting[] @relation("JobToTechStack")
+  // 変更点：ユーザーとの習熟度リレーションを追加
+  users       UserTech[]
+}
+
+model UserTech {
+  id          String @id @default(cuid())
+  /// ユーザーのID
+  userId      String
+  /// 技術スタックのID
+  techStackId String
+  /// 経験開始時期（ここから動的に経験年数を算出する）
+  startedAt   DateTime
+  /// 具体的な実績や使用感
+  note        String?
+  // データ製作日時
+  createdAt   DateTime @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  techStack   TechStack @relation(fields: [techStackId], references: [id], onDelete: Cascade)
+}
+/// 企業理念
+model CompanyPhilosophy {
+  /// 企業理念ID
+  id        String  @id @default(cuid())
+  /// 企業ID
+  companyId String
+  /// 企業理念内容
+  content   String?
+  
+  /// 関連：企業
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+/// 事業内容の詳細
+model BusinessContent {
+  /// 事業内容ID
+  id           String            @id @default(cuid())
+  /// 年代ID
+  yearlyInfoId String
+  /// 事業内容タイトル
+  title        String
+  /// 事業内容詳細
+  description  String?
+  
+  /// 関連：年代別企業情報
+  yearlyInfo   CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
+}
+
+/// 各種手当
+model Allowance {
+  /// 手当ID
+  id       String @id @default(cuid())
+  /// 給与ID
+  salaryId String
+  /// 手当名
+  name     String
+  /// 金額
+  amount   Int
+  
+  /// 関連：給与
+  salary   Salary @relation(fields: [salaryId], references: [id], onDelete: Cascade)
+}
+
+/// 賞与情報
+model Bonus {
+  /// 賞与ID
+  id           String @id @default(cuid())
+  /// 給与ID
+  salaryId     String
+  /// 賞与回数
+  timesPerYear Int?
+  /// 何か月分
+  months       Float?
+  
+  /// 関連：給与
+  salary       Salary @relation(fields: [salaryId], references: [id], onDelete: Cascade)
+}
+
+/// 労働時間の設定
+model WorkingHours {
+  /// 労働時間ID
+  id            String     @id @default(cuid())
+  /// 募集職種ID
+  jobPostingId  String
+  /// 始業時間
+  startTime     DateTime?  @db.Time
+  /// 終業時間
+  endTime       DateTime?  @db.Time
+  /// コアタイム開始時間
+  coreStartTime DateTime?  @db.Time
+  /// コアタイム終了時間
+  coreEndTime   DateTime?  @db.Time
+  
+  /// 関連：募集職種
+  jobPosting    JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+}
+
+/// 労働区分のマスタ
+model LaborCategory {
+  /// 労働区分ID
+  id          String       @id @default(cuid())
+  /// ユーザーID
+  userId      String
+  /// 区分名
+  name        String
+  /// 表示順序
+  sortOrder   Int          @default(0)
+  
+  /// 関連：ユーザー
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 関連：募集職種
+  jobPostings JobPosting[]
+}
+
+/// 休日制度
+model HolidaySystem {
+  /// 休日制度ID
+  id           String            @id @default(cuid())
+  /// 年代ID
+  yearlyInfoId String
+  /// 休日制度名
+  name         String
+  
+  /// 関連：年代別企業情報
+  yearlyInfo   CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
+}
+
+/// 福利厚生
+model Welfare {
+  /// 福利厚生ID
+  id           String            @id @default(cuid())
+  /// 年代ID
+  yearlyInfoId String
+  /// 福利厚生名
+  name         String
+  /// 福利厚生内容
+  content      String?
+  
+  /// 関連：年代別企業情報
+  yearlyInfo   CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
+}
+
+/// 研修制度
+model TrainingSystem {
+  /// 研修制度ID
+  id           String            @id @default(cuid())
+  /// 年代ID
+  yearlyInfoId String
+  /// 期間（月）
+  months       Float
+  /// 内容
+  content      String?
+  
+  /// 関連：年代別企業情報
+  yearlyInfo   CompanyYearlyInfo @relation(fields: [yearlyInfoId], references: [id], onDelete: Cascade)
+}
+
+/// 雇用形態のマスタ
+model EmploymentStatus {
+  /// 雇用形態ID
+  id          String       @id @default(cuid())
+  /// ユーザーID
+  userId      String
+  /// 雇用形態名
+  name        String?
+  /// 表示順序
+  sortOrder   Int          @default(0)
+  
+  /// 関連：ユーザー
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 関連：募集職種
+  jobPostings JobPosting[]
+}
+
+/// 自身のキャリアビジョン
+model CareerVision {
+  /// キャリアビジョンID
+  id         String   @id @default(cuid())
+  /// ユーザーID
+  userId     String
+  /// キャリア名
+  name       String
+  /// 達成する年
+  targetYear DateTime
+  
+  /// 関連：ユーザー
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

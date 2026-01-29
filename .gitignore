@@ -139,3 +139,11 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+
+docker-data
+.obsidian
+
+.turbo
+
+packages/db/seeds/config.ts

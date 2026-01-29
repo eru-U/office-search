@@ -1,0 +1,33 @@
+import { MapPin } from "lucide-react";
+import type { YearlyDetailItem } from "../../types";
+import { BranchInfoAdd } from "./branch-info-add";
+import { BranchInfoDelete } from "./branch-info-delete";
+import { BranchInfoEdit } from "./branch-info-edit";
+
+export const BranchSection = ({ data }: { data: YearlyDetailItem }) => (
+  <section className="flex flex-col h-100">
+    <div className="flex items-center justify-between border-l-4 border-blue-500 pl-4 mb-6 shrink-0">
+      <h2 className="text-xl font-bold">拠点情報</h2>
+      <BranchInfoAdd />
+    </div>
+
+    <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+      {/* 修正ポイント: data.branches ではなく data.company.branches を参照 */}
+      {(data.company?.branches ?? []).map((branch) => (
+        <div
+          key={branch.id}
+          className="group p-4 bg-background border rounded-2xl flex justify-between items-center gap-3 hover:border-blue-500/50 transition-all shadow-sm mb-3"
+        >
+          <div className="flex items-start gap-3">
+            <MapPin className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" />
+            <span className="text-sm leading-snug">{branch.address}</span>
+          </div>
+          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <BranchInfoEdit id={branch.id} initialContent={branch.address} />
+            <BranchInfoDelete id={branch.id} />
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+);

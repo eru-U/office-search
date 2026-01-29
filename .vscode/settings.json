@@ -1,4 +1,16 @@
 {
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "prisma.pinToPrisma6": true,
+  "css.validate": false,
+  "cSpell.words": ["cmdk", "contant", "cuid", "Embla", "TERASU", "vaul"],
+  "files.associations": {
+    "*.json": "jsonc"
+  },
+  "[typescript][javascript][typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome",
-    "editor.formatOnSave": true
+    "editor.codeActionsOnSave": {
+      "source.sortImports": "always"
+    }
+  }
 }

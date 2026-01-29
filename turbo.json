@@ -1,0 +1,31 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    // 開発サーバー（永続的に動くもの）
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    // ビルド（成果物があるもの）
+    "build": {
+      "dependsOn": ["^build", "db:pr:generate"],
+      "outputs": [".next/**", "dist/**"]
+    },
+    // Prisma関連
+    "db:pr:generate": {
+      "cache": true
+    },
+    "db:pr:studio": {
+      "cache": false,
+      "persistent": true
+    },
+    // Lint/Format
+    "lint": {
+      "cache": true
+    },
+    "format": {
+      "cache": true
+    }
+  }
+}
