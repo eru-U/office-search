@@ -1,11 +1,12 @@
 // apps/terasu-web/app/(authenticated)/companies/[Id]/components/header/header.tsx
 "use client";
 
+// biome-ignore assist/source/organizeImports: <>
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Globe, Star } from "lucide-react";
+import { Globe } from "lucide-react";
 import { ClientOnly } from "../details/shared/client-only";
+import { EvaluateList } from "../evalute/evaluate-list";
 import { CompanyDetailSideSheet } from "../sheet/side-sheet";
 import { CompanyDetailHeaderEditModal } from "./header-edit-modal";
 
@@ -62,14 +63,7 @@ export function CompanyDetailHeader({ data }: CompanyDetailHeaderProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2 rounded-full font-bold h-9"
-          >
-            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-            評価する
-          </Button>
+          <EvaluateList />
           <ClientOnly>
             <CompanyDetailSideSheet />
           </ClientOnly>
